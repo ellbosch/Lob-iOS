@@ -1,0 +1,6 @@
+framework module Pods_LobUITests {
+  umbrella header "Pods-LobUITests-umbrella.h"
+
+  export *
+  module * { export * }
+}
