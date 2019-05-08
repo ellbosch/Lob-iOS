@@ -2,6 +2,9 @@
 #
 # gitignore contributors: remember to update Global/Xcode.gitignore, Objective-C.gitignore & Swift.gitignore
 
+## Remove plist files with API keys
+Lob/GoogleService-info.plist
+
 ## Build generated
 build/
 DerivedData/
