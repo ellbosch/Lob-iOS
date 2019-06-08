@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="ZFy-aR-Qwj">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="ZFy-aR-Qwj">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -13,24 +13,24 @@
         <!--Channels-->
         <scene sceneID="xn6-DP-EbR">
             <objects>
-                <viewController storyboardIdentifier="SportsListViewController" title="Channels" id="JYZ-jm-Bfg" customClass="SportsListViewController" customModule="The_Lob" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SportsListViewController" title="Channels" id="JYZ-jm-Bfg" customClass="SportsListViewController" customModule="Lob" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="lkw-ST-9lf">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="59" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="iB7-FW-b1l">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="59" sectionHeaderHeight="30" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="iB7-FW-b1l">
                                 <rect key="frame" x="0.0" y="64" width="375" height="554"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="SportsTableViewCell" rowHeight="88" id="WDc-QT-ogW" customClass="SportsTableViewCell" customModule="The_Lob" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="28" width="375" height="88"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="SportsTableViewCell" rowHeight="88" id="WDc-QT-ogW" customClass="SportsTableViewCell" customModule="Lob" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="30" width="375" height="88"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="WDc-QT-ogW" id="SZO-A1-nIC">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="87.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zLN-fb-KtV">
-                                                    <rect key="frame" x="60" y="33.5" width="44" height="20.5"/>
+                                                    <rect key="frame" x="60" y="33.5" width="44" height="21"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -62,10 +62,10 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="iB7-FW-b1l" firstAttribute="bottom" secondItem="gYn-MU-6DQ" secondAttribute="bottom" id="O2d-th-Kf1"/>
+                            <constraint firstItem="iB7-FW-b1l" firstAttribute="bottom" secondItem="gYn-MU-6DQ" secondAttribute="bottom" id="0ZV-wp-stU"/>
+                            <constraint firstItem="iB7-FW-b1l" firstAttribute="top" secondItem="gYn-MU-6DQ" secondAttribute="top" id="EC8-MT-tX1"/>
                             <constraint firstItem="iB7-FW-b1l" firstAttribute="leading" secondItem="lkw-ST-9lf" secondAttribute="leading" id="gBL-nu-J6b"/>
                             <constraint firstAttribute="trailing" secondItem="iB7-FW-b1l" secondAttribute="trailing" id="kBY-NK-VBm"/>
-                            <constraint firstItem="iB7-FW-b1l" firstAttribute="top" secondItem="gYn-MU-6DQ" secondAttribute="top" id="lxK-V4-qod"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="gYn-MU-6DQ"/>
                     </view>
@@ -116,7 +116,7 @@
         <!--Feed View Controller-->
         <scene sceneID="RfU-PJ-adz">
             <objects>
-                <viewController storyboardIdentifier="FeedViewController" id="1bf-c7-XnR" customClass="FeedViewController" customModule="The_Lob" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="FeedViewController" id="1bf-c7-XnR" customClass="FeedViewController" customModule="Lob" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="L18-kr-6UC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -160,14 +160,14 @@
                                     </constraints>
                                 </view>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="LinkTableViewCell" rowHeight="412" id="e9Q-Xg-uCq" customClass="LinkTableViewCell" customModule="The_Lob" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="LinkTableViewCell" rowHeight="412" id="e9Q-Xg-uCq" customClass="LinkTableViewCell" customModule="Lob" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="375" height="412"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="e9Q-Xg-uCq" id="80y-E0-wCi">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="412"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Vzw-Rr-L6O" customClass="ThumbnailImageView" customModule="The_Lob" customModuleProvider="target">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Vzw-Rr-L6O" customClass="ThumbnailImageView" customModule="Lob" customModuleProvider="target">
                                                     <rect key="frame" x="0.0" y="0.0" width="375" height="300"/>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EH9-FS-iWI">
@@ -185,7 +185,7 @@
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <view alpha="0.0" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="9X5-BU-kOu" customClass="PlayerView" customModule="The_Lob" customModuleProvider="target">
+                                                <view alpha="0.0" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="9X5-BU-kOu" customClass="PlayerView" customModule="Lob" customModuleProvider="target">
                                                     <rect key="frame" x="0.0" y="0.0" width="375" height="300"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <gestureRecognizers/>
@@ -206,8 +206,8 @@
                                                         <action selector="muteToggleSelect:" destination="1bf-c7-XnR" eventType="touchUpInside" id="hTm-zz-E0y"/>
                                                     </connections>
                                                 </button>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="l8a-Yq-23l" customClass="ShareButton" customModule="The_Lob" customModuleProvider="target">
-                                                    <rect key="frame" x="285" y="338.5" width="75" height="45"/>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="l8a-Yq-23l" customClass="ShareButton" customModule="Lob" customModuleProvider="target">
+                                                    <rect key="frame" x="300" y="346" width="60" height="30"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                                     <inset key="contentEdgeInsets" minX="-10" minY="0.0" maxX="0.0" maxY="0.0"/>
                                                     <state key="normal" title="Share" image="share">
@@ -225,8 +225,8 @@
                                                         <constraint firstAttribute="height" constant="15" id="z4b-BT-PG1"/>
                                                     </constraints>
                                                 </imageView>
-                                                <button opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="749" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="tailTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NmN-j4-0CC" customClass="RedditAuthorButton" customModule="The_Lob" customModuleProvider="target">
-                                                    <rect key="frame" x="88" y="338.5" width="65" height="45"/>
+                                                <button opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="749" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="tailTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NmN-j4-0CC" customClass="RedditAuthorButton" customModule="Lob" customModuleProvider="target">
+                                                    <rect key="frame" x="88" y="346" width="50" height="30"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                                     <inset key="contentEdgeInsets" minX="-10" minY="0.0" maxX="0.0" maxY="0.0"/>
                                                     <state key="normal" title="user" image="reddit">
@@ -315,16 +315,16 @@
         <!--Video View Controller-->
         <scene sceneID="wbH-yq-LFB">
             <objects>
-                <viewController storyboardIdentifier="VideoViewController" id="mYP-L2-r9H" customClass="VideoViewController" customModule="The_Lob" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="VideoViewController" id="mYP-L2-r9H" customClass="VideoViewController" customModule="Lob" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="eY6-NQ-4Ha">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="uhw-IO-Uij" customClass="ThumbnailImageView" customModule="The_Lob" customModuleProvider="target">
+                            <view contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="uhw-IO-Uij" customClass="ThumbnailImageView" customModule="Lob" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
-                            <view alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zuQ-iC-uJg" customClass="PlayerView" customModule="The_Lob" customModuleProvider="target">
+                            <view alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zuQ-iC-uJg" customClass="PlayerView" customModule="Lob" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <gestureRecognizers/>
@@ -497,12 +497,12 @@
                     </connections>
                 </swipeGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="145" y="-1215"/>
+            <point key="canvasLocation" x="231" y="-1642"/>
         </scene>
         <!--Hot-->
         <scene sceneID="QsD-Zr-h5y">
             <objects>
-                <viewController storyboardIdentifier="HotFeedViewController" title="Hot" id="uJX-eV-vEz" customClass="FeedViewController" customModule="The_Lob" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="HotFeedViewController" title="Hot" id="uJX-eV-vEz" customClass="FeedViewController" customModule="Lob" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="7SI-DA-RyW">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -583,14 +583,14 @@
                                     </constraints>
                                 </view>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="LinkTableViewCell" rowHeight="412" id="O4J-Bi-qBH" customClass="LinkTableViewCell" customModule="The_Lob" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="LinkTableViewCell" rowHeight="412" id="O4J-Bi-qBH" customClass="LinkTableViewCell" customModule="Lob" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="167" width="375" height="412"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="O4J-Bi-qBH" id="kGY-Gp-m9y">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="412"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Lwv-OK-TuN" customClass="ThumbnailImageView" customModule="The_Lob" customModuleProvider="target">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Lwv-OK-TuN" customClass="ThumbnailImageView" customModule="Lob" customModuleProvider="target">
                                                     <rect key="frame" x="0.0" y="0.0" width="375" height="300"/>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SAU-Sv-Buf">
@@ -605,7 +605,7 @@
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <view alpha="0.0" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="zfh-aa-hoZ" customClass="PlayerView" customModule="The_Lob" customModuleProvider="target">
+                                                <view alpha="0.0" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="zfh-aa-hoZ" customClass="PlayerView" customModule="Lob" customModuleProvider="target">
                                                     <rect key="frame" x="0.0" y="0.0" width="375" height="300"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <gestureRecognizers/>
@@ -626,8 +626,8 @@
                                                         <action selector="muteToggleSelect:" destination="uJX-eV-vEz" eventType="touchUpInside" id="PNm-X2-gmP"/>
                                                     </connections>
                                                 </button>
-                                                <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XY2-Kq-De5" customClass="ShareButton" customModule="The_Lob" customModuleProvider="target">
-                                                    <rect key="frame" x="285" y="339.5" width="75" height="45"/>
+                                                <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XY2-Kq-De5" customClass="ShareButton" customModule="Lob" customModuleProvider="target">
+                                                    <rect key="frame" x="300" y="347" width="60" height="30"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                                     <inset key="contentEdgeInsets" minX="-10" minY="0.0" maxX="0.0" maxY="0.0"/>
                                                     <state key="normal" title="Share" image="share">
@@ -659,8 +659,8 @@
                                                         <constraint firstAttribute="height" constant="15" id="PGu-n8-ozt"/>
                                                     </constraints>
                                                 </imageView>
-                                                <button opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="749" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="tailTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="i2z-dv-s2X" customClass="RedditAuthorButton" customModule="The_Lob" customModuleProvider="target">
-                                                    <rect key="frame" x="173.5" y="339.5" width="65" height="45"/>
+                                                <button opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="749" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="tailTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="i2z-dv-s2X" customClass="RedditAuthorButton" customModule="Lob" customModuleProvider="target">
+                                                    <rect key="frame" x="173.5" y="347" width="50" height="30"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                                     <inset key="contentEdgeInsets" minX="-10" minY="0.0" maxX="0.0" maxY="0.0"/>
                                                     <state key="normal" title="user" image="reddit">
@@ -760,8 +760,8 @@
     <resources>
         <image name="clock" width="30" height="30"/>
         <image name="menu" width="30" height="30"/>
-        <image name="reddit" width="45" height="45"/>
-        <image name="share" width="45" height="45"/>
+        <image name="reddit" width="30" height="30"/>
+        <image name="share" width="30" height="30"/>
         <image name="sun" width="30" height="30"/>
     </resources>
     <inferredMetricsTieBreakers>

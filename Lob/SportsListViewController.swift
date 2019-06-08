@@ -15,6 +15,8 @@ class SportsListViewController: UIViewController, UITableViewDelegate, UITableVi
                                         ("NFL", UIImage(named: "footballAmerican")),
                                         ("MLB", UIImage(named: "baseball"))]
     
+    var legal: [String] = ["Terms of Service", "Privacy Policy", "DMCA"]
+    
     // ensures status bar is visible on this view
     override var prefersStatusBarHidden: Bool {
         return false
@@ -49,25 +51,40 @@ class SportsListViewController: UIViewController, UITableViewDelegate, UITableVi
         secondVC?.popToRootViewController(animated: false)
     }
     
-    // MARK: - Table view data source
-    
     func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
-        return 1
+        return 2
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 30
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return sports.count
+        switch section {
+        case 0:
+            return sports.count
+        case 1:
+            return legal.count
+        default:
+            return 0
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell: SportsTableViewCell = tableView.dequeueReusableCell(withIdentifier: "SportsTableViewCell", for: indexPath) as? SportsTableViewCell else {
             fatalError("The dequeued cell is not an instance of SportsTableViewCell")
         }
-        let sport = sports[indexPath.row]
-        cell.sportsLabel?.text = sport.0
-        cell.iconLabel?.image = sport.1
+        switch indexPath.section {
+        case 0:
+            let sport = sports[indexPath.row]
+            cell.sportsLabel?.text = sport.0
+            cell.iconLabel?.image = sport.1
+        case 1:
+            cell.sportsLabel?.text = legal[indexPath.row]
+        default:
+            break
+        }
         return cell
     }
     
