@@ -43,6 +43,9 @@ class SettingsViewController: UIViewController, UITableViewDelegate, UITableView
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        // deselect row for formatting
+        self.tableView?.deselectRow(at: indexPath, animated: true)
+        
         if indexPath.row == 0 {
             guard let url = URL(string: "https://lob.tv/terms-of-use") else { return }
             UIApplication.shared.open(url)

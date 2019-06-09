@@ -106,7 +106,7 @@ class SportsListViewController: UIViewController, UITableViewDelegate, UITableVi
                 let selectedRow = tableView?.indexPathForSelectedRow else { return }
             
             // deselect row for formatting
-            self.tableView?.deselectRow(at: selectedRow, animated: false)
+            self.tableView?.deselectRow(at: selectedRow, animated: true)
     
             // open channel to sport if one is selected
             let sport = self.sports[selectedRow.row]
