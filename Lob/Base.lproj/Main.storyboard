@@ -54,7 +54,6 @@
                                         <connections>
                                             <outlet property="iconLabel" destination="6AW-Jc-Mb2" id="ufv-3I-Uwn"/>
                                             <outlet property="sportsLabel" destination="zLN-fb-KtV" id="m2Y-WR-zjm"/>
-                                            <segue destination="1bf-c7-XnR" kind="show" id="tE9-cM-X7M"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -72,11 +71,28 @@
                     <navigationItem key="navigationItem" title="Channels" id="GX2-mW-Fsv"/>
                     <connections>
                         <outlet property="tableView" destination="iB7-FW-b1l" id="hrb-hm-0Ko"/>
+                        <segue destination="1bf-c7-XnR" kind="show" identifier="channelSegue" id="RzY-xN-K4o"/>
+                        <segue destination="rm0-4X-QNr" kind="show" identifier="settingsSegue" id="YGJ-te-Tyw"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="QDj-yX-wPF" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-1530.4000000000001" y="-1215.7421289355323"/>
+        </scene>
+        <!--Settings-->
+        <scene sceneID="t0j-Fo-6gk">
+            <objects>
+                <viewController title="Settings" id="rm0-4X-QNr" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="15b-5M-APh">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <viewLayoutGuide key="safeArea" id="hIf-VV-yab"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="M2t-Im-FMB" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1530" y="-418"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="0eh-WX-qug">
@@ -765,6 +781,6 @@
         <image name="sun" width="30" height="30"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="fX7-Jc-s10"/>
+        <segue reference="C8N-vk-0Xx"/>
     </inferredMetricsTieBreakers>
 </document>

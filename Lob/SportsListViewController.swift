@@ -15,8 +15,6 @@ class SportsListViewController: UIViewController, UITableViewDelegate, UITableVi
                                         ("NFL", UIImage(named: "footballAmerican")),
                                         ("MLB", UIImage(named: "baseball"))]
     
-    var legal: [String] = ["Terms of Service", "Privacy Policy", "DMCA"]
-    
     // ensures status bar is visible on this view
     override var prefersStatusBarHidden: Bool {
         return false
@@ -52,7 +50,6 @@ class SportsListViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
         return 2
     }
     
@@ -62,10 +59,12 @@ class SportsListViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
+        // league channels
         case 0:
             return sports.count
+        // settings
         case 1:
-            return legal.count
+            return 1
         default:
             return 0
         }
@@ -81,41 +80,52 @@ class SportsListViewController: UIViewController, UITableViewDelegate, UITableVi
             cell.sportsLabel?.text = sport.0
             cell.iconLabel?.image = sport.1
         case 1:
-            cell.sportsLabel?.text = legal[indexPath.row]
+            cell.sportsLabel?.text = "Settings"
+            cell.iconLabel?.image = UIImage(named: "settings")
         default:
             break
         }
         return cell
     }
     
-    // "deselects" cell for formatting
+    // logic for pushing segue
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: false)
+        if indexPath.section == 0 {
+            performSegue(withIdentifier: "channelSegue", sender: nil)
+        } else if indexPath.section == 1 {
+            performSegue(withIdentifier: "settingsSegue", sender: nil)
+        }
     }
     
     // MARK: - Navigation
     
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        guard let destinationVC = segue.destination as? FeedViewController,
+        if segue.identifier == "channelSegue" {
+            guard let feedVC = segue.destination as? FeedViewController,
                 let selectedRow = tableView?.indexPathForSelectedRow else { return }
-        
-        let sport = self.sports[selectedRow.row]
-        
-        // set page sport league variable and title
-        destinationVC.title = sport.0
-
-        switch sport.0 {
-        case "NBA":
-            destinationVC.league = "nba"
-        case "Soccer - All Leagues":
-            destinationVC.league = "soccer"
-        case "MLB":
-            destinationVC.league = "baseball"
-        case "NFL":
-            destinationVC.league = "nfl"
-        default:
-            break    // loads hot posts
+            
+            // deselect row for formatting
+            self.tableView?.deselectRow(at: selectedRow, animated: false)
+    
+            // open channel to sport if one is selected
+            let sport = self.sports[selectedRow.row]
+            
+            // set page sport league variable and title
+            feedVC.title = sport.0
+            
+            switch sport.0 {
+            case "NBA":
+                feedVC.league = "nba"
+            case "Soccer - All Leagues":
+                feedVC.league = "soccer"
+            case "MLB":
+                feedVC.league = "baseball"
+            case "NFL":
+                feedVC.league = "nfl"
+            default:
+                break    // loads hot posts
+            }
         }
     }
 }
