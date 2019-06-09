@@ -8,13 +8,50 @@
 
 import UIKit
 
-class SettingsViewController: UIViewController {
-
+class SettingsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+    @IBOutlet weak var tableView: UITableView?
+    
+    let rows = ["Terms of Use", "Privacy Policy"]
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        self.tableView?.delegate = self
+        self.tableView?.dataSource = self
+        
+        // removes empty cells
+        tableView?.tableFooterView = UIView()
     }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return rows.count
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 30
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cellIdentifier = "SettingsTableViewCell"
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SettingsTableViewCell else {
+            fatalError("The dequeued cell is not an instance of SettingsTableViewCell")
+        }
+        
+        cell.label.text = rows[indexPath.row]
+        
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if indexPath.row == 0 {
+            guard let url = URL(string: "https://lob.tv/terms-of-use") else { return }
+            UIApplication.shared.open(url)
+        } else if indexPath.row == 1 {
+            guard let url = URL(string: "https://lob.tv/privacy-policy") else { return }
+            UIApplication.shared.open(url)
+        }
+    }
+    
     
 
     /*
