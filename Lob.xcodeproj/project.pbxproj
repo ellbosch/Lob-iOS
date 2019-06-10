@@ -629,7 +629,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7688CADD5C9907D01FDA39EB /* Pods-Lob.debug.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon--old";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Lob/Lob.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = QW32W54QW6;
@@ -647,7 +647,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E9BCB58735ED77B0D8CC3439 /* Pods-Lob.release.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon--old";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Lob/Lob.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = QW32W54QW6;

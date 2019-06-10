@@ -11,7 +11,7 @@ import UIKit
 class SettingsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     @IBOutlet weak var tableView: UITableView?
     
-    let rows = ["Terms of Use", "Privacy Policy"]
+    let rows = ["Terms of Service", "Privacy Policy"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,7 +47,7 @@ class SettingsViewController: UIViewController, UITableViewDelegate, UITableView
         self.tableView?.deselectRow(at: indexPath, animated: true)
         
         if indexPath.row == 0 {
-            guard let url = URL(string: "https://lob.tv/terms-of-use") else { return }
+            guard let url = URL(string: "https://lob.tv/terms-of-service") else { return }
             UIApplication.shared.open(url)
         } else if indexPath.row == 1 {
             guard let url = URL(string: "https://lob.tv/privacy-policy") else { return }
