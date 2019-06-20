@@ -29,6 +29,7 @@ class LinkTableViewCell: UITableViewCell {
     var videoPost: VideoPost?
     var play_on: Bool = false
     var isVideoControlsVisible: Bool = false
+    var videoAsset: AVAsset?
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -59,6 +60,34 @@ class LinkTableViewCell: UITableViewCell {
     @IBAction func authorButtonSelect(_ sender: Any) {
         if let url = videoPost?.redditCommentsUrl {
             UIApplication.shared.open(url, options: [:])            
+        }
+    }
+    
+    func loadVideoForCell(startTime: CMTime? = nil) {
+        // start loading spinner
+        activityIndicator?.startAnimating()
+        
+        guard let videoPost = videoPost, let mp4Url = videoPost.mp4Url else { return }
+        
+        // lazily instantiate asset before async call
+        let playableKey = "playable"
+        let player = AVPlayer(playerItem: nil)
+        playerView?.playerLayer.player = player
+        
+        DispatchQueue.global(qos: .background).async { [weak self] in
+            // Background thread
+            // Do your AVPlayer work here
+            let item = AVPlayerItem(url: mp4Url)
+            print("load: \(mp4Url)")
+            self?.playerView?.playerLayer.player?.replaceCurrentItem(with: item)
+            
+            // When you need to update the UI, switch back out to the main thread
+            DispatchQueue.main.async {
+                // Main thread
+                // Do your UI updates here
+                self?.playerView?.player?.play()
+                self?.playerView?.fadeIn()
+            }
         }
     }
 }

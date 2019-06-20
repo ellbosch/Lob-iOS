@@ -182,6 +182,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
 //                cell.thumbnailView?.load(url: thumbnailUrl)
 //            }
             cell.thumbnailView?.sd_setImage(with: videoPost.thumbnailUrl, placeholderImage: nil)
+            cell.loadVideoForCell()
             cell.label?.text = videoPost.title
             
             // set label for time delta
@@ -343,120 +344,120 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     // loads AVPlayer in cell
     func loadVideoForCell(indexPath: IndexPath, startTime: CMTime? = nil) {
-        // pause other videos
-        pauseAllVideosExcept(indexPath: indexPath)
-        
-        // remove observer
-        if let observer = self.videoEndsObserver {
-            NotificationCenter.default.removeObserver(observer)
-        }
-        
-        if let cell: LinkTableViewCell = self.tableView?.cellForRow(at: indexPath) as? LinkTableViewCell {
-            // play video if it's already loaded, else load it
-            if cell.playerView?.playerLayer.player?.currentItem != nil {
-                cell.playerView?.playerLayer.player?.playImmediately(atRate: Float(1))
-            } else {
-                // keep track of playing video
-                self.indexPathForPlayingVideo = indexPath
-                
-                // start loading spinner
-                cell.activityIndicator?.startAnimating()
-                
-                guard let videoPost = cell.videoPost, let mp4Url = videoPost.mp4Url else { return }
-                
-                // lazily instantiate asset before async call
-                self.videoAsset = AVAsset(url: mp4Url)
-                let playableKey = "playable"
-                let player = AVPlayer(playerItem: nil)
-                cell.playerView?.playerLayer.player = player
-                
-                // load url in background thread
-                if let videoAsset = self.videoAsset {
-                    videoAsset.loadValuesAsynchronously(forKeys: [playableKey]) { [weak self] in
-                        var error: NSError? = nil
-                        
-                        let status = videoAsset.statusOfValue(forKey: playableKey, error: &error)
-                        switch status {
-                        case .loaded:
-                            // configure video scrubber to update with video playback (labels for UISlider have to be updated on main thread
-                            DispatchQueue.main.async { [weak self ] in
-                                // analytics
-                                let league_page = self?.league ?? "[today view]"
-                                
-                                // find 1D index for the now-playing video (use this for analytics to see how far down the table people watch videos)
-                                var indexCount: Int = 0
-                                if let tableView = self?.tableView,
-                                    let lastIndex = self?.indexPathForPlayingVideo,
-                                    lastIndex.section > 0 {
-                                    for i in stride(from: 0, to: lastIndex.section, by: 1) {
-                                        indexCount += tableView.numberOfRows(inSection: i)
-                                    }
-                                    indexCount += lastIndex.row + 1
-                                }
-                                
-                                Analytics.logEvent("videoLoaded", parameters: [
-                                    AnalyticsParameterItemID: videoPost.id,
-                                    AnalyticsParameterItemName: videoPost.title,
-                                    AnalyticsParameterItemCategory: league_page,
-                                    AnalyticsParameterContent: "table",
-                                    AnalyticsParameterIndex: indexCount
-                                    ])
-                                
-                                // Sucessfully loaded. Continue processing.
-                                if let videoAsset = self?.videoAsset {
-                                    let item = AVPlayerItem(asset: videoAsset)
-                                    cell.playerView?.playerLayer.player?.replaceCurrentItem(with: item)
-                                    
-                                    // fast-forward start time, if specified
-                                    cell.playerView?.player?.seek(to: startTime ?? CMTimeMake(value: 0, timescale: 1))
-                                    
-                                    // play and set to mute/unmute
-                                    cell.playerView?.player?.play()
-                                    self?.updateMuteControls(cell: cell)
-                                }
-                            }
-                            break
-                        case .failed:
-                            // Handle error
-                            print("URL LOAD FAILED!")
-                        case .cancelled:
-                            // Terminate processing
-                            print("URL LOAD CANCELLED!")
-                        default:
-                            // Handle all other cases
-                            print("DEFAULT HAPPENED?")
-                        }
-                    }
-                }
-                
-                // track perf for time it takes to load video
-                //        cell.videoPerfTrace = Performance.startTrace(name: "Video Load in TableView")
-                
-                // hacky KVO solution to stop loading spinner, hide thumbnail image
-                NotificationCenter.default.addObserver(forName: Notification.Name.AVPlayerItemTimeJumped, object: player.currentItem, queue: .main) { _ in
-                    cell.activityIndicator?.stopAnimating()
-                    cell.playerView?.fadeIn()
-                }
-                
-                // video plays faster but this might cause buffering...
-                cell.playerView?.player?.automaticallyWaitsToMinimizeStalling = false
-                
-                // KVO to find videos that failed to load (and attempt to reload
-                cell.playerView?.player?.addObserver(self, forKeyPath: "status", options: NSKeyValueObservingOptions(rawValue: 0), context: nil)
-                
-                // KVO to keep video in loop
-                self.videoEndsObserver = NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: player.currentItem, queue: .main) { _ in
-                    // replay video
-                    player.seek(to: CMTime.zero)
-                    player.play()
-                }
-            }
-            // set mute as specified by user
-            updateMuteControls(cell: cell)
-            
-            // keep tracking of playing video
-            self.indexPathForPlayingVideo = indexPath
-        }
+//        // pause other videos
+//        pauseAllVideosExcept(indexPath: indexPath)
+//
+//        // remove observer
+//        if let observer = self.videoEndsObserver {
+//            NotificationCenter.default.removeObserver(observer)
+//        }
+//
+//        if let cell: LinkTableViewCell = self.tableView?.cellForRow(at: indexPath) as? LinkTableViewCell {
+//            // play video if it's already loaded, else load it
+//            if cell.playerView?.playerLayer.player?.currentItem != nil {
+//                cell.playerView?.playerLayer.player?.playImmediately(atRate: Float(1))
+//            } else {
+//                // keep track of playing video
+//                self.indexPathForPlayingVideo = indexPath
+//
+//                // start loading spinner
+//                cell.activityIndicator?.startAnimating()
+//
+//                guard let videoPost = cell.videoPost, let mp4Url = videoPost.mp4Url else { return }
+//
+//                // lazily instantiate asset before async call
+//                self.videoAsset = AVAsset(url: mp4Url)
+//                let playableKey = "playable"
+//                let player = AVPlayer(playerItem: nil)
+//                cell.playerView?.playerLayer.player = player
+//
+//                // load url in background thread
+//                if let videoAsset = self.videoAsset {
+//                    videoAsset.loadValuesAsynchronously(forKeys: [playableKey]) { [weak self] in
+//                        var error: NSError? = nil
+//
+//                        let status = videoAsset.statusOfValue(forKey: playableKey, error: &error)
+//                        switch status {
+//                        case .loaded:
+//                            // configure video scrubber to update with video playback (labels for UISlider have to be updated on main thread
+//                            DispatchQueue.main.async { [weak self ] in
+//                                // analytics
+//                                let league_page = self?.league ?? "[today view]"
+//
+//                                // find 1D index for the now-playing video (use this for analytics to see how far down the table people watch videos)
+//                                var indexCount: Int = 0
+//                                if let tableView = self?.tableView,
+//                                    let lastIndex = self?.indexPathForPlayingVideo,
+//                                    lastIndex.section > 0 {
+//                                    for i in stride(from: 0, to: lastIndex.section, by: 1) {
+//                                        indexCount += tableView.numberOfRows(inSection: i)
+//                                    }
+//                                    indexCount += lastIndex.row + 1
+//                                }
+//
+//                                Analytics.logEvent("videoLoaded", parameters: [
+//                                    AnalyticsParameterItemID: videoPost.id,
+//                                    AnalyticsParameterItemName: videoPost.title,
+//                                    AnalyticsParameterItemCategory: league_page,
+//                                    AnalyticsParameterContent: "table",
+//                                    AnalyticsParameterIndex: indexCount
+//                                    ])
+//
+//                                // Sucessfully loaded. Continue processing.
+//                                if let videoAsset = self?.videoAsset {
+//                                    let item = AVPlayerItem(asset: videoAsset)
+//                                    cell.playerView?.playerLayer.player?.replaceCurrentItem(with: item)
+//
+//                                    // fast-forward start time, if specified
+//                                    cell.playerView?.player?.seek(to: startTime ?? CMTimeMake(value: 0, timescale: 1))
+//
+//                                    // play and set to mute/unmute
+//                                    cell.playerView?.player?.play()
+//                                    self?.updateMuteControls(cell: cell)
+//                                }
+//                            }
+//                            break
+//                        case .failed:
+//                            // Handle error
+//                            print("URL LOAD FAILED!")
+//                        case .cancelled:
+//                            // Terminate processing
+//                            print("URL LOAD CANCELLED!")
+//                        default:
+//                            // Handle all other cases
+//                            print("DEFAULT HAPPENED?")
+//                        }
+//                    }
+//                }
+//
+//                // track perf for time it takes to load video
+//                //        cell.videoPerfTrace = Performance.startTrace(name: "Video Load in TableView")
+//
+//                // hacky KVO solution to stop loading spinner, hide thumbnail image
+//                NotificationCenter.default.addObserver(forName: Notification.Name.AVPlayerItemTimeJumped, object: player.currentItem, queue: .main) { _ in
+//                    cell.activityIndicator?.stopAnimating()
+//                    cell.playerView?.fadeIn()
+//                }
+//
+//                // video plays faster but this might cause buffering...
+//                cell.playerView?.player?.automaticallyWaitsToMinimizeStalling = false
+//
+//                // KVO to find videos that failed to load (and attempt to reload
+//                cell.playerView?.player?.addObserver(self, forKeyPath: "status", options: NSKeyValueObservingOptions(rawValue: 0), context: nil)
+//
+//                // KVO to keep video in loop
+//                self.videoEndsObserver = NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: player.currentItem, queue: .main) { _ in
+//                    // replay video
+//                    player.seek(to: CMTime.zero)
+//                    player.play()
+//                }
+//            }
+//            // set mute as specified by user
+//            updateMuteControls(cell: cell)
+//
+//            // keep tracking of playing video
+//            self.indexPathForPlayingVideo = indexPath
+//        }
     }
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
