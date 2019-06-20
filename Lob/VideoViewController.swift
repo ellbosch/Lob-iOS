@@ -123,7 +123,8 @@ class VideoViewController: UIViewController {
         self.playerView?.playerLayer.player?.replaceCurrentItem(with: nil)
         
         // load thumbnail image
-        self.thumbnailView?.load(url: thumbnailUrl, slideDirection: slideDirection)
+        // TODO
+//        self.thumbnailView?.load(url: thumbnailUrl, slideDirection: slideDirection)
         
         // load new player
         self.videoAsset = AVAsset(url: mp4Url)

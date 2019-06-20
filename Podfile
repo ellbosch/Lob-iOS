@@ -10,6 +10,7 @@ target 'Lob' do
   pod 'Firebase'
   pod 'SwiftyJSON'
   pod 'FontAwesome.swift'
+  pod 'SDWebImage'
 
   target 'LobTests' do
     inherit! :search_paths

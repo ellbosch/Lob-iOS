@@ -21,21 +21,21 @@ class ThumbnailImageView: UIImageView {
 }
 
 extension UIImageView {
-    func load(url: URL, slideDirection: String = "") {
-        DispatchQueue.global().async { [weak self] in
-            if let data = try? Data(contentsOf: url) {
-                if let image = UIImage(data: data) {
-                    DispatchQueue.main.async {
-                        self?.image = image
-                        
-                        if slideDirection != "" {
-                            self?.slideIn(fromDirection: slideDirection)
-                        }
-                    }
-                }
-            }
-        }
-    }
+//    func load(url: URL, slideDirection: String = "") {
+//        DispatchQueue.global().async { [weak self] in
+//            if let data = try? Data(contentsOf: url) {
+//                if let image = UIImage(data: data) {
+//                    DispatchQueue.main.async {
+//                        self?.image = image
+//                        
+//                        if slideDirection != "" {
+//                            self?.slideIn(fromDirection: slideDirection)
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
     
 //    // slides in imageview from right
 //    func slideInFromRight(duration: TimeInterval = 0.3, completionDelegate: AnyObject? = nil) {

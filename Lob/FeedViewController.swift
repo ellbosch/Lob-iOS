@@ -6,10 +6,11 @@
 //  Copyright © 2018 Elliot Boschwitz. All rights reserved.
 //
 
-import UIKit
-import FirebaseAnalytics
 import AVKit
 import CoreMedia
+import FirebaseAnalytics
+import SDWebImage
+import UIKit
 
 
 class FeedViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITabBarControllerDelegate, LinkTableViewCellDelegate {
@@ -177,9 +178,10 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
             cell.videoPost = videoPost
             
             // set cell attributes
-            if let thumbnailUrl = videoPost.thumbnailUrl {
-                cell.thumbnailView?.load(url: thumbnailUrl)
-            }
+//            if let thumbnailUrl = videoPost.thumbnailUrl {
+//                cell.thumbnailView?.load(url: thumbnailUrl)
+//            }
+            cell.thumbnailView?.sd_setImage(with: videoPost.thumbnailUrl, placeholderImage: nil)
             cell.label?.text = videoPost.title
             
             // set label for time delta

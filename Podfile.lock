@@ -53,12 +53,16 @@ PODS:
     - nanopb/encode (= 0.3.901)
   - nanopb/decode (0.3.901)
   - nanopb/encode (0.3.901)
+  - SDWebImage (5.0.2):
+    - SDWebImage/Core (= 5.0.2)
+  - SDWebImage/Core (5.0.2)
   - SwiftyJSON (5.0.0)
 
 DEPENDENCIES:
   - Alamofire
   - Firebase
   - FontAwesome.swift
+  - SDWebImage
   - SwiftyJSON
 
 SPEC REPOS:
@@ -72,6 +76,7 @@ SPEC REPOS:
     - GoogleAppMeasurement
     - GoogleUtilities
     - nanopb
+    - SDWebImage
     - SwiftyJSON
 
 SPEC CHECKSUMS:
@@ -84,8 +89,9 @@ SPEC CHECKSUMS:
   GoogleAppMeasurement: ffe513e90551844a739e7bcbb1d2aca1c28a4338
   GoogleUtilities: 04fce34bcd5620c1ee76fb79172105c74a4df335
   nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
+  SDWebImage: 6764b5fa0f73c203728052955dbefa2bf1f33282
   SwiftyJSON: 36413e04c44ee145039d332b4f4e2d3e8d6c4db7
 
-PODFILE CHECKSUM: c06fabfb274bce729245642267df73a517c42054
+PODFILE CHECKSUM: db3a77c2b361f047f425fcecf1570cb9adb47f21
 
 COCOAPODS: 1.6.1
