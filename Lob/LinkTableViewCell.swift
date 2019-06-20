@@ -71,7 +71,6 @@ class LinkTableViewCell: UITableViewCell {
         guard let videoPost = videoPost, let mp4Url = videoPost.mp4Url else { return }
         
         // lazily instantiate asset before async call
-        let playableKey = "playable"
         let player = AVPlayer(playerItem: nil)
         playerView?.playerLayer.player = player
         

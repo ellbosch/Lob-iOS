@@ -179,11 +179,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
             cell.videoPost = videoPost
             
             // set cell attributes
-//            if let thumbnailUrl = videoPost.thumbnailUrl {
-//                cell.thumbnailView?.load(url: thumbnailUrl)
-//            }
             cell.thumbnailView?.sd_setImage(with: videoPost.thumbnailUrl, placeholderImage: nil)
-//            cell.loadVideoForCell()
             cell.label?.text = videoPost.title
             
             // set label for time delta
@@ -315,11 +311,20 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                 if rectOfCellInSuperview.origin.y > headerHeight || ptrIndex == visibleCellIndexes.last {
                     if self.indexPathForPlayingVideo != ptrIndex {
                         self.indexPathForPlayingVideo = ptrIndex
-                        if let cell = self.tableView?.cellForRow(at: ptrIndex) as? LinkTableViewCell{
-                            cell.loadVideoForCell()
+                        if let cell = self.tableView?.cellForRow(at: ptrIndex) as? LinkTableViewCell {
+                            // don't reload player if already loaded
+                            if let player = cell.playerView?.player, player.currentItem != nil {
+                                if player.rate == 0 {
+                                    player.play()
+                                } else {
+                                    return      // don't do anything if video is already playing
+                                }
+                            } else {
+                                cell.loadVideoForCell()
+                            }
                             pauseAllVideosExcept(indexPath: ptrIndex)
                         }
-                        break
+                        return
                     }
                 }
             }
@@ -334,6 +339,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
             let indexPathPtr = self.tableView?.indexPath(for: cellptr)
             
             if indexPath != indexPathPtr {
+                print("index path: \(indexPathPtr)")
                 cellptr.playerView?.player?.pause()
             }
         }
