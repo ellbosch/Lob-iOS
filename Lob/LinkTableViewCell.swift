@@ -41,13 +41,14 @@ class LinkTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-//    override func prepareForReuse() {
-//        super.prepareForReuse()
-//        
-//        thumbnailView //.af_cancelImageRequest() // NOTE: - Using AlamofireImage
-//        mainImageView.image = nil
-//    }
-//    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        self.thumbnailView?.sd_setImage(with: nil, placeholderImage: nil)
+        self.playerView?.playerLayer.player?.replaceCurrentItem(with: nil)
+    }
+    
+
     // user selects share button (taken from https://stackoverflow.com/questions/35931946/basic-example-for-sharing-text-or-image-with-uiactivityviewcontroller-in-swift)
     @IBAction func shareButton(_ sender: Any) {
         // reference delegate to launch share sheet on parent view

@@ -149,6 +149,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         // Dispose of any resources that can be recreated.
     }
     
+
     /*****************************************
      TABLEVIEW FUNCTIONS
      *****************************************/
@@ -230,7 +231,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         return cell
     }
-        
+    
     // give the table a section header only if we're NOT viewing hot posts
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if self.league == nil {
@@ -247,17 +248,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
             return dateFormatter.string(from: date)
         }
     }
-    
-    // if cell disappears, remove player from memory--APPEARS UNNECESSARY SINCE LATEST FIXES
-//    func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-//        if let cell: LinkTableViewCell = cell as? LinkTableViewCell {
-//            if let playerView = cell.playerView {
-//                // video and pic will get recycled or take up space, so get rid of them
-//                playerView.player?.replaceCurrentItem(with: nil)
-//                cell.thumbnailView?.image = nil
-//            }
-//        }
-//    }
+
     
     // necessary for loading videos in full screen
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -322,12 +313,14 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                 
                 // play video if it's not hidden at the top, OR if it's the last video
                 if rectOfCellInSuperview.origin.y > headerHeight || ptrIndex == visibleCellIndexes.last {
-//                    loadVideoForCell(indexPath: ptrIndex)
-                    if let cell = self.tableView?.cellForRow(at: ptrIndex) as? LinkTableViewCell{
-                        cell.loadVideoForCell()
-                        pauseAllVideosExcept(indexPath: ptrIndex)
+                    if self.indexPathForPlayingVideo != ptrIndex {
+                        self.indexPathForPlayingVideo = ptrIndex
+                        if let cell = self.tableView?.cellForRow(at: ptrIndex) as? LinkTableViewCell{
+                            cell.loadVideoForCell()
+                            pauseAllVideosExcept(indexPath: ptrIndex)
+                        }
+                        break
                     }
-                    break
                 }
             }
         }
