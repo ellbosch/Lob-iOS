@@ -340,7 +340,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     // loads AVPlayer in cell
-    func loadVideoForCell(indexPath: IndexPath, startTime: CMTime? = nil) {
+//    func loadVideoForCell(indexPath: IndexPath, startTime: CMTime? = nil) {
 //        // pause other videos
 //        pauseAllVideosExcept(indexPath: indexPath)
 //
@@ -455,7 +455,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
 //            // keep tracking of playing video
 //            self.indexPathForPlayingVideo = indexPath
 //        }
-    }
+//    }
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if let player: AVPlayer = object as? AVPlayer {
@@ -554,10 +554,12 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
             let indexPathToPlay = self?.indexPathForPlayingVideo ?? firstIndexPath
             
             // scroll to tableView to video cell if it exists and isn't the first row (which would hide the header if so)
-            if self?.tableView?.cellForRow(at: indexPathToPlay) != nil && indexPathToPlay != firstIndexPath{
-                self?.tableView?.scrollToRow(at: indexPathToPlay, at: .top, animated: false)
+            if let cell = self?.tableView?.cellForRow(at: indexPathToPlay) as? LinkTableViewCell {
+                if indexPathToPlay != firstIndexPath {
+                    self?.tableView?.scrollToRow(at: indexPathToPlay, at: .top, animated: false)
+                }
+                cell.loadVideoForCell()
             }
-            self?.loadVideoForCell(indexPath: indexPathToPlay)
             
             // hide loading indicator
             self?.activityIndicator?.stopAnimating()

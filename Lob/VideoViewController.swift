@@ -6,9 +6,10 @@
 //  Copyright © 2018 Elliot Boschwitz. All rights reserved.
 //
 
-import UIKit
 import AVKit
 import FirebaseAnalytics
+import SDWebImage
+import UIKit
 
 class VideoViewController: UIViewController {
     
@@ -123,7 +124,7 @@ class VideoViewController: UIViewController {
         self.playerView?.playerLayer.player?.replaceCurrentItem(with: nil)
         
         // load thumbnail image
-        // TODO
+        self.thumbnailView?.sd_setImage(with: thumbnailUrl, placeholderImage: nil)
 //        self.thumbnailView?.load(url: thumbnailUrl, slideDirection: slideDirection)
         
         // load new player
