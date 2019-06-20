@@ -78,15 +78,15 @@ class LinkTableViewCell: UITableViewCell {
             // Background thread
             // Do your AVPlayer work here
             let item = AVPlayerItem(url: mp4Url)
-            print("load: \(mp4Url)")
-            self?.playerView?.playerLayer.player?.replaceCurrentItem(with: item)
             
             // When you need to update the UI, switch back out to the main thread
             DispatchQueue.main.async {
                 // Main thread
                 // Do your UI updates here
+                self?.playerView?.playerLayer.player?.replaceCurrentItem(with: item)
                 self?.playerView?.player?.play()
                 self?.playerView?.fadeIn()
+                self?.activityIndicator?.stopAnimating()
             }
         }
     }

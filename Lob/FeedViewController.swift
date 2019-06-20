@@ -182,7 +182,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
 //                cell.thumbnailView?.load(url: thumbnailUrl)
 //            }
             cell.thumbnailView?.sd_setImage(with: videoPost.thumbnailUrl, placeholderImage: nil)
-            cell.loadVideoForCell()
+//            cell.loadVideoForCell()
             cell.label?.text = videoPost.title
             
             // set label for time delta
@@ -230,7 +230,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         return cell
     }
-    
+        
     // give the table a section header only if we're NOT viewing hot posts
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if self.league == nil {
@@ -322,7 +322,11 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                 
                 // play video if it's not hidden at the top, OR if it's the last video
                 if rectOfCellInSuperview.origin.y > headerHeight || ptrIndex == visibleCellIndexes.last {
-                    loadVideoForCell(indexPath: ptrIndex)
+//                    loadVideoForCell(indexPath: ptrIndex)
+                    if let cell = self.tableView?.cellForRow(at: ptrIndex) as? LinkTableViewCell{
+                        cell.loadVideoForCell()
+                        pauseAllVideosExcept(indexPath: ptrIndex)
+                    }
                     break
                 }
             }
