@@ -37,6 +37,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     // keeps track of observer used to see when video ends
     private var videoEndsObserver: NSObjectProtocol?
+
     
     // kep status bar visible
     override var prefersStatusBarHidden: Bool {
@@ -323,6 +324,16 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                                 cell.loadVideoForCell()
                             }
                             pauseAllVideosExcept(indexPath: ptrIndex)
+                            
+                            // KVO to keep video in loop
+                            self.videoEndsObserver = NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: cell.playerView?.player?.currentItem, queue: .main) { [weak self] _ in
+                                // replay video just for one that's currently playing
+                                if let indexPathForPlayingVideo = self?.indexPathForPlayingVideo,
+                                    let cell = tableView.cellForRow(at: indexPathForPlayingVideo) as? LinkTableViewCell {
+                                    cell.playerView?.player?.seek(to: CMTime.zero)
+                                    cell.playerView?.player?.play()
+                                }
+                            }
                         }
                     }
                     return

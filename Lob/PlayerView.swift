@@ -6,8 +6,8 @@
 //  Copyright © 2018 Elliot Boschwitz. All rights reserved.
 //
 
-import UIKit
 import AVKit
+import UIKit
 
 class PlayerView: UIView {
     
