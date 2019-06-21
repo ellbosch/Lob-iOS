@@ -64,7 +64,7 @@ class LinkTableViewCell: UITableViewCell {
         }
     }
     
-    func loadVideoForCell(startTime: CMTime? = nil) {
+    func loadVideoForCell(isMute: Bool, indexCount: Int, leaguePage: String, startTime: CMTime? = nil) {
         // start loading spinner
         activityIndicator?.startAnimating()
         
@@ -89,6 +89,14 @@ class LinkTableViewCell: UITableViewCell {
                 self?.activityIndicator?.stopAnimating()
             }
         }
+
+        Analytics.logEvent("videoLoaded", parameters: [
+            AnalyticsParameterItemID: videoPost.id,
+            AnalyticsParameterItemName: videoPost.title,
+            AnalyticsParameterItemCategory: leaguePage,
+            AnalyticsParameterContent: "table",
+            AnalyticsParameterIndex: indexCount
+            ])
     }
 }
 

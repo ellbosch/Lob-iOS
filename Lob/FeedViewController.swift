@@ -321,7 +321,9 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                                     return      // SAFETY CALL, SHOULDN'T HAPPEN--don't do anything if video is already playing
                                 }
                             } else {
-                                cell.loadVideoForCell()
+                                let indexCount = self.calculateRows(indexPath: ptrIndex)
+                                let leaguePage = self.league ?? "[today view]"
+                                cell.loadVideoForCell(indexCount: indexCount, leaguePage: leaguePage)
                             }
                             pauseAllVideosExcept(indexPath: ptrIndex)
                             
@@ -574,12 +576,27 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                 if indexPathToPlay != firstIndexPath {
                     self?.tableView?.scrollToRow(at: indexPathToPlay, at: .top, animated: false)
                 }
-                cell.loadVideoForCell()
+                
+                let indexCount = self?.calculateRows(indexPath: indexPathToPlay) ?? -1
+                let leaguePage = self?.league ?? "[today view]"
+                cell.loadVideoForCell(indexCount: indexCount, leaguePage: leaguePage)
             }
             
             // hide loading indicator
             self?.activityIndicator?.stopAnimating()
         })
+    }
+    
+    private func calculateRows(indexPath: IndexPath) -> Int {
+        // find 1D index for the now-playing video (use this for analytics to see how far down the table people watch videos)
+        var indexCount: Int = 0
+        if let tableView = self.tableView {
+            for i in stride(from: 0, to: indexPath.section, by: 1) {
+                indexCount += tableView.numberOfRows(inSection: i)
+            }
+            indexCount += indexPath.row + 1
+        }
+        return indexCount
     }
 
     
