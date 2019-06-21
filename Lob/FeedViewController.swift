@@ -215,7 +215,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
             
             // show mute button and update volume toggle
             cell.muteToggleButton?.isHidden = false
-            self.updateMuteControls(cell: cell)
+            cell.updateMuteControls(isMute: self.isMute)
         }
         if let playerView = cell.playerView {
             playerView.playerLayer.frame = playerView.bounds
@@ -323,7 +323,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                             } else {
                                 let indexCount = self.calculateRows(indexPath: ptrIndex)
                                 let leaguePage = self.league ?? "[today view]"
-                                cell.loadVideoForCell(indexCount: indexCount, leaguePage: leaguePage)
+                                cell.loadVideoForCell(isMute: self.isMute, indexCount: indexCount, leaguePage: leaguePage)
                             }
                             pauseAllVideosExcept(indexPath: ptrIndex)
                             
@@ -522,20 +522,6 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         cell.backgroundColor = .white
     }
     
-    
-    func updateMuteControls(cell: LinkTableViewCell) {
-        if self.isMute {
-            cell.muteToggleButton?.titleLabel?.font = UIFont.fontAwesome(ofSize: 30, style: .solid)
-            cell.muteToggleButton?.setTitle(String.fontAwesomeIcon(name: .volumeOff), for: .normal)
-        } else {
-            cell.muteToggleButton?.titleLabel?.font = UIFont.fontAwesome(ofSize: 30, style: .solid)
-            cell.muteToggleButton?.setTitle(String.fontAwesomeIcon(name: .volumeUp), for: .normal)
-        }
-        
-        // this actually mutes or unmutes the video
-        cell.playerView?.player?.isMuted = self.isMute
-    }
-    
     // converts integer of seconds into string representing time (mm:ss)
     func convertSecondsToTimeString(secondsTotal: Int) -> String {
         var timeString: String
@@ -579,7 +565,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                 
                 let indexCount = self?.calculateRows(indexPath: indexPathToPlay) ?? -1
                 let leaguePage = self?.league ?? "[today view]"
-                cell.loadVideoForCell(indexCount: indexCount, leaguePage: leaguePage)
+                cell.loadVideoForCell(isMute: self?.isMute ?? true, indexCount: indexCount, leaguePage: leaguePage)
             }
             
             // hide loading indicator
@@ -634,7 +620,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         // update cells that have already loaded
         if let visibleCells = (self.tableView?.visibleCells as? [LinkTableViewCell]) {
             for cell in visibleCells {
-                self.updateMuteControls(cell: cell)
+                cell.updateMuteControls(isMute: self.isMute)
             }
         }
     }

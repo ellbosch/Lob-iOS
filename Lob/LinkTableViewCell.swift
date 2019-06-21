@@ -48,22 +48,6 @@ class LinkTableViewCell: UITableViewCell {
         self.playerView?.playerLayer.player?.replaceCurrentItem(with: nil)
     }
     
-
-    // user selects share button (taken from https://stackoverflow.com/questions/35931946/basic-example-for-sharing-text-or-image-with-uiactivityviewcontroller-in-swift)
-    @IBAction func shareButton(_ sender: Any) {
-        // reference delegate to launch share sheet on parent view
-        if let delegate = self.delegate, let videoPost = self.videoPost {
-            delegate.shareVideo(videoPost: videoPost)
-        }
-    }
-    
-    // button for opening reddit page
-    @IBAction func authorButtonSelect(_ sender: Any) {
-        if let url = videoPost?.redditCommentsUrl {
-            UIApplication.shared.open(url, options: [:])            
-        }
-    }
-    
     func loadVideoForCell(isMute: Bool, indexCount: Int, leaguePage: String, startTime: CMTime? = nil) {
         // start loading spinner
         activityIndicator?.startAnimating()
@@ -79,10 +63,9 @@ class LinkTableViewCell: UITableViewCell {
             // Do your AVPlayer work here
             let item = AVPlayerItem(url: mp4Url)
             
-            // When you need to update the UI, switch back out to the main thread
+            // main thread changes: play video player and set to mute/unmute
             DispatchQueue.main.async {
-                // Main thread
-                // Do your UI updates here
+                self?.updateMuteControls(isMute: isMute)
                 self?.playerView?.playerLayer.player?.replaceCurrentItem(with: item)
                 self?.playerView?.player?.play()
                 self?.playerView?.fadeIn()
@@ -97,6 +80,35 @@ class LinkTableViewCell: UITableViewCell {
             AnalyticsParameterContent: "table",
             AnalyticsParameterIndex: indexCount
             ])
+    }
+    
+    func updateMuteControls(isMute: Bool) {
+        if isMute {
+            self.muteToggleButton?.titleLabel?.font = UIFont.fontAwesome(ofSize: 30, style: .solid)
+            self.muteToggleButton?.setTitle(String.fontAwesomeIcon(name: .volumeOff), for: .normal)
+        } else {
+            self.muteToggleButton?.titleLabel?.font = UIFont.fontAwesome(ofSize: 30, style: .solid)
+            self.muteToggleButton?.setTitle(String.fontAwesomeIcon(name: .volumeUp), for: .normal)
+        }
+        
+        // this actually mutes or unmutes the video
+        self.playerView?.player?.isMuted = isMute
+    }
+    
+
+    // user selects share button (taken from https://stackoverflow.com/questions/35931946/basic-example-for-sharing-text-or-image-with-uiactivityviewcontroller-in-swift)
+    @IBAction func shareButton(_ sender: Any) {
+        // reference delegate to launch share sheet on parent view
+        if let delegate = self.delegate, let videoPost = self.videoPost {
+            delegate.shareVideo(videoPost: videoPost)
+        }
+    }
+    
+    // button for opening reddit page
+    @IBAction func authorButtonSelect(_ sender: Any) {
+        if let url = videoPost?.redditCommentsUrl {
+            UIApplication.shared.open(url, options: [:])            
+        }
     }
 }
 
