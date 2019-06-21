@@ -317,15 +317,15 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                                 if player.rate == 0 {
                                     player.play()
                                 } else {
-                                    return      // don't do anything if video is already playing
+                                    return      // SAFETY CALL, SHOULDN'T HAPPEN--don't do anything if video is already playing
                                 }
                             } else {
                                 cell.loadVideoForCell()
                             }
                             pauseAllVideosExcept(indexPath: ptrIndex)
                         }
-                        return
                     }
+                    return
                 }
             }
         }
@@ -339,7 +339,6 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
             let indexPathPtr = self.tableView?.indexPath(for: cellptr)
             
             if indexPath != indexPathPtr {
-                print("index path: \(indexPathPtr)")
                 cellptr.playerView?.player?.pause()
             }
         }
