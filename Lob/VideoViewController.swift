@@ -123,9 +123,12 @@ class VideoViewController: UIViewController {
         self.thumbnailView?.image = nil
         self.playerView?.playerLayer.player?.replaceCurrentItem(with: nil)
         
-        // load thumbnail image
-        self.thumbnailView?.sd_setImage(with: thumbnailUrl, placeholderImage: nil)
-//        self.thumbnailView?.load(url: thumbnailUrl, slideDirection: slideDirection)
+        // load thumbnail image and animate thumbnail in direction of swipe
+        self.thumbnailView?.sd_setImage(with: thumbnailUrl, placeholderImage: nil, completed: { (image, error, cacheType, url) -> Void in
+            DispatchQueue.main.async { [weak self] in
+                self?.thumbnailView?.slideIn(fromDirection: slideDirection)
+            }
+        })
         
         // load new player
         self.videoAsset = AVAsset(url: mp4Url)
@@ -357,13 +360,15 @@ class VideoViewController: UIViewController {
             AnalyticsParameterContentType: "swipeDown"
             ])
     }
-    @IBAction func swipeEdgeScreenToExit(_ sender: Any) {
-        dismissViewController()
-        
-        Analytics.logEvent("fullScreenModeExit", parameters: [
-            AnalyticsParameterContentType: "swipeEdge"
-            ])
-    }
+    
+//  DISABLING DUE TO LIKELIHOOD OF MISSED SWIPE TO SKIP VIDEO
+//    @IBAction func swipeEdgeScreenToExit(_ sender: Any) {
+//        dismissViewController()
+//
+//        Analytics.logEvent("fullScreenModeExit", parameters: [
+//            AnalyticsParameterContentType: "swipeEdge"
+//            ])
+//    }
     
     // shows video controls on tap
     @IBAction func tapRecognizer(_ sender: Any) {

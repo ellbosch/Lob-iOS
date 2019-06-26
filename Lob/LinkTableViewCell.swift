@@ -59,14 +59,13 @@ class LinkTableViewCell: UITableViewCell {
         playerView?.playerLayer.player = player
         
         DispatchQueue.global(qos: .background).async { [weak self] in
-            // Background thread
-            // Do your AVPlayer work here
+            // load avplayer in background thread
             let item = AVPlayerItem(url: mp4Url)
             
             // main thread changes: play video player and set to mute/unmute
             DispatchQueue.main.async {
-                self?.updateMuteControls(isMute: isMute)
                 self?.playerView?.playerLayer.player?.replaceCurrentItem(with: item)
+                self?.updateMuteControls(isMute: isMute)
                 self?.playerView?.player?.play()
                 self?.playerView?.fadeIn()
                 self?.activityIndicator?.stopAnimating()
