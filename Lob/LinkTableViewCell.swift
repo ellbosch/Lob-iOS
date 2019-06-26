@@ -37,8 +37,6 @@ class LinkTableViewCell: UITableViewCell {
     
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
     }
     
     override func prepareForReuse() {
@@ -136,6 +134,38 @@ class RedditAuthorButton: UIButton {
             imageView?.frame = CGRect(x: 0, y: (frame.size.height-15)/2, width: 15, height: 15)
             imageView?.image = UIImage(named: "reddit")?.withRenderingMode(.alwaysTemplate)
         }
+    }
+}
+
+// this extension helps us get the time back from the video post (source: https://stackoverflow.com/questions/44086555/swift-display-time-ago-from-date-nsdate)
+extension Date {
+    func timeAgoDisplay() -> String {
+        let calendar = Calendar.current
+        
+        guard let minuteAgo = calendar.date(byAdding: .minute, value: -1, to: Date()),
+            let hourAgo = calendar.date(byAdding: .hour, value: -1, to: Date()),
+            let dayAgo = calendar.date(byAdding: .day, value: -1, to: Date()),
+            let monthAgo = calendar.date(byAdding: .month, value: -1, to: Date()),
+            let yearAgo = calendar.date(byAdding: .year, value: -1, to: Date()) else { return "" }
+        
+        if minuteAgo < self {
+            let diff = Calendar.current.dateComponents([.second], from: self, to: Date()).second ?? 0
+            return "\(diff)s"
+        } else if hourAgo < self {
+            let diff = Calendar.current.dateComponents([.minute], from: self, to: Date()).minute ?? 0
+            return "\(diff)m"
+        } else if dayAgo < self {
+            let diff = Calendar.current.dateComponents([.hour], from: self, to: Date()).hour ?? 0
+            return "\(diff)h"
+        } else if monthAgo < self {
+            let diff = Calendar.current.dateComponents([.day], from: self, to: Date()).day ?? 0
+            return "\(diff)d"
+        } else if yearAgo < self {
+            let diff = Calendar.current.dateComponents([.month], from: self, to: Date()).month ?? 0
+            return "\(diff)m"
+        }
+        let diff = Calendar.current.dateComponents([.year], from: self, to: Date()).year ?? 0
+        return "\(diff)y"
     }
 }
 
