@@ -22,7 +22,6 @@ class FeedViewController: UIViewController {
     var videoPosts: [(Date, [VideoPost])] = []
     var league: String?
     private var notification: NSObjectProtocol?
-    var videoAsset: AVAsset?
     
     // keeps track of global mute control (if users disables mute)
     var isMute: Bool = true
@@ -123,9 +122,7 @@ class FeedViewController: UIViewController {
     }
     
     // null table if view disappears
-    override func viewWillDisappear(_ animated: Bool) {
-        self.videoAsset = nil
-        
+    override func viewWillDisappear(_ animated: Bool) {       
         // remove all thumbnails and videos from memory
         for cell in allRows {
             if cell.playerView != nil {
