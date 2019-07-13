@@ -13,7 +13,7 @@ import SDWebImage
 import UIKit
 
 
-class FeedViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITabBarControllerDelegate, LinkTableViewCellDelegate {
+class FeedViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView?
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView?
@@ -39,7 +39,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
     private var videoEndsObserver: NSObjectProtocol?
 
     
-    // kep status bar visible
+    // keep status bar visible
     override var prefersStatusBarHidden: Bool {
         return false
     }
@@ -105,10 +105,6 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        // show status bar and makes it dark (although function below is deprecated, nothing else is working...)
-//        UIApplication.shared.statusBarStyle = .default
-    
-        
         // if we're in hot posts view: make status bar solid white
         guard let statusBarView = UIApplication.shared.value(forKeyPath: "statusBarWindow.statusBar") as? UIView else {
             return
@@ -150,120 +146,6 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         // Dispose of any resources that can be recreated.
     }
     
-
-    /*****************************************
-     TABLEVIEW FUNCTIONS
-     *****************************************/
-    
-    func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return self.videoPosts.count
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return self.videoPosts[section].1.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cellIdentifier = "LinkTableViewCell"
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? LinkTableViewCell else {
-            fatalError("The dequeued cell is not an instance of LinkTableViewCell")
-        }
-        
-        cell.delegate = self
-        
-        let section = indexPath.section
-        
-        if !self.videoPosts.isEmpty {
-            let videoPost = self.videoPosts[section].1[indexPath.row]
-            cell.videoPost = videoPost
-            
-            // set cell attributes
-            cell.thumbnailView?.sd_setImage(with: videoPost.thumbnailUrl, placeholderImage: nil)
-            cell.label?.text = videoPost.title
-            
-            // set label for time delta
-            cell.timeLabel?.text = videoPost.datePosted.timeAgoDisplay()
-            
-            // sets dimensions for each cell
-            setDimensionsForTableView(cell: cell)
-            
-            // if NOT hot posts view, show section header for cell; else set league label
-            if self.league != nil {
-                self.tableView?.headerView(forSection: indexPath.section)?.isHidden = false
-            } else {
-                // label text and icon
-                var leagueLabel = ""
-                if videoPost.league == "nba" {
-                    leagueLabel = "NBA"
-                    cell.leagueLabelIcon?.image = UIImage(named: "basketball")?.withRenderingMode(.alwaysTemplate)
-                } else if videoPost.league == "nfl" {
-                    leagueLabel = "NFL"
-                    cell.leagueLabelIcon?.image = UIImage(named: "footballAmerican")?.withRenderingMode(.alwaysTemplate)
-                } else if videoPost.league == "baseball" {
-                    leagueLabel = "MLB"
-                }
-                cell.leagueLabel?.text = leagueLabel
-            }
-            
-            // set author button
-            cell.authorButton?.setTitle(videoPost.author, for: .normal)
-            
-            // allows icon for clock to have a dark gray tint (rather than default black
-            cell.timeLabelIcon?.image = UIImage(named: "clock")?.withRenderingMode(.alwaysTemplate)
-            
-            // show mute button and update volume toggle
-            cell.muteToggleButton?.isHidden = false
-            cell.updateMuteControls(isMute: self.isMute)
-        }
-        if let playerView = cell.playerView {
-            playerView.playerLayer.frame = playerView.bounds
-        }
-        
-        // we hold a global array of all created cells to release the thumbnail images from memory, since there were leaks
-        if !allRows.contains(cell) {
-            allRows.append(cell)
-        }
-        
-        return cell
-    }
-    
-    // give the table a section header only if we're NOT viewing hot posts
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if self.league == nil {
-            return nil
-        } else {
-            // sets header indent
-            let headerInset: CGFloat = 15
-            tableView.separatorInset = UIEdgeInsets.init(top: 0, left: headerInset, bottom: 0, right: 0)
-            
-            let date = self.videoPosts[section].0
-            let dateFormatter = DateFormatter()
-            dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-            dateFormatter.dateFormat = "MMMM d, YYYY"
-            return dateFormatter.string(from: date)
-        }
-    }
-
-    
-    // necessary for loading videos in full screen
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return UITableView.automaticDimension
-    }
-    
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        // sets table cell indent to 0
-        cell.separatorInset = UIEdgeInsets.zero
-    }
-    
-    // set video to fullscreen on tap, unmute video, and pause all other playing videos
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        self.indexPathForPlayingVideo = indexPath
-        
-        // programmatically call segue to show video detail
-        self.performSegue(withIdentifier: "videoDetailSegue", sender: self)
-    }
 
     /*****************************************
      AUTOPLAY LOGIC
@@ -506,23 +388,148 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
             }
         }
     }
+}
+
+
+// MARK-- UITableViewDelegate
+extension FeedViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cellIdentifier = "LinkTableViewCell"
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? LinkTableViewCell else {
+            fatalError("The dequeued cell is not an instance of LinkTableViewCell")
+        }
+        
+        cell.delegate = self
+        
+        let section = indexPath.section
+        
+        if !self.videoPosts.isEmpty {
+            let videoPost = self.videoPosts[section].1[indexPath.row]
+            cell.videoPost = videoPost
+            
+            // set cell attributes
+            cell.thumbnailView?.sd_setImage(with: videoPost.thumbnailUrl, placeholderImage: nil)
+            cell.label?.text = videoPost.title
+            
+            // set label for time delta
+            cell.timeLabel?.text = videoPost.datePosted.timeAgoDisplay()
+            
+            // sets dimensions for each cell
+            setDimensionsForTableView(cell: cell)
+            
+            // if NOT hot posts view, show section header for cell; else set league label
+            if self.league != nil {
+                self.tableView?.headerView(forSection: indexPath.section)?.isHidden = false
+            } else {
+                // label text and icon
+                var leagueLabel = ""
+                if videoPost.league == "nba" {
+                    leagueLabel = "NBA"
+                    cell.leagueLabelIcon?.image = UIImage(named: "basketball")?.withRenderingMode(.alwaysTemplate)
+                } else if videoPost.league == "nfl" {
+                    leagueLabel = "NFL"
+                    cell.leagueLabelIcon?.image = UIImage(named: "footballAmerican")?.withRenderingMode(.alwaysTemplate)
+                } else if videoPost.league == "baseball" {
+                    leagueLabel = "MLB"
+                }
+                cell.leagueLabel?.text = leagueLabel
+            }
+            
+            // set author button
+            cell.authorButton?.setTitle(videoPost.author, for: .normal)
+            
+            // allows icon for clock to have a dark gray tint (rather than default black
+            cell.timeLabelIcon?.image = UIImage(named: "clock")?.withRenderingMode(.alwaysTemplate)
+            
+            // show mute button and update volume toggle
+            cell.muteToggleButton?.isHidden = false
+            cell.updateMuteControls(isMute: self.isMute)
+        }
+        if let playerView = cell.playerView {
+            playerView.playerLayer.frame = playerView.bounds
+        }
+        
+        // we hold a global array of all created cells to release the thumbnail images from memory, since there were leaks
+        if !allRows.contains(cell) {
+            allRows.append(cell)
+        }
+        
+        return cell
+    }
     
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        // sets table cell indent to 0
+        cell.separatorInset = UIEdgeInsets.zero
+    }
+    
+    // set video to fullscreen on tap, unmute video, and pause all other playing videos
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        self.indexPathForPlayingVideo = indexPath
+        
+        // programmatically call segue to show video detail
+        self.performSegue(withIdentifier: "videoDetailSegue", sender: self)
+    }
+
+}
+
+
+// MARK-- UITableViewDataSource
+extension FeedViewController: UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        // #warning Incomplete implementation, return the number of sections
+        return self.videoPosts.count
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        // #warning Incomplete implementation, return the number of rows
+        return self.videoPosts[section].1.count
+    }
+    
+    
+    // give the table a section header only if we're NOT viewing hot posts
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        if self.league == nil {
+            return nil
+        } else {
+            // sets header indent
+            let headerInset: CGFloat = 15
+            tableView.separatorInset = UIEdgeInsets.init(top: 0, left: headerInset, bottom: 0, right: 0)
+            
+            let date = self.videoPosts[section].0
+            let dateFormatter = DateFormatter()
+            dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+            dateFormatter.dateFormat = "MMMM d, YYYY"
+            return dateFormatter.string(from: date)
+        }
+    }
+    
+    
+    // necessary for loading videos in full screen
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return UITableView.automaticDimension
+    }
+    
+}
+
+
+// MARK-- UITabBarControllerDelegate
+extension FeedViewController: UITabBarControllerDelegate {
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)
-
+        
         if segue.identifier == "videoDetailSegue" {
             if let videoVC = segue.destination as? VideoViewController {
                 if self.indexPathForPlayingVideo != nil {
                     // send array of videoposts and current index to segue vc
                     var videoPostsNoDate: [VideoPost] = [VideoPost]()
-
+                    
                     for videosForDate in self.videoPosts {
                         let videoPosts = videosForDate.1
                         videoPostsNoDate.append(contentsOf: videoPosts)
                     }
                     videoVC.videos = videoPostsNoDate
-
+                    
                     // send index of currently viewed video (index = row + rowsInSection(section-1)
                     if let videoIndex = self.indexPathForPlayingVideo, let tableView = self.tableView {
                         videoVC.videoIndex = videoIndex.row
@@ -537,19 +544,20 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
             }
         }
     }
-    
-    /********************************
-     SHARE BUTTON
-     *********************************/
+}
+
+
+// MARK--LinkTableViewCellDelegate
+extension FeedViewController: LinkTableViewCellDelegate {
     // user selects share button (taken from https://stackoverflow.com/questions/35931946/basic-example-for-sharing-text-or-image-with-uiactivityviewcontroller-in-swift)
     func shareVideo(videoPost: VideoPost) {
         // analytics
         let league = self.league ?? "[today view]"
-
+        
         Analytics.logEvent(AnalyticsEventShare, parameters: [
-                            AnalyticsParameterItemCategory: league,
-                            AnalyticsParameterItemID: videoPost.id,
-                            AnalyticsParameterContentType: "outgoing_link"])
+            AnalyticsParameterItemCategory: league,
+            AnalyticsParameterItemID: videoPost.id,
+            AnalyticsParameterContentType: "outgoing_link"])
         
         // construct url to lob.tv
         let videoUrl = URL(string: "https://lob.tv/video/\(videoPost.id)/")
@@ -560,7 +568,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         activityViewController.popoverPresentationController?.sourceView = self.view // so that iPads won't crash
         
         // exclude some activity types from the list (optional)
-//        activityViewController.excludedActivityTypes = [ UIActivityType.airDrop, UIActivityType.postToFacebook ]
+        //        activityViewController.excludedActivityTypes = [ UIActivityType.airDrop, UIActivityType.postToFacebook ]
         
         // present the view controller
         self.present(activityViewController, animated: true, completion: nil)

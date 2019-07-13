@@ -11,6 +11,11 @@ import AVKit
 import FirebaseAnalytics
 import FontAwesome_swift
 
+// MARK--Delegate for cell that signals share button select
+protocol LinkTableViewCellDelegate {
+    func shareVideo(videoPost: VideoPost)
+}
+
 class LinkTableViewCell: UITableViewCell {
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView?
     @IBOutlet weak var playerViewWidth: NSLayoutConstraint?
@@ -107,11 +112,6 @@ class LinkTableViewCell: UITableViewCell {
             UIApplication.shared.open(url, options: [:])            
         }
     }
-}
-
-// protocol to call share sheet in parent view
-protocol LinkTableViewCellDelegate {
-    func shareVideo(videoPost: VideoPost)
 }
 
 // custom classes influenced from https://medium.com/@harmittaa/uibutton-with-label-text-and-right-aligned-image-a9d0f590bba1

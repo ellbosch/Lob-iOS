@@ -147,6 +147,8 @@
 		8BCC1F622099346D008BBED0 /* Lob */ = {
 			isa = PBXGroup;
 			children = (
+				8BF2B50222DA63DC00320A3F /* View */,
+				8BF2B50122DA5F8800320A3F /* Controller */,
 				8BF55A272282755700B6399C /* Lob.entitlements */,
 				8BCC1F632099346D008BBED0 /* AppDelegate.swift */,
 				8BCC1F672099346D008BBED0 /* Main.storyboard */,
@@ -157,9 +159,7 @@
 				8B7F9FDD20CDA28600C666B8 /* SportsTableViewCell.swift */,
 				8BAFE77B22AC657C009B87CA /* SettingsViewController.swift */,
 				8BAFE77D22AD8A37009B87CA /* SettingsTableViewCell.swift */,
-				8B135D172119566000B87BA5 /* FeedViewController.swift */,
 				8B76852D2132193300D05240 /* VideoViewController.swift */,
-				8BCC1F9320993FFE008BBED0 /* LinkTableViewCell.swift */,
 				8B803650227E3770009A3EB6 /* DataProvider.swift */,
 				8B135D112115863100B87BA5 /* ThumbnailImageView.swift */,
 				8B52BCB020E897D40062F5AB /* PlayerView.swift */,
@@ -185,6 +185,22 @@
 				8BCC1F852099346D008BBED0 /* Info.plist */,
 			);
 			path = LobAppUITests;
+			sourceTree = "<group>";
+		};
+		8BF2B50122DA5F8800320A3F /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				8B135D172119566000B87BA5 /* FeedViewController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		8BF2B50222DA63DC00320A3F /* View */ = {
+			isa = PBXGroup;
+			children = (
+				8BCC1F9320993FFE008BBED0 /* LinkTableViewCell.swift */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 		9CB1F350B7F2BA5C4976141B /* Pods */ = {
