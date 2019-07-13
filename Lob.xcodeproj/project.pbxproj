@@ -149,7 +149,7 @@
 		8BCC1F622099346D008BBED0 /* Lob */ = {
 			isa = PBXGroup;
 			children = (
-				8BF2B50322DA695900320A3F /* New Group */,
+				8BF2B50322DA695900320A3F /* Model */,
 				8BF2B50222DA63DC00320A3F /* View */,
 				8BF2B50122DA5F8800320A3F /* Controller */,
 				8BF2B50422DA69B200320A3F /* Network */,
@@ -206,12 +206,12 @@
 			path = View;
 			sourceTree = "<group>";
 		};
-		8BF2B50322DA695900320A3F /* New Group */ = {
+		8BF2B50322DA695900320A3F /* Model */ = {
 			isa = PBXGroup;
 			children = (
 				8BCC1F9B20A3D76F008BBED0 /* VideoPost.swift */,
 			);
-			path = "New Group";
+			path = Model;
 			sourceTree = "<group>";
 		};
 		8BF2B50422DA69B200320A3F /* Network */ = {
