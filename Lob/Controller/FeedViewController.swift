@@ -7,7 +7,6 @@
 //
 
 import AVKit
-import CoreMedia
 import FirebaseAnalytics
 import SDWebImage
 import UIKit
@@ -20,23 +19,23 @@ class FeedViewController: UIViewController {
     @IBOutlet weak var headerDateLabel: UILabel?
     @IBOutlet weak var errorView: UIView?
     
-    private var videoPosts: [(Date, [VideoPost])] = []
+    var videoPosts: [(Date, [VideoPost])] = []
     var league: String?
     private var notification: NSObjectProtocol?
     var videoAsset: AVAsset?
     
     // keeps track of global mute control (if users disables mute)
-    private var isMute: Bool = true
+    var isMute: Bool = true
     
     // keeps track of currently playing video
-    private var indexPathForPlayingVideo: IndexPath?
+    var indexPathForPlayingVideo: IndexPath?
     
     // keeps track of the indexpaths of visible rows
-    private var visibleRows: [IndexPath] = [IndexPath]()
-    private var allRows: [LinkTableViewCell] = [LinkTableViewCell]()
+    var visibleRows: [IndexPath] = [IndexPath]()
+    var allRows: [LinkTableViewCell] = [LinkTableViewCell]()
     
     // keeps track of observer used to see when video ends
-    private var videoEndsObserver: NSObjectProtocol?
+    var videoEndsObserver: NSObjectProtocol?
 
     
     // keep status bar visible
@@ -145,99 +144,6 @@ class FeedViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-
-    /*****************************************
-     AUTOPLAY LOGIC
-     *****************************************/
-    
-    // play middle(ish) video AFTER scroll drag has ended, but ONLY if user hasn't done a big swipe
-    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        if !decelerate {
-            self.autoplayVideoInTable()
-        }
-    }
-    
-    // load video if deceleration ended
-    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        self.autoplayVideoInTable()
-    }
-    
-    func autoplayVideoInTable() {
-        // see if full screen mode is disabled and new cells have loaded, if yes, toggle autoplay
-        guard let tableView = self.tableView else { return }
-        let visibleCells = tableView.visibleCells
-        
-        if !visibleCells.isEmpty {
-            var visibleCellIndexes = [IndexPath]()
-            
-            // get list of visible indexes
-            for cell in visibleCells {
-                if let indexPath = tableView.indexPath(for: cell) {
-                    visibleCellIndexes.append(indexPath)
-                }
-            }
-            
-            // calculate height of header above first cell
-            var headerHeight: CGFloat = 64
-            // add height of iphone x inset (if there is any)
-            if #available(iOS 11.0, *) {
-                headerHeight = view.safeAreaInsets.top
-            }
-            
-            // plays top most video that isn't above the header height
-            for ptrIndex in visibleCellIndexes {
-                let rectOfCellInTableView = tableView.rectForRow(at: ptrIndex)
-                let rectOfCellInSuperview = tableView.convert(rectOfCellInTableView, to: self.tableView?.superview)
-                
-                // play video if it's not hidden at the top, OR if it's the last video
-                if rectOfCellInSuperview.origin.y > headerHeight || ptrIndex == visibleCellIndexes.last {
-                    if self.indexPathForPlayingVideo != ptrIndex {
-                        self.indexPathForPlayingVideo = ptrIndex
-                        if let cell = self.tableView?.cellForRow(at: ptrIndex) as? LinkTableViewCell {
-                            // don't reload player if already loaded
-                            if let player = cell.playerView?.player, player.currentItem != nil {
-                                if player.rate == 0 {
-                                    player.play()
-                                } else {
-                                    return      // SAFETY CALL, SHOULDN'T HAPPEN--don't do anything if video is already playing
-                                }
-                            } else {
-                                let indexCount = self.calculateRows(indexPath: ptrIndex)
-                                let leaguePage = self.league ?? "[today view]"
-                                cell.loadVideoForCell(isMute: self.isMute, indexCount: indexCount, leaguePage: leaguePage)
-                            }
-                            pauseAllVideosExcept(indexPath: ptrIndex)
-                            
-                            // KVO to keep video in loop
-                            self.videoEndsObserver = NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: cell.playerView?.player?.currentItem, queue: .main) { [weak self] _ in
-                                // replay video just for one that's currently playing
-                                if let indexPathForPlayingVideo = self?.indexPathForPlayingVideo,
-                                    let cell = tableView.cellForRow(at: indexPathForPlayingVideo) as? LinkTableViewCell {
-                                    cell.playerView?.player?.seek(to: CMTime.zero)
-                                    cell.playerView?.player?.play()
-                                }
-                            }
-                        }
-                    }
-                    return
-                }
-            }
-        }
-    }
-
-    // ensures all other videos are paused except the specified index path
-    func pauseAllVideosExcept(indexPath: IndexPath) {
-        guard let visibleCells = (self.tableView?.visibleCells as? [LinkTableViewCell]) else { return }
-        
-        for cellptr in visibleCells {
-            let indexPathPtr = self.tableView?.indexPath(for: cellptr)
-            
-            if indexPath != indexPathPtr {
-                cellptr.playerView?.player?.pause()
-            }
-        }
-    }
 
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if let player: AVPlayer = object as? AVPlayer {
@@ -337,7 +243,7 @@ class FeedViewController: UIViewController {
         })
     }
     
-    private func calculateRows(indexPath: IndexPath) -> Int {
+    func calculateRows(indexPath: IndexPath) -> Int {
         // find 1D index for the now-playing video (use this for analytics to see how far down the table people watch videos)
         var indexCount: Int = 0
         if let tableView = self.tableView {
@@ -543,6 +449,22 @@ extension FeedViewController: UITabBarControllerDelegate {
                 }
             }
         }
+    }
+}
+
+
+// MARK--ScrollViewController calls
+extension FeedViewController {
+    // play middle(ish) video AFTER scroll drag has ended, but ONLY if user hasn't done a big swipe
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if !decelerate {
+            self.autoplayVideoInTable()
+        }
+    }
+
+    // load video if deceleration ended
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        self.autoplayVideoInTable()
     }
 }
 
