@@ -12,6 +12,8 @@ import SwiftyJSON
 import UIKit
 
 class DataProvider {
+    private static let LOB_ROOT_URL = "https://www.lob.tv"
+    
     static var videoPosts: [(Date, [VideoPost])] = []
     
     static func getVideoPosts(league: String?, completion: @escaping () -> ()) {
@@ -27,7 +29,7 @@ class DataProvider {
         var videoPostsUnsorted = [Date: [VideoPost]]()
         var videoPostsSorted = [(Date, [VideoPost])]()
         
-        Alamofire.request("https://www.lob.tv/hot_posts").responseJSON { response in
+        Alamofire.request(LOB_ROOT_URL + "/hot_posts").responseJSON { response in
             // TODO: CREATE NEW JSON DECODER
             if let data: Data = response.data, let json: JSON = try? JSON(data: data) {
                 for tuple in json {
@@ -72,7 +74,7 @@ class DataProvider {
         var videoPostsUnsorted = [Date: [VideoPost]]()
         var videoPostsSorted = [(Date, [VideoPost])]()
         
-        Alamofire.request("https://www.lob.tv/new/\(sport)").responseJSON { response in
+        Alamofire.request(LOB_ROOT_URL + "/new/\(sport)").responseJSON { response in
             if let data:Data = response.data, let json: JSON = try? JSON(data: data) {
                 let decoder = JSONDecoder()
                 
@@ -107,5 +109,19 @@ class DataProvider {
             }
             completion()
         }
+    }
+    
+    // gets sport data from property list
+    static func getSportsData() -> [Sport] {
+        var sports: [Sport]?
+        
+        if let path = Bundle.main.path(forResource: "Sports", ofType: "plist") {
+            if let data = try? Data(contentsOf: URL(fileURLWithPath: path)) {
+                let decoder = PropertyListDecoder()
+                sports = try? decoder.decode([Sport].self, from: data)
+            }
+        }
+        
+        return sports ?? []
     }
 }

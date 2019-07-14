@@ -16,6 +16,8 @@
 		8B7F9FDE20CDA28600C666B8 /* SportsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B7F9FDD20CDA28600C666B8 /* SportsTableViewCell.swift */; };
 		8B803651227E3770009A3EB6 /* DataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B803650227E3770009A3EB6 /* DataProvider.swift */; };
 		8B84CD4520CA322E00A4E598 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8B84CD4420CA322E00A4E598 /* GoogleService-Info.plist */; };
+		8B8B142622DA934000611AF3 /* Sport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B8B142522DA934000611AF3 /* Sport.swift */; };
+		8B8B142922DA9DE500611AF3 /* Sports.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8B8B142822DA9DE500611AF3 /* Sports.plist */; };
 		8BAFE77C22AC657C009B87CA /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BAFE77B22AC657C009B87CA /* SettingsViewController.swift */; };
 		8BAFE77E22AD8A37009B87CA /* SettingsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BAFE77D22AD8A37009B87CA /* SettingsTableViewCell.swift */; };
 		8BCC1F642099346D008BBED0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BCC1F632099346D008BBED0 /* AppDelegate.swift */; };
@@ -62,6 +64,8 @@
 		8B7F9FDD20CDA28600C666B8 /* SportsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsTableViewCell.swift; sourceTree = "<group>"; };
 		8B803650227E3770009A3EB6 /* DataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataProvider.swift; sourceTree = "<group>"; };
 		8B84CD4420CA322E00A4E598 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		8B8B142522DA934000611AF3 /* Sport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sport.swift; sourceTree = "<group>"; };
+		8B8B142822DA9DE500611AF3 /* Sports.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Sports.plist; sourceTree = "<group>"; };
 		8BAFE77B22AC657C009B87CA /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		8BAFE77D22AD8A37009B87CA /* SettingsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTableViewCell.swift; sourceTree = "<group>"; };
 		8BCC1F602099346D008BBED0 /* Lob.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Lob.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -124,6 +128,13 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		8B8B142722DA981900611AF3 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
 		8BCC1F572099346D008BBED0 = {
 			isa = PBXGroup;
 			children = (
@@ -149,10 +160,11 @@
 		8BCC1F622099346D008BBED0 /* Lob */ = {
 			isa = PBXGroup;
 			children = (
+				8B8B142722DA981900611AF3 /* Data */,
 				8BF2B50322DA695900320A3F /* Model */,
 				8BF2B50222DA63DC00320A3F /* View */,
 				8BF2B50122DA5F8800320A3F /* Controller */,
-				8BF2B50422DA69B200320A3F /* Network */,
+				8BF2B50422DA69B200320A3F /* Data Provider */,
 				8BF55A272282755700B6399C /* Lob.entitlements */,
 				8BCC1F632099346D008BBED0 /* AppDelegate.swift */,
 				8BCC1F672099346D008BBED0 /* Main.storyboard */,
@@ -160,6 +172,7 @@
 				8BCC1F6C2099346D008BBED0 /* LaunchScreen.storyboard */,
 				8BCC1F6F2099346D008BBED0 /* Info.plist */,
 				8B84CD4420CA322E00A4E598 /* GoogleService-Info.plist */,
+				8B8B142822DA9DE500611AF3 /* Sports.plist */,
 			);
 			path = Lob;
 			sourceTree = "<group>";
@@ -210,16 +223,17 @@
 			isa = PBXGroup;
 			children = (
 				8BCC1F9B20A3D76F008BBED0 /* VideoPost.swift */,
+				8B8B142522DA934000611AF3 /* Sport.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
 		};
-		8BF2B50422DA69B200320A3F /* Network */ = {
+		8BF2B50422DA69B200320A3F /* Data Provider */ = {
 			isa = PBXGroup;
 			children = (
 				8B803650227E3770009A3EB6 /* DataProvider.swift */,
 			);
-			path = Network;
+			path = "Data Provider";
 			sourceTree = "<group>";
 		};
 		9CB1F350B7F2BA5C4976141B /* Pods */ = {
@@ -356,6 +370,7 @@
 			files = (
 				8BCC1F6E2099346D008BBED0 /* LaunchScreen.storyboard in Resources */,
 				8B84CD4520CA322E00A4E598 /* GoogleService-Info.plist in Resources */,
+				8B8B142922DA9DE500611AF3 /* Sports.plist in Resources */,
 				8BCC1F6B2099346D008BBED0 /* Assets.xcassets in Resources */,
 				8BCC1F692099346D008BBED0 /* Main.storyboard in Resources */,
 			);
@@ -483,6 +498,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8B8B142622DA934000611AF3 /* Sport.swift in Sources */,
 				8BF2B50622DA6A3F00320A3F /* VideoAutoplay.swift in Sources */,
 				8B135D122115863100B87BA5 /* ThumbnailImageView.swift in Sources */,
 				8BCC1F642099346D008BBED0 /* AppDelegate.swift in Sources */,

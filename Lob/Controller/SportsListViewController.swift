@@ -11,9 +11,7 @@ import UIKit
 class SportsListViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITabBarControllerDelegate {
     @IBOutlet weak var tableView: UITableView?
     
-    var sports: [(String, UIImage?)] = [("NBA", UIImage(named: "basketball")),
-                                        ("NFL", UIImage(named: "footballAmerican")),
-                                        ("MLB", UIImage(named: "baseball"))]
+    var sports: [Sport]?
     
     // ensures status bar is visible on this view
     override var prefersStatusBarHidden: Bool {
@@ -30,6 +28,9 @@ class SportsListViewController: UIViewController, UITableViewDelegate, UITableVi
         
         // removes empty cells
         tableView?.tableFooterView = UIView()
+        
+        // get sport data from property list
+        self.sports = DataProvider.getSportsData()
     }
     
     override func viewDidAppear(_ animated: Bool) {        
@@ -61,7 +62,7 @@ class SportsListViewController: UIViewController, UITableViewDelegate, UITableVi
         switch section {
         // league channels
         case 0:
-            return sports.count
+            return sports?.count ?? 0
         // settings
         case 1:
             return 1
@@ -76,9 +77,10 @@ class SportsListViewController: UIViewController, UITableViewDelegate, UITableVi
         }
         switch indexPath.section {
         case 0:
-            let sport = sports[indexPath.row]
-            cell.sportsLabel?.text = sport.0
-            cell.iconLabel?.image = sport.1
+            if let sport = self.sports?[indexPath.row], let iconLabel = sport.iconLabel {
+                cell.sportsLabel?.text = sport.name
+                cell.iconLabel?.image = UIImage(named: iconLabel)
+            }
         case 1:
             cell.sportsLabel?.text = "Settings"
             cell.iconLabel?.image = UIImage(named: "settings")
@@ -109,23 +111,25 @@ class SportsListViewController: UIViewController, UITableViewDelegate, UITableVi
             self.tableView?.deselectRow(at: selectedRow, animated: true)
     
             // open channel to sport if one is selected
-            let sport = self.sports[selectedRow.row]
-            
-            // set page sport league variable and title
-            feedVC.title = sport.0
-            
-            switch sport.0 {
-            case "NBA":
-                feedVC.league = "nba"
-            case "Soccer - All Leagues":
-                feedVC.league = "soccer"
-            case "MLB":
-                feedVC.league = "baseball"
-            case "NFL":
-                feedVC.league = "nfl"
-            default:
-                break    // loads hot posts
+            if let sport = self.sports?[selectedRow.row] {
+                // set page sport league variable and title
+                feedVC.title = sport.name
+//                feedVC.league = sport.name
+                
+                switch sport.name {
+                case "NBA":
+                    feedVC.league = "nba"
+                case "Soccer - All Leagues":
+                    feedVC.league = "soccer"
+                case "MLB":
+                    feedVC.league = "baseball"
+                case "NFL":
+                    feedVC.league = "nfl"
+                default:
+                    break    // loads hot posts
+                }
             }
+            
         }
     }
 }
