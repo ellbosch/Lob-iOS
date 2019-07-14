@@ -72,9 +72,9 @@ class SportsListViewController: UIViewController, UITableViewDelegate, UITableVi
         }
         switch indexPath.section {
         case 0:
-            if let sport = DataProvider.shared.sportsData?[indexPath.row], let iconLabel = sport.iconLabel {
+            if let sport = DataProvider.shared.sportsData?[indexPath.row] {
                 cell.sportsLabel?.text = sport.name
-                cell.iconLabel?.image = UIImage(named: iconLabel)
+                cell.iconLabel?.image = UIImage(named: sport.iconLabel)
             }
         case 1:
             cell.sportsLabel?.text = "Settings"

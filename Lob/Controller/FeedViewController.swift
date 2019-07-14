@@ -373,12 +373,10 @@ extension FeedViewController: UITableViewDelegate {
 // MARK-- UITableViewDataSource
 extension FeedViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
         return self.videoPosts.count
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
         return self.videoPosts[section].1.count
     }
     
