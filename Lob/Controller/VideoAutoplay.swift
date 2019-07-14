@@ -53,7 +53,7 @@ extension FeedViewController {
                                 }
                             } else {
                                 let indexCount = self.calculateRows(indexPath: ptrIndex)
-                                let leaguePage = self.league ?? "[today view]"
+                                let leaguePage = self.sport?.name ?? "[today view]"
                                 cell.loadVideoForCell(isMute: self.isMute, indexCount: indexCount, leaguePage: leaguePage)
                             }
                             pauseAllVideosExcept(indexPath: ptrIndex)

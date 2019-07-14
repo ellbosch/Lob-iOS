@@ -19,8 +19,9 @@ class FeedViewController: UIViewController {
     @IBOutlet weak var headerDateLabel: UILabel?
     @IBOutlet weak var errorView: UIView?
     
+    var sport: Sport?
     var videoPosts: [(Date, [VideoPost])] = []
-    var league: String?
+    
     private var notification: NSObjectProtocol?
     
     // keeps track of global mute control (if users disables mute)
@@ -49,19 +50,8 @@ class FeedViewController: UIViewController {
         self.tableView?.delegate = self
 
         // set title: nil case means we're in hot posts view
-        if let league = self.league {
-            switch league {
-            case "nba":
-                self.title = "NBA"
-            case "soccer":
-                self.title = "Soccer - All Leagues"
-            case "baseball":
-                self.title = "Baseball - All Leagues"
-            case "nfl":
-                self.title = "NFL"
-            default:
-                break
-            }
+        if let sport = self.sport {
+            self.title = sport.name
         } else {
             // if we're in hot posts view: set date header
             // date for header
@@ -107,10 +97,12 @@ class FeedViewController: UIViewController {
         guard let statusBarView = UIApplication.shared.value(forKeyPath: "statusBarWindow.statusBar") as? UIView else {
             return
         }
-        if self.league == nil {
-            statusBarView.backgroundColor = UIColor.white
-        } else {
+        
+        // TODO: separate this into new VC
+        if self.sport != nil {
             statusBarView.backgroundColor = nil
+        } else {
+            statusBarView.backgroundColor = UIColor.white
         }
     
         // start animating loading spinner
@@ -211,7 +203,7 @@ class FeedViewController: UIViewController {
     
     // loads video posts and scrolls to current day. if no sport is selected, the user is viewing "hot" posts.
     private func initLoadVideoPosts() {
-        DataProvider.getVideoPosts(league: self.league, completion: { [weak self] in
+        DataProvider.getVideoPosts(league: self.sport?.subreddit, completion: { [weak self] in
             self?.videoPosts = DataProvider.videoPosts
             self?.tableView?.reloadData()     // necessary to load data in table view
             
@@ -231,7 +223,7 @@ class FeedViewController: UIViewController {
                 }
                 
                 let indexCount = self?.calculateRows(indexPath: indexPathToPlay) ?? -1
-                let leaguePage = self?.league ?? "[today view]"
+                let leaguePage = self?.sport?.name ?? "[today view]"
                 cell.loadVideoForCell(isMute: self?.isMute ?? true, indexCount: indexCount, leaguePage: leaguePage)
             }
             
@@ -320,8 +312,10 @@ extension FeedViewController: UITableViewDelegate {
             // sets dimensions for each cell
             setDimensionsForTableView(cell: cell)
             
+            
+            // TODO: separate code into new VC
             // if NOT hot posts view, show section header for cell; else set league label
-            if self.league != nil {
+            if self.sport != nil {
                 self.tableView?.headerView(forSection: indexPath.section)?.isHidden = false
             } else {
                 // label text and icon
@@ -388,10 +382,10 @@ extension FeedViewController: UITableViewDataSource {
         return self.videoPosts[section].1.count
     }
     
-    
+    // TODO: separate into new VC
     // give the table a section header only if we're NOT viewing hot posts
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if self.league == nil {
+        if self.sport == nil {
             return nil
         } else {
             // sets header indent
@@ -442,7 +436,7 @@ extension FeedViewController: UITabBarControllerDelegate {
                             sectionPtr += 1
                         }
                     }
-                    videoVC.league = self.league
+                    videoVC.league = self.sport?.name
                 }
             }
         }
@@ -470,8 +464,9 @@ extension FeedViewController {
 extension FeedViewController: LinkTableViewCellDelegate {
     // user selects share button (taken from https://stackoverflow.com/questions/35931946/basic-example-for-sharing-text-or-image-with-uiactivityviewcontroller-in-swift)
     func shareVideo(videoPost: VideoPost) {
+        // TODO: separate into new VC
         // analytics
-        let league = self.league ?? "[today view]"
+        let league = self.sport?.name ?? "[today view]"
         
         Analytics.logEvent(AnalyticsEventShare, parameters: [
             AnalyticsParameterItemCategory: league,

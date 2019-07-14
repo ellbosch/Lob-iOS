@@ -7,17 +7,23 @@
 		<string>NBA</string>
 		<key>iconLabel</key>
 		<string>basketball</string>
+		<key>subreddit</key>
+		<string>nba</string>
 	</dict>
 	<dict>
 		<key>name</key>
 		<string>NFL</string>
 		<key>iconLabel</key>
 		<string>footballAmerican</string>
+		<key>subreddit</key>
+		<string>nfl</string>
 	</dict>
 	<dict>
 		<key>name</key>
 		<string>MLB</string>
 		<key>iconLabel</key>
+		<string>baseball</string>
+		<key>subreddit</key>
 		<string>baseball</string>
 	</dict>
 </array>

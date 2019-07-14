@@ -112,22 +112,7 @@ class SportsListViewController: UIViewController, UITableViewDelegate, UITableVi
     
             // open channel to sport if one is selected
             if let sport = self.sports?[selectedRow.row] {
-                // set page sport league variable and title
-                feedVC.title = sport.name
-//                feedVC.league = sport.name
-                
-                switch sport.name {
-                case "NBA":
-                    feedVC.league = "nba"
-                case "Soccer - All Leagues":
-                    feedVC.league = "soccer"
-                case "MLB":
-                    feedVC.league = "baseball"
-                case "NFL":
-                    feedVC.league = "nfl"
-                default:
-                    break    // loads hot posts
-                }
+                feedVC.sport = sport
             }
             
         }
