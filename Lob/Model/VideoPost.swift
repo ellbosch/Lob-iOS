@@ -12,7 +12,7 @@ import UIKit
 public struct VideoPost: Decodable {
     var id: String
     var title: String
-    var league: String
+    var sport: Sport?
     var datePostedRaw: String
     var datePosted: Date
     var dateShort: Date
@@ -77,8 +77,7 @@ public struct VideoPost: Decodable {
         
         // set sport by league
         let league = try container.decode(String.self, forKey: .league)
-        self.league = league
-//        self.sport = 
+        self.sport = DataProvider.shared.sportsData[league]
     }
     
 }

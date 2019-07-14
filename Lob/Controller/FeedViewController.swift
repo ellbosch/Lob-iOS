@@ -312,24 +312,9 @@ extension FeedViewController: UITableViewDelegate {
             // sets dimensions for each cell
             setDimensionsForTableView(cell: cell)
             
-            
-            // TODO: separate code into new VC
-            // if NOT hot posts view, show section header for cell; else set league label
-            if self.sport != nil {
-                self.tableView?.headerView(forSection: indexPath.section)?.isHidden = false
-            } else {
-                // label text and icon
-                var leagueLabel = ""
-                if videoPost.league == "nba" {
-                    leagueLabel = "NBA"
-                    cell.leagueLabelIcon?.image = UIImage(named: "basketball")?.withRenderingMode(.alwaysTemplate)
-                } else if videoPost.league == "nfl" {
-                    leagueLabel = "NFL"
-                    cell.leagueLabelIcon?.image = UIImage(named: "footballAmerican")?.withRenderingMode(.alwaysTemplate)
-                } else if videoPost.league == "baseball" {
-                    leagueLabel = "MLB"
-                }
-                cell.leagueLabel?.text = leagueLabel
+            if let sport = videoPost.sport {
+                cell.leagueLabelIcon?.image = UIImage(named: sport.iconLabel)
+                cell.leagueLabel?.text = sport.name
             }
             
             // set author button
