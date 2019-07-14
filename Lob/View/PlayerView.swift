@@ -11,8 +11,6 @@ import UIKit
 
 class PlayerView: UIView {
     
-//    weak var cell: LinkTableViewCell?
-
     var player: AVPlayer? {
         get {
             return playerLayer.player
@@ -30,8 +28,6 @@ class PlayerView: UIView {
     override static var layerClass: AnyClass {
         return AVPlayerLayer.self
     }
-    
-
     
 }
 

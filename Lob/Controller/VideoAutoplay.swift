@@ -10,7 +10,7 @@ import CoreMedia
 import Foundation
 import UIKit
 
-// MARK-- video autoplay logic
+// MARK-- video autoplay logic for feed vc
 extension FeedViewController {
     func autoplayVideoInTable() {
         // see if full screen mode is disabled and new cells have loaded, if yes, toggle autoplay
@@ -86,5 +86,25 @@ extension FeedViewController {
                 cellptr.playerView?.player?.pause()
             }
         }
+    }
+    
+    
+    // sets dimensions for elements in cell for table view
+    func setPlayerDimensionsForTableView(width: Int, height: Int) -> (CGFloat, CGFloat) {
+        // sets dimensions for AVPlayerLayer
+        let aspectRatio = CGFloat(height) / CGFloat(width)
+        
+        // set width of video based on device orientation
+        var width = CGFloat(UIScreen.main.bounds.size.width)
+        if UIDevice.current.orientation.isLandscape {
+            width = CGFloat(UIScreen.main.bounds.size.height)
+        }
+        var height = aspectRatio * width
+        // resize video of height is too high
+        if (height > 400) {
+            width = 400 / aspectRatio
+            height = 400
+        }
+        return (width, height)
     }
 }

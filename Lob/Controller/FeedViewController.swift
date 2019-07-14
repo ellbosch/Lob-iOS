@@ -148,56 +148,6 @@ class FeedViewController: UIViewController {
     }
     
     /*****************************************
-     SETTING CELL DIMENSIONS
-     *****************************************/
-    
-    // sets dimensions for elements in cell for table view
-    func setDimensionsForTableView(cell: LinkTableViewCell) {
-        // sets dimensions for AVPlayerLayer
-        if let videoPost = cell.videoPost {
-            let aspectRatio = CGFloat(videoPost.height) / CGFloat(videoPost.width)
-    
-            // set width of video based on device orientation
-            var width = CGFloat(UIScreen.main.bounds.size.width)
-            if UIDevice.current.orientation.isLandscape {
-                width = CGFloat(UIScreen.main.bounds.size.height)
-            }
-            var height = aspectRatio * width
-            // resize video of height is too high
-            if (height > 400) {
-                width = 400 / aspectRatio
-                height = 400
-            }
-            cell.playerViewHeight?.constant = height
-            cell.playerViewWidth?.constant = width
-        }
-
-
-        // show labels
-        cell.label?.isHidden = false
-        cell.timeLabel?.isHidden = false
-
-        // set background to white
-        cell.backgroundColor = .white
-    }
-    
-    // converts integer of seconds into string representing time (mm:ss)
-    func convertSecondsToTimeString(secondsTotal: Int) -> String {
-        var timeString: String
-        
-        let seconds = secondsTotal % 60    // modulo to get just seconds
-        let minutes = Int(secondsTotal/60)      // number of minutes played so far
-        // add a "0" if seconds is under 10
-        if seconds < 10 {
-            timeString = "\(minutes):0\(seconds)"
-        } else {
-            timeString = "\(minutes):\(seconds)"
-        }
-        
-        return timeString
-    }
-    
-    /*****************************************
      VIDEOPOSTS LOADING
      *****************************************/
     
@@ -310,7 +260,9 @@ extension FeedViewController: UITableViewDelegate {
             cell.timeLabel?.text = videoPost.datePosted.timeAgoDisplay()
             
             // sets dimensions for each cell
-            setDimensionsForTableView(cell: cell)
+            let dimensions = setPlayerDimensionsForTableView(width: videoPost.width, height: videoPost.height)
+            cell.playerViewWidth?.constant = dimensions.0
+            cell.playerViewHeight?.constant = dimensions.1
             
             if let sport = videoPost.sport {
                 cell.leagueLabelIcon?.image = UIImage(named: sport.iconLabel)
