@@ -203,12 +203,12 @@ class FeedViewController: UIViewController {
     
     // loads video posts and scrolls to current day. if no sport is selected, the user is viewing "hot" posts.
     private func initLoadVideoPosts() {
-        DataProvider.getVideoPosts(league: self.sport?.subreddit, completion: { [weak self] in
-            self?.videoPosts = DataProvider.videoPosts
+        DataProvider.shared.getVideoPosts(league: self.sport?.subreddit, completion: { [weak self] videoPosts in
+            self?.videoPosts = videoPosts
             self?.tableView?.reloadData()     // necessary to load data in table view
             
             // show error view if there are no posts
-            if DataProvider.videoPosts.isEmpty {
+            if videoPosts.isEmpty {
                 self?.errorView?.isHidden = false
             }
             

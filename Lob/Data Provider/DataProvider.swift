@@ -12,20 +12,27 @@ import SwiftyJSON
 import UIKit
 
 class DataProvider {
-    private static let LOB_ROOT_URL = "https://www.lob.tv"
     
-    static var videoPosts: [(Date, [VideoPost])] = []
+    static let shared = DataProvider()
     
-    static func getVideoPosts(league: String?, completion: @escaping () -> ()) {
+    private let LOB_ROOT_URL = "https://www.lob.tv"
+    
+    public var sportsData: [Sport]?
+    
+    private init() {
+        sportsData = self.getSportsData()
+    }
+    
+    public func getVideoPosts(league: String?, completion: @escaping ([(Date, [VideoPost])]) -> Void)  {
         if let league = league {
-            self.getVideoPostsForSport(sport: league, completion: { completion() })
+            self.getVideoPostsForSport(sport: league, completion: completion)
+        } else {
+            getHotVideoPosts(completion: completion)
         }
-        else {
-            self.getHotVideoPosts(completion: { completion() })
-        }
+
     }
 
-    static private func getHotVideoPosts(completion: @escaping () -> ()) {
+    private func getHotVideoPosts(completion: @escaping ([(Date, [VideoPost])]) -> Void) {
         var videoPostsUnsorted = [Date: [VideoPost]]()
         var videoPostsSorted = [(Date, [VideoPost])]()
         
@@ -64,13 +71,12 @@ class DataProvider {
                     let tuple = (key, videoPostsUnsorted[key]!)
                     videoPostsSorted.append(tuple)
                 }
-                self.videoPosts = videoPostsSorted
             }
-            completion()
+            completion(videoPostsSorted)
         }
     }
     
-    static private func getVideoPostsForSport(sport: String, completion: @escaping () -> ()) {
+    private func getVideoPostsForSport(sport: String, completion: @escaping ([(Date, [VideoPost])]) -> Void) {
         var videoPostsUnsorted = [Date: [VideoPost]]()
         var videoPostsSorted = [(Date, [VideoPost])]()
         
@@ -105,14 +111,13 @@ class DataProvider {
                     let tuple = (key, videoPostsUnsorted[key]!)
                     videoPostsSorted.append(tuple)
                 }
-                self.videoPosts = videoPostsSorted
             }
-            completion()
+            completion(videoPostsSorted)
         }
     }
     
     // gets sport data from property list
-    static func getSportsData() -> [Sport] {
+    private func getSportsData() -> [Sport] {
         var sports: [Sport]?
         
         if let path = Bundle.main.path(forResource: "Sports", ofType: "plist") {

@@ -11,8 +11,6 @@ import UIKit
 class SportsListViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITabBarControllerDelegate {
     @IBOutlet weak var tableView: UITableView?
     
-    var sports: [Sport]?
-    
     // ensures status bar is visible on this view
     override var prefersStatusBarHidden: Bool {
         return false
@@ -28,9 +26,6 @@ class SportsListViewController: UIViewController, UITableViewDelegate, UITableVi
         
         // removes empty cells
         tableView?.tableFooterView = UIView()
-        
-        // get sport data from property list
-        self.sports = DataProvider.getSportsData()
     }
     
     override func viewDidAppear(_ animated: Bool) {        
@@ -62,7 +57,7 @@ class SportsListViewController: UIViewController, UITableViewDelegate, UITableVi
         switch section {
         // league channels
         case 0:
-            return sports?.count ?? 0
+            return DataProvider.shared.sportsData?.count ?? 0
         // settings
         case 1:
             return 1
@@ -77,7 +72,7 @@ class SportsListViewController: UIViewController, UITableViewDelegate, UITableVi
         }
         switch indexPath.section {
         case 0:
-            if let sport = self.sports?[indexPath.row], let iconLabel = sport.iconLabel {
+            if let sport = DataProvider.shared.sportsData?[indexPath.row], let iconLabel = sport.iconLabel {
                 cell.sportsLabel?.text = sport.name
                 cell.iconLabel?.image = UIImage(named: iconLabel)
             }
@@ -111,7 +106,7 @@ class SportsListViewController: UIViewController, UITableViewDelegate, UITableVi
             self.tableView?.deselectRow(at: selectedRow, animated: true)
     
             // open channel to sport if one is selected
-            if let sport = self.sports?[selectedRow.row] {
+            if let sport = DataProvider.shared.sportsData?[selectedRow.row] {
                 feedVC.sport = sport
             }
             

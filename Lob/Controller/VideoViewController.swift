@@ -438,43 +438,43 @@ class VideoViewController: UIViewController {
         }
         
         // load other videos for identified league and identify the video we want to play in the full lsit
-        DataProvider.getVideoPosts(league: nil, completion: { [weak self] in
-            // create 1d array of videos
-            var videoPostsNoDate: [VideoPost] = []
-            for videosForDate in DataProvider.videoPosts {
-                let videoPosts = videosForDate.1
-                videoPostsNoDate.append(contentsOf: videoPosts)
-            }
-            
-            // remove instance of video we want to play from the array so a dupe isn't played
-            var indexToRemove: Int?
-            var videoPost: VideoPost?
-            for (index, v) in videoPostsNoDate.enumerated() {
-                if v.id == videoId {
-                    indexToRemove = index
-                    videoPost = v
-                }
-            }
-            
-            // if we have a valid index, play the video, else we display an error that no video was found
-            if let indexToRemove = indexToRemove, let videoPost = videoPost {
-                // remove video want to play from array and pop it to top
-                videoPostsNoDate.remove(at: indexToRemove)
-                videoPostsNoDate.insert(videoPost, at: 0)
-                
-                // analytics
-                Analytics.logEvent(AnalyticsEventShare, parameters: [AnalyticsParameterItemID: videoId, AnalyticsParameterContentType: "incoming_link"])
-                
-                // send index and videos array to destination VC
-                self?.videoIndex = 0
-                self?.videos = videoPostsNoDate
-                
-                // set videoVC by default to play (used for when videos are opened from a share so that the video doesn't start with blasting audio if set to false)
-                self?.shouldPlay = true
-                self?.showVideoControls()
-                self?.loadFullScreenVideo()
-            }
-        })
+//        let videoPosts = DataProvider.shared.getVideoPosts(league: nil, completion: { [weak self] in
+//            // create 1d array of videos
+//            var videoPostsNoDate: [VideoPost] = []
+//            for videosForDate in DataProvider.videoPosts {
+//                let videoPosts = videosForDate.1
+//                videoPostsNoDate.append(contentsOf: videoPosts)
+//            }
+//
+//            // remove instance of video we want to play from the array so a dupe isn't played
+//            var indexToRemove: Int?
+//            var videoPost: VideoPost?
+//            for (index, v) in videoPostsNoDate.enumerated() {
+//                if v.id == videoId {
+//                    indexToRemove = index
+//                    videoPost = v
+//                }
+//            }
+//
+//            // if we have a valid index, play the video, else we display an error that no video was found
+//            if let indexToRemove = indexToRemove, let videoPost = videoPost {
+//                // remove video want to play from array and pop it to top
+//                videoPostsNoDate.remove(at: indexToRemove)
+//                videoPostsNoDate.insert(videoPost, at: 0)
+//
+//                // analytics
+//                Analytics.logEvent(AnalyticsEventShare, parameters: [AnalyticsParameterItemID: videoId, AnalyticsParameterContentType: "incoming_link"])
+//
+//                // send index and videos array to destination VC
+//                self?.videoIndex = 0
+//                self?.videos = videoPostsNoDate
+//
+//                // set videoVC by default to play (used for when videos are opened from a share so that the video doesn't start with blasting audio if set to false)
+//                self?.shouldPlay = true
+//                self?.showVideoControls()
+//                self?.loadFullScreenVideo()
+//            }
+//        })
     }
 
 }
