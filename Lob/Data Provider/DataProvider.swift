@@ -17,10 +17,10 @@ class DataProvider {
     
     private let LOB_ROOT_URL = "https://www.lob.tv"
     
-    public var sportsData: [Sport]?
+    public var sportsData: [String:Sport] = [:]
     
     private init() {
-        sportsData = self.getSportsData()
+        self.getSportsData()
     }
     
     public func getVideoPosts(league: String?, completion: @escaping ([(Date, [VideoPost])]) -> Void)  {
@@ -117,16 +117,16 @@ class DataProvider {
     }
     
     // gets sport data from property list
-    private func getSportsData() -> [Sport] {
-        var sports: [Sport]?
-        
+    private func getSportsData() {
         if let path = Bundle.main.path(forResource: "Sports", ofType: "plist") {
             if let data = try? Data(contentsOf: URL(fileURLWithPath: path)) {
                 let decoder = PropertyListDecoder()
-                sports = try? decoder.decode([Sport].self, from: data)
+                do {
+                    self.sportsData = try decoder.decode([String:Sport].self, from: data)
+                } catch {
+                    print(error)
+                }
             }
         }
-        
-        return sports ?? []
     }
 }

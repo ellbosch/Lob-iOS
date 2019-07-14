@@ -11,6 +11,8 @@ import UIKit
 class SportsListViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITabBarControllerDelegate {
     @IBOutlet weak var tableView: UITableView?
     
+    private var sports: [Sport] = []
+    
     // ensures status bar is visible on this view
     override var prefersStatusBarHidden: Bool {
         return false
@@ -26,6 +28,9 @@ class SportsListViewController: UIViewController, UITableViewDelegate, UITableVi
         
         // removes empty cells
         tableView?.tableFooterView = UIView()
+        
+        // gets sports data
+        getSportData()
     }
     
     override func viewDidAppear(_ animated: Bool) {        
@@ -37,6 +42,12 @@ class SportsListViewController: UIViewController, UITableViewDelegate, UITableVi
             return
         }
         statusBarView.backgroundColor = nil
+    }
+    
+    func getSportData() {
+        for sport in DataProvider.shared.sportsData.values {
+            self.sports.append(sport)
+        }
     }
     
     // delegate class for tab bar forces view to go to root when channel tab selected
@@ -57,7 +68,7 @@ class SportsListViewController: UIViewController, UITableViewDelegate, UITableVi
         switch section {
         // league channels
         case 0:
-            return DataProvider.shared.sportsData?.count ?? 0
+            return DataProvider.shared.sportsData.values.count
         // settings
         case 1:
             return 1
@@ -70,12 +81,12 @@ class SportsListViewController: UIViewController, UITableViewDelegate, UITableVi
         guard let cell: SportsTableViewCell = tableView.dequeueReusableCell(withIdentifier: "SportsTableViewCell", for: indexPath) as? SportsTableViewCell else {
             fatalError("The dequeued cell is not an instance of SportsTableViewCell")
         }
+        
         switch indexPath.section {
         case 0:
-            if let sport = DataProvider.shared.sportsData?[indexPath.row] {
-                cell.sportsLabel?.text = sport.name
-                cell.iconLabel?.image = UIImage(named: sport.iconLabel)
-            }
+            let sport = self.sports[indexPath.row]
+            cell.sportsLabel?.text = sport.name
+            cell.iconLabel?.image = UIImage(named: sport.iconLabel)
         case 1:
             cell.sportsLabel?.text = "Settings"
             cell.iconLabel?.image = UIImage(named: "settings")
@@ -106,9 +117,7 @@ class SportsListViewController: UIViewController, UITableViewDelegate, UITableVi
             self.tableView?.deselectRow(at: selectedRow, animated: true)
     
             // open channel to sport if one is selected
-            if let sport = DataProvider.shared.sportsData?[selectedRow.row] {
-                feedVC.sport = sport
-            }
+            feedVC.sport = self.sports[selectedRow.row]
             
         }
     }

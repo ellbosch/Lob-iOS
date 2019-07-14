@@ -46,7 +46,6 @@ public struct VideoPost: Decodable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.id = try container.decode(String.self, forKey: .id)
         self.title = try container.decode(String.self, forKey: .title)
-        self.league = try container.decode(String.self, forKey: .league)
         self.datePostedRaw = try container.decode(String.self, forKey: .datePostedRaw)
         self.author = try container.decode(String.self, forKey: .author)
         self.redditScore = try container.decode(Int.self, forKey: .redditScore)
@@ -75,6 +74,11 @@ public struct VideoPost: Decodable {
         formatterShort.locale = Locale(identifier: "en_US_POSIX")
         formatterShort.dateFormat = "yyyy M d"
         self.dateShort = formatterShort.date(from: "\(year) \(month) \(day)") ?? Date()
+        
+        // set sport by league
+        let league = try container.decode(String.self, forKey: .league)
+        self.league = league
+//        self.sport = 
     }
     
 }
