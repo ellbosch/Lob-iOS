@@ -20,30 +20,14 @@ class FeedViewController: UIViewController {
     
     var dataSource: FeedDataSource = FeedDataSource()
     var delegate: FeedDelegate = FeedDelegate()
-    
     var sport: Sport?
     
-    private var notification: NSObjectProtocol?
-    
-//    // keeps track of currently playing video
-    var indexPathForPlayingVideo: IndexPath?
-    
-    // keeps track of the indexpaths of visible rows
-    var visibleRows: [IndexPath] = [IndexPath]()
-    
-    // keeps track of observer used to see when video ends
-    var videoEndsObserver: NSObjectProtocol?
 
-    
-    // keep status bar visible
-    override var prefersStatusBarHidden: Bool {
-        return false
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         dataSource.sport = self.sport
+        dataSource.cellDelegate = self
         self.tableView?.dataSource = dataSource
         self.tableView?.delegate = delegate
 
@@ -86,6 +70,11 @@ class FeedViewController: UIViewController {
         return false
     }
     
+    // keep status bar visible
+    override var prefersStatusBarHidden: Bool {
+        return false
+    }
+    
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .default
     }
@@ -122,7 +111,6 @@ class FeedViewController: UIViewController {
             cell.thumbnailView?.image = nil
         }
         
-        self.visibleRows.removeAll()
         self.dataSource.videoPosts.removeAll()
         self.tableView?.reloadData()
     }
@@ -146,7 +134,7 @@ class FeedViewController: UIViewController {
     }
     
     /*****************************************
-     VIDEOPOSTS LOADING
+     INITALIZING FOR LOADING DATA
      *****************************************/
     
     // loads video posts and scrolls to current day. if no sport is selected, the user is viewing "hot" posts.
@@ -163,8 +151,7 @@ class FeedViewController: UIViewController {
             if let tableView = self?.tableView {
                 // play first video if indexPathForPlayingVideo is null
                 let firstIndexPath = IndexPath(row: 0, section:0)
-                let indexPathToPlay = self?.indexPathForPlayingVideo ?? firstIndexPath
-                self?.delegate.playVideo(tableView, forRowAt: indexPathToPlay)
+                self?.delegate.playVideo(tableView, forRowAt: firstIndexPath)
             }
             
             // hide loading indicator
@@ -181,9 +168,6 @@ class FeedViewController: UIViewController {
         // remove table before refresh sequence begins (makes the experience feel nicer since everything gets reloaded anyways
         self.dataSource.videoPosts.removeAll()
         self.tableView?.reloadData()
-        
-        // set index path of last playing video to first so that we don't scroll back on refresh
-        indexPathForPlayingVideo = IndexPath(row: 0, section:0)
     
         initLoadVideoPosts()
         self.tableView?.refreshControl?.endRefreshing()
@@ -219,31 +203,31 @@ extension FeedViewController: UITabBarControllerDelegate {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)
         
-        if segue.identifier == "videoDetailSegue" {
-            if let videoVC = segue.destination as? VideoViewController {
-                if self.indexPathForPlayingVideo != nil {
-                    // send array of videoposts and current index to segue vc
-                    var videoPostsNoDate: [VideoPost] = [VideoPost]()
-                    
-                    for videosForDate in self.dataSource.videoPosts {
-                        let videoPosts = videosForDate.1
-                        videoPostsNoDate.append(contentsOf: videoPosts)
-                    }
-                    videoVC.videos = videoPostsNoDate
-                    
-                    // send index of currently viewed video (index = row + rowsInSection(section-1)
-                    if let videoIndex = self.indexPathForPlayingVideo, let tableView = self.tableView {
-                        videoVC.videoIndex = videoIndex.row
-                        var sectionPtr = 0
-                        while sectionPtr < videoIndex.section {
-                            videoVC.videoIndex += tableView.numberOfRows(inSection: sectionPtr)
-                            sectionPtr += 1
-                        }
-                    }
-                    videoVC.league = self.sport?.name
-                }
-            }
-        }
+//        if segue.identifier == "videoDetailSegue" {
+//            if let videoVC = segue.destination as? VideoViewController {
+//                if self.indexPathForPlayingVideo != nil {
+//                    // send array of videoposts and current index to segue vc
+//                    var videoPostsNoDate: [VideoPost] = [VideoPost]()
+//
+//                    for videosForDate in self.dataSource.videoPosts {
+//                        let videoPosts = videosForDate.1
+//                        videoPostsNoDate.append(contentsOf: videoPosts)
+//                    }
+//                    videoVC.videos = videoPostsNoDate
+//
+//                    // send index of currently viewed video (index = row + rowsInSection(section-1)
+//                    if let videoIndex = self.indexPathForPlayingVideo, let tableView = self.tableView {
+//                        videoVC.videoIndex = videoIndex.row
+//                        var sectionPtr = 0
+//                        while sectionPtr < videoIndex.section {
+//                            videoVC.videoIndex += tableView.numberOfRows(inSection: sectionPtr)
+//                            sectionPtr += 1
+//                        }
+//                    }
+//                    videoVC.league = self.sport?.name
+//                }
+//            }
+//        }
     }
 }
 

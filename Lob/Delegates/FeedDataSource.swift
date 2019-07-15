@@ -14,6 +14,7 @@ class FeedDataSource: NSObject, UITableViewDataSource {
     var allRows: [LinkTableViewCell] = []           // we REALLY need to get rid of this
     var sport: Sport?
     var isMute: Bool = true
+    weak var cellDelegate: FeedCellDelegate?
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cellIdentifier = "LinkTableViewCell"
@@ -21,7 +22,7 @@ class FeedDataSource: NSObject, UITableViewDataSource {
             fatalError("The dequeued cell is not an instance of LinkTableViewCell")
         }
         
-//        cell.delegate = self
+        cell.delegate = cellDelegate
         
         let section = indexPath.section
         
