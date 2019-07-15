@@ -13,7 +13,8 @@ class FeedDataSource: NSObject, UITableViewDataSource {
     var videoPosts: [(Date, [VideoPost])] = []
     var allRows: [LinkTableViewCell] = []           // we REALLY need to get rid of this
     var sport: Sport?
-    var isMute: Bool = true
+    var isMuted: Bool = true
+    
     weak var cellDelegate: FeedCellDelegate?
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -55,7 +56,8 @@ class FeedDataSource: NSObject, UITableViewDataSource {
             
             // show mute button and update volume toggle
             cell.muteToggleButton?.isHidden = false
-            cell.updateMuteControls(isMute: self.isMute)
+            cell.updateMuteControls(isMuted: self.isMuted)
+            cell.playerView?.isMuted = isMuted
         }
         if let playerView = cell.playerView {
             playerView.playerLayer.frame = playerView.bounds

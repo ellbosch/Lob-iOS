@@ -24,6 +24,12 @@ class PlayerView: UIView {
         return layer as! AVPlayerLayer
     }
     
+    var isMuted: Bool? {
+        didSet {
+            player?.isMuted = isMuted ?? true
+        }
+    }
+    
     // Override UIView property
     override static var layerClass: AnyClass {
         return AVPlayerLayer.self

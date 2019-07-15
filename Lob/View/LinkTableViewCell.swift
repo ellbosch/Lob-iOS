@@ -51,17 +51,14 @@ class LinkTableViewCell: UITableViewCell {
         self.playerView?.playerLayer.player?.replaceCurrentItem(with: nil)
     }
     
-    func updateMuteControls(isMute: Bool) {
-        if isMute {
+    func updateMuteControls(isMuted: Bool) {
+        if isMuted {
             self.muteToggleButton?.titleLabel?.font = UIFont.fontAwesome(ofSize: 30, style: .solid)
             self.muteToggleButton?.setTitle(String.fontAwesomeIcon(name: .volumeOff), for: .normal)
         } else {
             self.muteToggleButton?.titleLabel?.font = UIFont.fontAwesome(ofSize: 30, style: .solid)
             self.muteToggleButton?.setTitle(String.fontAwesomeIcon(name: .volumeUp), for: .normal)
         }
-        
-        // this actually mutes or unmutes the video
-        self.playerView?.player?.isMuted = isMute
     }
     
 

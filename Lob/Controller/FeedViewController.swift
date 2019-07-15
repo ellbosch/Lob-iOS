@@ -22,7 +22,6 @@ class FeedViewController: UIViewController {
     var delegate: FeedDelegate = FeedDelegate()
     var sport: Sport?
     
-
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -60,9 +59,6 @@ class FeedViewController: UIViewController {
         
         // load videos by specified view
         initLoadVideoPosts()
-        
-        // add KVO for visiblecells in table
-        self.tableView?.addObserver(self, forKeyPath: "visibleCells", options: NSKeyValueObservingOptions(rawValue: 0), context: nil)
     }
     
     // hide iphone x home indicator in fullscreen mode
@@ -182,19 +178,14 @@ class FeedViewController: UIViewController {
     
     // toggles mute on current video and changes icons
     @IBAction func muteToggleSelect(_ sender: Any) {
-        // toggle mute for current playing video
-        
         // ensures future loaded videos will have mute toggled
-        if self.dataSource.isMute {
-            self.dataSource.isMute = false
-        } else {
-            self.dataSource.isMute = true
-        }
+        self.dataSource.isMuted.toggle()
         
         // update cells that have already loaded
         if let visibleCells = (self.tableView?.visibleCells as? [LinkTableViewCell]) {
             for cell in visibleCells {
-                cell.updateMuteControls(isMute: self.dataSource.isMute)
+                cell.updateMuteControls(isMuted: self.dataSource.isMuted)
+                cell.playerView?.isMuted = self.dataSource.isMuted
             }
         }
     }
