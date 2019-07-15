@@ -18,12 +18,14 @@ class FeedViewController: UIViewController {
     @IBOutlet weak var headerDateLabel: UILabel?
     @IBOutlet weak var errorView: UIView?
     
+    var dataSource: FeedDataSource = FeedDataSource()
+    var delegate: FeedDelegate = FeedDelegate()
+    
     var sport: Sport?
-    let dataSource = FeedDataSource()
     
     private var notification: NSObjectProtocol?
     
-    // keeps track of currently playing video
+//    // keeps track of currently playing video
     var indexPathForPlayingVideo: IndexPath?
     
     // keeps track of the indexpaths of visible rows
@@ -43,7 +45,7 @@ class FeedViewController: UIViewController {
         
         dataSource.sport = self.sport
         self.tableView?.dataSource = dataSource
-        self.tableView?.delegate = self
+        self.tableView?.delegate = delegate
 
         // set title: nil case means we're in hot posts view
         if let sport = self.sport {
@@ -158,36 +160,16 @@ class FeedViewController: UIViewController {
                 self?.errorView?.isHidden = false
             }
             
-            // play first video if indexPathForPlayingVideo is null
-            let firstIndexPath = IndexPath(row: 0, section:0)
-            let indexPathToPlay = self?.indexPathForPlayingVideo ?? firstIndexPath
-            
-            // scroll tableView to video cell if it exists and isn't the first row (which would hide the header if so)
-            if let cell = self?.tableView?.cellForRow(at: indexPathToPlay) as? LinkTableViewCell {
-                if indexPathToPlay != firstIndexPath {
-                    self?.tableView?.scrollToRow(at: indexPathToPlay, at: .top, animated: false)
-                }
-                
-                let indexCount = self?.calculateRows(indexPath: indexPathToPlay) ?? -1
-                let leaguePage = self?.sport?.name ?? "[today view]"
-                cell.loadVideoForCell(isMute: self?.dataSource.isMute ?? true, indexCount: indexCount, leaguePage: leaguePage)
+            if let tableView = self?.tableView {
+                // play first video if indexPathForPlayingVideo is null
+                let firstIndexPath = IndexPath(row: 0, section:0)
+                let indexPathToPlay = self?.indexPathForPlayingVideo ?? firstIndexPath
+                self?.delegate.playVideo(tableView, forRowAt: indexPathToPlay)
             }
             
             // hide loading indicator
             self?.activityIndicator?.stopAnimating()
         })
-    }
-    
-    func calculateRows(indexPath: IndexPath) -> Int {
-        // find 1D index for the now-playing video (use this for analytics to see how far down the table people watch videos)
-        var indexCount: Int = 0
-        if let tableView = self.tableView {
-            for i in stride(from: 0, to: indexPath.section, by: 1) {
-                indexCount += tableView.numberOfRows(inSection: i)
-            }
-            indexCount += indexPath.row + 1
-        }
-        return indexCount
     }
 
     
@@ -231,25 +213,7 @@ class FeedViewController: UIViewController {
     }
 }
 
-
-// MARK-- UITableViewDelegate
-extension FeedViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        // sets table cell indent to 0
-        cell.separatorInset = UIEdgeInsets.zero
-    }
-    
-    // set video to fullscreen on tap, unmute video, and pause all other playing videos
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        self.indexPathForPlayingVideo = indexPath
-        
-        // programmatically call segue to show video detail
-        self.performSegue(withIdentifier: "videoDetailSegue", sender: self)
-    }
-
-}
-
-// MARK-- UITabBarControllerDelegate
+// MARK: UITabBarControllerDelegate
 extension FeedViewController: UITabBarControllerDelegate {
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -283,27 +247,8 @@ extension FeedViewController: UITabBarControllerDelegate {
     }
 }
 
-
-// MARK--ScrollViewController calls
-extension FeedViewController {
-    // play middle(ish) video AFTER scroll drag has ended, but ONLY if user hasn't done a big swipe
-    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        if !decelerate {
-            self.autoplayVideoInTable()
-        }
-    }
-
-    // load video if deceleration ended
-    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        self.autoplayVideoInTable()
-    }
-}
-
-
-// MARK--LinkTableViewCellDelegate
-extension FeedViewController: LinkTableViewCellDelegate {
-    // user selects share button (taken from https://stackoverflow.com/questions/35931946/basic-example-for-sharing-text-or-image-with-uiactivityviewcontroller-in-swift)
-    func shareVideo(videoPost: VideoPost) {
+extension FeedViewController: FeedCellDelegate {
+    func willShareVideo(videoPost: VideoPost) {
         // TODO: separate into new VC
         // analytics
         let league = self.sport?.name ?? "[today view]"

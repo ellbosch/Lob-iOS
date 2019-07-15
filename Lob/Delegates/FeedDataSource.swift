@@ -76,7 +76,6 @@ class FeedDataSource: NSObject, UITableViewDataSource {
         return self.videoPosts[section].1.count
     }
     
-    // TODO: separate into new VC
     // give the table a section header only if we're NOT viewing hot posts
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if self.sport == nil {
@@ -118,4 +117,5 @@ class FeedDataSource: NSObject, UITableViewDataSource {
         return (width, height)
     }
 }
+
 

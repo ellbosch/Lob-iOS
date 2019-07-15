@@ -11,10 +11,10 @@ import AVKit
 import FirebaseAnalytics
 import FontAwesome_swift
 
-// MARK--Delegate for cell that signals share button select
-protocol LinkTableViewCellDelegate {
-    func shareVideo(videoPost: VideoPost)
+protocol FeedCellDelegate: class {
+    func willShareVideo(videoPost: VideoPost)
 }
+
 
 class LinkTableViewCell: UITableViewCell {
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView?
@@ -30,7 +30,7 @@ class LinkTableViewCell: UITableViewCell {
     @IBOutlet weak var leagueLabelIcon: UIImageView?
     @IBOutlet weak var authorButton: RedditAuthorButton?
 
-    var delegate: LinkTableViewCellDelegate?
+    var delegate: FeedCellDelegate?
     var videoPost: VideoPost?
     var play_on: Bool = false
     var isVideoControlsVisible: Bool = false
@@ -51,39 +51,6 @@ class LinkTableViewCell: UITableViewCell {
         self.playerView?.playerLayer.player?.replaceCurrentItem(with: nil)
     }
     
-    func loadVideoForCell(isMute: Bool, indexCount: Int, leaguePage: String, startTime: CMTime? = nil) {
-        // start loading spinner
-        activityIndicator?.startAnimating()
-        
-        guard let videoPost = videoPost, let mp4Url = videoPost.mp4Url else { return }
-        
-        // lazily instantiate asset before async call
-        let player = AVPlayer(playerItem: nil)
-        playerView?.playerLayer.player = player
-        
-        DispatchQueue.global(qos: .background).async { [weak self] in
-            // load avplayer in background thread
-            let item = AVPlayerItem(url: mp4Url)
-            
-            // main thread changes: play video player and set to mute/unmute
-            DispatchQueue.main.async {
-                self?.playerView?.playerLayer.player?.replaceCurrentItem(with: item)
-                self?.updateMuteControls(isMute: isMute)
-                self?.playerView?.player?.play()
-                self?.playerView?.fadeIn()
-                self?.activityIndicator?.stopAnimating()
-            }
-        }
-
-        Analytics.logEvent("videoLoaded", parameters: [
-            AnalyticsParameterItemID: videoPost.id,
-            AnalyticsParameterItemName: videoPost.title,
-            AnalyticsParameterItemCategory: leaguePage,
-            AnalyticsParameterContent: "table",
-            AnalyticsParameterIndex: indexCount
-            ])
-    }
-    
     func updateMuteControls(isMute: Bool) {
         if isMute {
             self.muteToggleButton?.titleLabel?.font = UIFont.fontAwesome(ofSize: 30, style: .solid)
@@ -102,7 +69,7 @@ class LinkTableViewCell: UITableViewCell {
     @IBAction func shareButton(_ sender: Any) {
         // reference delegate to launch share sheet on parent view
         if let delegate = self.delegate, let videoPost = self.videoPost {
-            delegate.shareVideo(videoPost: videoPost)
+            delegate.willShareVideo(videoPost: videoPost)
         }
     }
     
