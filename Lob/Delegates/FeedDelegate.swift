@@ -28,8 +28,8 @@ class FeedDelegate: NSObject, UITableViewDelegate {
         guard let tableView = scrollView as? UITableView else {
             return
         }
-        if !decelerate {
-            autoplayVideo(tableView)
+        if !decelerate, let indexPath = locateIndexToPlayVideo(tableView) {
+            playVideo(tableView, forRowAt: indexPath)
         }
     }
     
@@ -38,8 +38,9 @@ class FeedDelegate: NSObject, UITableViewDelegate {
         guard let tableView = scrollView as? UITableView else {
             return
         }
-        
-        autoplayVideo(tableView)
+        if let indexPath = locateIndexToPlayVideo(tableView) {
+            playVideo(tableView, forRowAt: indexPath)
+        }
     }
     
     // set video to fullscreen on tap, unmute video, and pause all other playing videos
@@ -51,42 +52,6 @@ class FeedDelegate: NSObject, UITableViewDelegate {
 //    }
 }
 extension FeedDelegate {
-    // MARK: checks if video is in correct part of view to play
-    private func autoplayVideo(_ tableView: UITableView) {
-        // see if full screen mode is disabled and new cells have loaded, if yes, toggle autoplay
-        let visibleCells = tableView.visibleCells
-        
-        if !visibleCells.isEmpty {
-            var visibleCellIndexes = [IndexPath]()
-            
-            // get list of visible indexes
-            for cell in visibleCells {
-                if let indexPath = tableView.indexPath(for: cell) {
-                    visibleCellIndexes.append(indexPath)
-                }
-            }
-            
-            // calculate height of header above first cell
-            var headerHeight: CGFloat = 64
-            // add height of iphone x inset (if there is any)
-            if #available(iOS 11.0, *) {
-                headerHeight = tableView.safeAreaInsets.top
-            }
-            
-            // plays top most video that isn't above the header height
-            for ptrIndex in visibleCellIndexes {
-                let rectOfCellInTableView = tableView.rectForRow(at: ptrIndex)
-                let rectOfCellInSuperview = tableView.convert(rectOfCellInTableView, to: tableView.superview)
-                
-                // play video if it's not hidden at the top, OR if it's the last video
-                if rectOfCellInSuperview.origin.y > headerHeight || ptrIndex == visibleCellIndexes.last {
-                    // stops for loop
-                    return playVideo(tableView, forRowAt: ptrIndex)
-                }
-            }
-        }
-    }
-    
     // MARK: play video at specified index
     func playVideo(_ tableView: UITableView, forRowAt indexPath: IndexPath) {
         if let cell = tableView.cellForRow(at: indexPath) as? LinkTableViewCell {
@@ -155,6 +120,46 @@ extension FeedDelegate {
                 cellptr.playerView?.player?.pause()
             }
         }
+    }
+    
+    // MARK: identifies the index for where we play video
+    private func locateIndexToPlayVideo(_ tableView: UITableView) -> IndexPath? {
+        var middleIndex: IndexPath?
+        
+        // see if full screen mode is disabled and new cells have loaded, if yes, toggle autoplay
+        let visibleCells = tableView.visibleCells
+        
+        if !visibleCells.isEmpty {
+            var visibleCellIndexes = [IndexPath]()
+            
+            // get list of visible indexes
+            for cell in visibleCells {
+                if let indexPath = tableView.indexPath(for: cell) {
+                    visibleCellIndexes.append(indexPath)
+                }
+            }
+            
+            // calculate height of header above first cell
+            var headerHeight: CGFloat = 64
+            // add height of iphone x inset (if there is any)
+            if #available(iOS 11.0, *) {
+                headerHeight = tableView.safeAreaInsets.top
+            }
+            
+            // plays top most video that isn't above the header height
+            for ptrIndex in visibleCellIndexes {
+                let rectOfCellInTableView = tableView.rectForRow(at: ptrIndex)
+                let rectOfCellInSuperview = tableView.convert(rectOfCellInTableView, to: tableView.superview)
+                
+                // play video if it's not hidden at the top, OR if it's the last video
+                if rectOfCellInSuperview.origin.y > headerHeight || ptrIndex == visibleCellIndexes.last {
+                    // stops for loop
+                    middleIndex = ptrIndex
+                    break
+                }
+            }
+        }
+        return middleIndex
     }
     
     // MARK: find 1D index for the now-playing video (use this for analytics to see how far down the table people watch videos)

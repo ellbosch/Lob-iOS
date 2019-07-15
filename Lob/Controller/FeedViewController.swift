@@ -177,11 +177,14 @@ class FeedViewController: UIViewController {
     }
     
     /********************************
-     NAVIGATION
+     MUTE TOGGLE
      *********************************/
     
     // toggles mute on current video and changes icons
     @IBAction func muteToggleSelect(_ sender: Any) {
+        // toggle mute for current playing video
+        
+        // ensures future loaded videos will have mute toggled
         if self.dataSource.isMute {
             self.dataSource.isMute = false
         } else {
