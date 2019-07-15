@@ -54,7 +54,7 @@ extension FeedViewController {
                             } else {
                                 let indexCount = self.calculateRows(indexPath: ptrIndex)
                                 let leaguePage = self.sport?.name ?? "[today view]"
-                                cell.loadVideoForCell(isMute: self.isMute, indexCount: indexCount, leaguePage: leaguePage)
+                                cell.loadVideoForCell(isMute: self.dataSource.isMute, indexCount: indexCount, leaguePage: leaguePage)
                             }
                             pauseAllVideosExcept(indexPath: ptrIndex)
                             
@@ -87,24 +87,5 @@ extension FeedViewController {
             }
         }
     }
-    
-    
-    // sets dimensions for elements in cell for table view
-    func setPlayerDimensionsForTableView(width: Int, height: Int) -> (CGFloat, CGFloat) {
-        // sets dimensions for AVPlayerLayer
-        let aspectRatio = CGFloat(height) / CGFloat(width)
-        
-        // set width of video based on device orientation
-        var width = CGFloat(UIScreen.main.bounds.size.width)
-        if UIDevice.current.orientation.isLandscape {
-            width = CGFloat(UIScreen.main.bounds.size.height)
-        }
-        var height = aspectRatio * width
-        // resize video of height is too high
-        if (height > 400) {
-            width = 400 / aspectRatio
-            height = 400
-        }
-        return (width, height)
-    }
+
 }

@@ -13,26 +13,21 @@ import UIKit
 
 
 class FeedViewController: UIViewController {
-    
     @IBOutlet weak var tableView: UITableView?
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView?
     @IBOutlet weak var headerDateLabel: UILabel?
     @IBOutlet weak var errorView: UIView?
     
     var sport: Sport?
-    var videoPosts: [(Date, [VideoPost])] = []
+    let dataSource = FeedDataSource()
     
     private var notification: NSObjectProtocol?
-    
-    // keeps track of global mute control (if users disables mute)
-    var isMute: Bool = true
     
     // keeps track of currently playing video
     var indexPathForPlayingVideo: IndexPath?
     
     // keeps track of the indexpaths of visible rows
     var visibleRows: [IndexPath] = [IndexPath]()
-    var allRows: [LinkTableViewCell] = [LinkTableViewCell]()
     
     // keeps track of observer used to see when video ends
     var videoEndsObserver: NSObjectProtocol?
@@ -46,7 +41,8 @@ class FeedViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.tableView?.dataSource = self
+        dataSource.sport = self.sport
+        self.tableView?.dataSource = dataSource
         self.tableView?.delegate = self
 
         // set title: nil case means we're in hot posts view
@@ -116,7 +112,7 @@ class FeedViewController: UIViewController {
     // null table if view disappears
     override func viewWillDisappear(_ animated: Bool) {       
         // remove all thumbnails and videos from memory
-        for cell in allRows {
+        for cell in self.dataSource.allRows {
             if cell.playerView != nil {
                 // video and pic will get recycled or take up space, so get rid of them
                 cell.playerView?.player?.replaceCurrentItem(with: nil)
@@ -125,7 +121,7 @@ class FeedViewController: UIViewController {
         }
         
         self.visibleRows.removeAll()
-        self.videoPosts.removeAll()
+        self.dataSource.videoPosts.removeAll()
         self.tableView?.reloadData()
     }
     
@@ -154,7 +150,7 @@ class FeedViewController: UIViewController {
     // loads video posts and scrolls to current day. if no sport is selected, the user is viewing "hot" posts.
     private func initLoadVideoPosts() {
         DataProvider.shared.getVideoPosts(league: self.sport?.subreddit, completion: { [weak self] videoPosts in
-            self?.videoPosts = videoPosts
+            self?.dataSource.videoPosts = videoPosts
             self?.tableView?.reloadData()     // necessary to load data in table view
             
             // show error view if there are no posts
@@ -174,7 +170,7 @@ class FeedViewController: UIViewController {
                 
                 let indexCount = self?.calculateRows(indexPath: indexPathToPlay) ?? -1
                 let leaguePage = self?.sport?.name ?? "[today view]"
-                cell.loadVideoForCell(isMute: self?.isMute ?? true, indexCount: indexCount, leaguePage: leaguePage)
+                cell.loadVideoForCell(isMute: self?.dataSource.isMute ?? true, indexCount: indexCount, leaguePage: leaguePage)
             }
             
             // hide loading indicator
@@ -201,7 +197,7 @@ class FeedViewController: UIViewController {
     
     @objc func handleRefresh(_ sender: Any) {
         // remove table before refresh sequence begins (makes the experience feel nicer since everything gets reloaded anyways
-        self.videoPosts.removeAll()
+        self.dataSource.videoPosts.removeAll()
         self.tableView?.reloadData()
         
         // set index path of last playing video to first so that we don't scroll back on refresh
@@ -220,16 +216,16 @@ class FeedViewController: UIViewController {
     
     // toggles mute on current video and changes icons
     @IBAction func muteToggleSelect(_ sender: Any) {
-        if self.isMute {
-            self.isMute = false
+        if self.dataSource.isMute {
+            self.dataSource.isMute = false
         } else {
-            self.isMute = true
+            self.dataSource.isMute = true
         }
         
         // update cells that have already loaded
         if let visibleCells = (self.tableView?.visibleCells as? [LinkTableViewCell]) {
             for cell in visibleCells {
-                cell.updateMuteControls(isMute: self.isMute)
+                cell.updateMuteControls(isMute: self.dataSource.isMute)
             }
         }
     }
@@ -238,59 +234,6 @@ class FeedViewController: UIViewController {
 
 // MARK-- UITableViewDelegate
 extension FeedViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cellIdentifier = "LinkTableViewCell"
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? LinkTableViewCell else {
-            fatalError("The dequeued cell is not an instance of LinkTableViewCell")
-        }
-        
-        cell.delegate = self
-        
-        let section = indexPath.section
-        
-        if !self.videoPosts.isEmpty {
-            let videoPost = self.videoPosts[section].1[indexPath.row]
-            cell.videoPost = videoPost
-            
-            // set cell attributes
-            cell.thumbnailView?.sd_setImage(with: videoPost.thumbnailUrl, placeholderImage: nil)
-            cell.label?.text = videoPost.title
-            
-            // set label for time delta
-            cell.timeLabel?.text = videoPost.datePosted.timeAgoDisplay()
-            
-            // sets dimensions for each cell
-            let dimensions = setPlayerDimensionsForTableView(width: videoPost.width, height: videoPost.height)
-            cell.playerViewWidth?.constant = dimensions.0
-            cell.playerViewHeight?.constant = dimensions.1
-            
-            if let sport = videoPost.sport {
-                cell.leagueLabelIcon?.image = UIImage(named: sport.iconLabel)
-                cell.leagueLabel?.text = sport.name
-            }
-            
-            // set author button
-            cell.authorButton?.setTitle(videoPost.author, for: .normal)
-            
-            // allows icon for clock to have a dark gray tint (rather than default black
-            cell.timeLabelIcon?.image = UIImage(named: "clock")?.withRenderingMode(.alwaysTemplate)
-            
-            // show mute button and update volume toggle
-            cell.muteToggleButton?.isHidden = false
-            cell.updateMuteControls(isMute: self.isMute)
-        }
-        if let playerView = cell.playerView {
-            playerView.playerLayer.frame = playerView.bounds
-        }
-        
-        // we hold a global array of all created cells to release the thumbnail images from memory, since there were leaks
-        if !allRows.contains(cell) {
-            allRows.append(cell)
-        }
-        
-        return cell
-    }
-    
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         // sets table cell indent to 0
         cell.separatorInset = UIEdgeInsets.zero
@@ -306,44 +249,6 @@ extension FeedViewController: UITableViewDelegate {
 
 }
 
-
-// MARK-- UITableViewDataSource
-extension FeedViewController: UITableViewDataSource {
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return self.videoPosts.count
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.videoPosts[section].1.count
-    }
-    
-    // TODO: separate into new VC
-    // give the table a section header only if we're NOT viewing hot posts
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if self.sport == nil {
-            return nil
-        } else {
-            // sets header indent
-            let headerInset: CGFloat = 15
-            tableView.separatorInset = UIEdgeInsets.init(top: 0, left: headerInset, bottom: 0, right: 0)
-            
-            let date = self.videoPosts[section].0
-            let dateFormatter = DateFormatter()
-            dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-            dateFormatter.dateFormat = "MMMM d, YYYY"
-            return dateFormatter.string(from: date)
-        }
-    }
-    
-    
-    // necessary for loading videos in full screen
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return UITableView.automaticDimension
-    }
-    
-}
-
-
 // MARK-- UITabBarControllerDelegate
 extension FeedViewController: UITabBarControllerDelegate {
     // In a storyboard-based application, you will often want to do a little preparation before navigation
@@ -356,7 +261,7 @@ extension FeedViewController: UITabBarControllerDelegate {
                     // send array of videoposts and current index to segue vc
                     var videoPostsNoDate: [VideoPost] = [VideoPost]()
                     
-                    for videosForDate in self.videoPosts {
+                    for videosForDate in self.dataSource.videoPosts {
                         let videoPosts = videosForDate.1
                         videoPostsNoDate.append(contentsOf: videoPosts)
                     }

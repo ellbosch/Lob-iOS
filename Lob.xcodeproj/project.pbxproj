@@ -27,6 +27,7 @@
 		8BCC1F842099346D008BBED0 /* LobAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BCC1F832099346D008BBED0 /* LobAppUITests.swift */; };
 		8BCC1F9420993FFE008BBED0 /* LinkTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BCC1F9320993FFE008BBED0 /* LinkTableViewCell.swift */; };
 		8BCC1F9C20A3D76F008BBED0 /* VideoPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BCC1F9B20A3D76F008BBED0 /* VideoPost.swift */; };
+		8BD012E822DC0EB50075463D /* FeedDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BD012E722DC0EB50075463D /* FeedDataSource.swift */; };
 		8BF2B50622DA6A3F00320A3F /* VideoAutoplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BF2B50522DA6A3F00320A3F /* VideoAutoplay.swift */; };
 		8C03391FCEF7DC50F304E36F /* Pods_LobUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 064A4FD44DC2D4D94D2AA034 /* Pods_LobUITests.framework */; };
 		AF0E7E45B6A2606F1313613D /* Pods_LobTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0DD9BBD18DA4F61F3217E04 /* Pods_LobTests.framework */; };
@@ -81,6 +82,7 @@
 		8BCC1F852099346D008BBED0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8BCC1F9320993FFE008BBED0 /* LinkTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkTableViewCell.swift; sourceTree = "<group>"; };
 		8BCC1F9B20A3D76F008BBED0 /* VideoPost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPost.swift; sourceTree = "<group>"; };
+		8BD012E722DC0EB50075463D /* FeedDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedDataSource.swift; sourceTree = "<group>"; };
 		8BF2B50522DA6A3F00320A3F /* VideoAutoplay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoAutoplay.swift; sourceTree = "<group>"; };
 		8BF55A272282755700B6399C /* Lob.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Lob.entitlements; sourceTree = "<group>"; };
 		AD6D2D93742702ED0F43B333 /* Pods-LobUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LobUITests.release.xcconfig"; path = "Target Support Files/Pods-LobUITests/Pods-LobUITests.release.xcconfig"; sourceTree = "<group>"; };
@@ -128,13 +130,6 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		8B8B142722DA981900611AF3 /* Data */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Data;
-			sourceTree = "<group>";
-		};
 		8BCC1F572099346D008BBED0 = {
 			isa = PBXGroup;
 			children = (
@@ -160,7 +155,7 @@
 		8BCC1F622099346D008BBED0 /* Lob */ = {
 			isa = PBXGroup;
 			children = (
-				8B8B142722DA981900611AF3 /* Data */,
+				8BD012E622DC0EA30075463D /* Delegates */,
 				8BF2B50322DA695900320A3F /* Model */,
 				8BF2B50222DA63DC00320A3F /* View */,
 				8BF2B50122DA5F8800320A3F /* Controller */,
@@ -193,6 +188,14 @@
 				8BCC1F852099346D008BBED0 /* Info.plist */,
 			);
 			path = LobAppUITests;
+			sourceTree = "<group>";
+		};
+		8BD012E622DC0EA30075463D /* Delegates */ = {
+			isa = PBXGroup;
+			children = (
+				8BD012E722DC0EB50075463D /* FeedDataSource.swift */,
+			);
+			path = Delegates;
 			sourceTree = "<group>";
 		};
 		8BF2B50122DA5F8800320A3F /* Controller */ = {
@@ -503,6 +506,7 @@
 				8B135D122115863100B87BA5 /* ThumbnailImageView.swift in Sources */,
 				8BCC1F642099346D008BBED0 /* AppDelegate.swift in Sources */,
 				8BAFE77E22AD8A37009B87CA /* SettingsTableViewCell.swift in Sources */,
+				8BD012E822DC0EB50075463D /* FeedDataSource.swift in Sources */,
 				8BAFE77C22AC657C009B87CA /* SettingsViewController.swift in Sources */,
 				8B52BCB120E897D40062F5AB /* PlayerView.swift in Sources */,
 				B5CDB41221D5B9C600D54353 /* SportsListViewController.swift in Sources */,
