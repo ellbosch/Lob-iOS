@@ -96,15 +96,10 @@ extension FeedDelegate {
             }
             pauseAllVideos(tableView, exceptAt: indexPath)
             
-            // KVO to keep video in loop
-//            self.videoEndsObserver = NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: cell.playerView?.player?.currentItem, queue: .main) { [weak self] _ in
-//                // replay video just for one that's currently playing
-//                if let indexPathForPlayingVideo = self?.indexPathForPlayingVideo,
-//                    let cell = tableView.cellForRow(at: indexPathForPlayingVideo) as? LinkTableViewCell {
-//                    cell.playerView?.player?.seek(to: CMTime.zero)
-//                    cell.playerView?.player?.play()
-//                }
-//            }
+            NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: cell.playerView?.player?.currentItem, queue: .main) { _ in
+                cell.playerView?.player?.seek(to: CMTime.zero)
+                cell.playerView?.player?.play()
+            }
         }
     }
     
