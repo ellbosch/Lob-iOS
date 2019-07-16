@@ -10,13 +10,10 @@ import AVKit
 import FirebaseAnalytics
 import UIKit
 
-//protocol FeedProtocol: class {
-//    func feed(_ feed: Feed, shouldPlayVideoAt indexPath: IndexPath)
-//}
 
 class FeedDelegate: NSObject, UITableViewDelegate {
-    // hold weak reference to parent VC when we need to push new view controller
-    weak var feedVC: UIViewController?
+    weak var feedVC: UIViewController?           // hold weak reference to parent VC when we need to push new view controller
+    var videoLoopObserver: NSObjectProtocol?     // holds reference to videoLoopObserver so only one is created
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         // sets table cell indent to 0
@@ -98,7 +95,11 @@ extension FeedDelegate {
             }
             pauseAllVideos(tableView, exceptAt: indexPath)
             
-            NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: cell.playerView?.player?.currentItem, queue: .main) { _ in
+            // re-init video looper observer--needed to make sure previously loaded videos also don't repeat when called. maintains 1-to-1 mapping.
+            if let observer = videoLoopObserver {
+                NotificationCenter.default.removeObserver(observer)
+            }
+            videoLoopObserver = NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: cell.playerView?.player?.currentItem, queue: .main) { _ in
                 cell.playerView?.player?.seek(to: CMTime.zero)
                 cell.playerView?.player?.play()
             }
