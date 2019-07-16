@@ -264,7 +264,7 @@
                                                     </connections>
                                                 </button>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="l8a-Yq-23l" customClass="ShareButton" customModule="Lob" customModuleProvider="target">
-                                                    <rect key="frame" x="314" y="352" width="46" height="18"/>
+                                                    <rect key="frame" x="300" y="346" width="60" height="30"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                                     <inset key="contentEdgeInsets" minX="-10" minY="0.0" maxX="0.0" maxY="0.0"/>
                                                     <state key="normal" title="Share" image="share">
@@ -283,7 +283,7 @@
                                                     </constraints>
                                                 </imageView>
                                                 <button opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="749" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="tailTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NmN-j4-0CC" customClass="RedditAuthorButton" customModule="Lob" customModuleProvider="target">
-                                                    <rect key="frame" x="88" y="352" width="36" height="18"/>
+                                                    <rect key="frame" x="88" y="346" width="50" height="30"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                                     <inset key="contentEdgeInsets" minX="-10" minY="0.0" maxX="0.0" maxY="0.0"/>
                                                     <state key="normal" title="user" image="reddit">

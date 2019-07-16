@@ -15,8 +15,8 @@ import UIKit
 //}
 
 class FeedDelegate: NSObject, UITableViewDelegate {
-    // keeps track of currently playing video
-//    var indexPathForPlayingVideo: IndexPath?
+    // hold weak reference to parent VC when we need to push new view controller
+    weak var feedVC: UIViewController?
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         // sets table cell indent to 0
@@ -44,12 +44,14 @@ class FeedDelegate: NSObject, UITableViewDelegate {
     }
     
     // set video to fullscreen on tap, unmute video, and pause all other playing videos
-//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        self.indexPathForPlayingVideo = indexPath
-//
-//        // programmatically call segue to show video detail
-//        self.performSegue(withIdentifier: "videoDetailSegue", sender: self)
-//    }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let feedVC = feedVC as? FeedViewController else {
+            return
+        }
+        
+        // programmatically call segue to show video detail
+        feedVC.performSegue(withIdentifier: "videoDetailSegue", sender: self)
+    }
 }
 extension FeedDelegate {
     // MARK: play video at specified index
@@ -158,7 +160,7 @@ extension FeedDelegate {
     }
     
     // MARK: find 1D index for the now-playing video (use this for analytics to see how far down the table people watch videos)
-    private func calculateRows(_ tableView: UITableView, indexPath: IndexPath) -> Int {
+    public func calculateRows(_ tableView: UITableView, indexPath: IndexPath) -> Int {
         var indexCount: Int = 0
 
         for i in stride(from: 0, to: indexPath.section, by: 1) {

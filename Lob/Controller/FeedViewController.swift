@@ -27,6 +27,7 @@ class FeedViewController: UIViewController {
         
         dataSource.sport = self.sport
         dataSource.cellDelegate = self
+        delegate.feedVC = self
         self.tableView?.dataSource = dataSource
         self.tableView?.delegate = delegate
 
@@ -191,37 +192,31 @@ class FeedViewController: UIViewController {
     }
 }
 
+
 // MARK: UITabBarControllerDelegate
 extension FeedViewController: UITabBarControllerDelegate {
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)
         
-//        if segue.identifier == "videoDetailSegue" {
-//            if let videoVC = segue.destination as? VideoViewController {
-//                if self.indexPathForPlayingVideo != nil {
-//                    // send array of videoposts and current index to segue vc
-//                    var videoPostsNoDate: [VideoPost] = [VideoPost]()
-//
-//                    for videosForDate in self.dataSource.videoPosts {
-//                        let videoPosts = videosForDate.1
-//                        videoPostsNoDate.append(contentsOf: videoPosts)
-//                    }
-//                    videoVC.videos = videoPostsNoDate
-//
-//                    // send index of currently viewed video (index = row + rowsInSection(section-1)
-//                    if let videoIndex = self.indexPathForPlayingVideo, let tableView = self.tableView {
-//                        videoVC.videoIndex = videoIndex.row
-//                        var sectionPtr = 0
-//                        while sectionPtr < videoIndex.section {
-//                            videoVC.videoIndex += tableView.numberOfRows(inSection: sectionPtr)
-//                            sectionPtr += 1
-//                        }
-//                    }
-//                    videoVC.league = self.sport?.name
-//                }
-//            }
-//        }
+        if segue.identifier == "videoDetailSegue" {
+            if let videoVC = segue.destination as? VideoViewController {
+                // send array of videoposts and current index to segue vc
+                var videoPostsNoDate: [VideoPost] = [VideoPost]()
+
+                for videosForDate in self.dataSource.videoPosts {
+                    let videoPosts = videosForDate.1
+                    videoPostsNoDate.append(contentsOf: videoPosts)
+                }
+                videoVC.videos = videoPostsNoDate
+
+                // send index of currently viewed video (index = row + rowsInSection(section-1)
+                if let tableView = self.tableView, let indexPath = tableView.indexPathForSelectedRow {
+                    videoVC.videoIndex = delegate.calculateRows(tableView, indexPath: indexPath) - 1
+                    videoVC.league = self.sport?.name
+                }
+            }
+        }
     }
 }
 
