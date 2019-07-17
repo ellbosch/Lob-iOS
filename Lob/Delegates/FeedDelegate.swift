@@ -77,11 +77,13 @@ extension FeedDelegate {
                     
                     // main thread changes: play video player and set to mute/unmute
                     DispatchQueue.main.async { [weak cell] in
-                        cell?.playerView?.playerLayer.player?.replaceCurrentItem(with: item)
-                        cell?.playerView?.player?.play()
-                        cell?.playerView?.fadeIn()
-                        cell?.activityIndicator?.stopAnimating()
-                        cell?.playerView?.player?.isMuted = cell?.playerView?.isMuted ?? false
+                        if let cell = cell {
+                            cell.playerView?.playerLayer.player?.replaceCurrentItem(with: item)
+                            cell.playerView?.player?.play()
+                            cell.playerView?.fadeIn()
+                            cell.activityIndicator?.stopAnimating()
+                            cell.playerView?.player?.isMuted = cell.playerView?.isMuted ?? false
+                        }
                     }
                 }
                 
