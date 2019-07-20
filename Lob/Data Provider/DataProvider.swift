@@ -47,9 +47,6 @@ class DataProvider {
         }
         
         let task = URLSession(configuration: .default).dataTask(with: urlRequest) { (data, response, error) in
-        
-//        Alamofire.request(LOB_ROOT_URL + "/hot_posts").responseJSON { response in
-            // TODO: CREATE NEW JSON DECODER
             guard error == nil else {
                 print("error calling GET on /todos/1")
                 print(error!)
