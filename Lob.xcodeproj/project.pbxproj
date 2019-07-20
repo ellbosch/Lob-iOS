@@ -15,7 +15,6 @@
 		8B76852E2132193300D05240 /* VideoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B76852D2132193300D05240 /* VideoViewController.swift */; };
 		8B7F9FDE20CDA28600C666B8 /* SportsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B7F9FDD20CDA28600C666B8 /* SportsTableViewCell.swift */; };
 		8B803651227E3770009A3EB6 /* DataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B803650227E3770009A3EB6 /* DataProvider.swift */; };
-		8B84CD4520CA322E00A4E598 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8B84CD4420CA322E00A4E598 /* GoogleService-Info.plist */; };
 		8B8B142622DA934000611AF3 /* Sport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B8B142522DA934000611AF3 /* Sport.swift */; };
 		8B8B142922DA9DE500611AF3 /* Sports.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8B8B142822DA9DE500611AF3 /* Sports.plist */; };
 		8BAFE77C22AC657C009B87CA /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BAFE77B22AC657C009B87CA /* SettingsViewController.swift */; };
@@ -29,6 +28,7 @@
 		8BCC1F9C20A3D76F008BBED0 /* VideoPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BCC1F9B20A3D76F008BBED0 /* VideoPost.swift */; };
 		8BD012E822DC0EB50075463D /* FeedDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BD012E722DC0EB50075463D /* FeedDataSource.swift */; };
 		8BD012EE22DC3AC40075463D /* FeedDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BD012ED22DC3AC40075463D /* FeedDelegate.swift */; };
+		8BDD48F122E2A4FD00579712 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8BDD48F022E2A4FD00579712 /* GoogleService-Info.plist */; };
 		8C03391FCEF7DC50F304E36F /* Pods_LobUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 064A4FD44DC2D4D94D2AA034 /* Pods_LobUITests.framework */; };
 		AF0E7E45B6A2606F1313613D /* Pods_LobTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0DD9BBD18DA4F61F3217E04 /* Pods_LobTests.framework */; };
 		B5CDB41221D5B9C600D54353 /* SportsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5CDB41121D5B9C600D54353 /* SportsListViewController.swift */; };
@@ -64,7 +64,6 @@
 		8B76852D2132193300D05240 /* VideoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoViewController.swift; sourceTree = "<group>"; };
 		8B7F9FDD20CDA28600C666B8 /* SportsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsTableViewCell.swift; sourceTree = "<group>"; };
 		8B803650227E3770009A3EB6 /* DataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataProvider.swift; sourceTree = "<group>"; };
-		8B84CD4420CA322E00A4E598 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		8B8B142522DA934000611AF3 /* Sport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sport.swift; sourceTree = "<group>"; };
 		8B8B142822DA9DE500611AF3 /* Sports.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Sports.plist; sourceTree = "<group>"; };
 		8BAFE77B22AC657C009B87CA /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
@@ -84,6 +83,7 @@
 		8BCC1F9B20A3D76F008BBED0 /* VideoPost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPost.swift; sourceTree = "<group>"; };
 		8BD012E722DC0EB50075463D /* FeedDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedDataSource.swift; sourceTree = "<group>"; };
 		8BD012ED22DC3AC40075463D /* FeedDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedDelegate.swift; sourceTree = "<group>"; };
+		8BDD48F022E2A4FD00579712 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		8BF55A272282755700B6399C /* Lob.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Lob.entitlements; sourceTree = "<group>"; };
 		AD6D2D93742702ED0F43B333 /* Pods-LobUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LobUITests.release.xcconfig"; path = "Target Support Files/Pods-LobUITests/Pods-LobUITests.release.xcconfig"; sourceTree = "<group>"; };
 		B0DD9BBD18DA4F61F3217E04 /* Pods_LobTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LobTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -166,8 +166,8 @@
 				8BCC1F6A2099346D008BBED0 /* Assets.xcassets */,
 				8BCC1F6C2099346D008BBED0 /* LaunchScreen.storyboard */,
 				8BCC1F6F2099346D008BBED0 /* Info.plist */,
-				8B84CD4420CA322E00A4E598 /* GoogleService-Info.plist */,
 				8B8B142822DA9DE500611AF3 /* Sports.plist */,
+				8BDD48F022E2A4FD00579712 /* GoogleService-Info.plist */,
 			);
 			path = Lob;
 			sourceTree = "<group>";
@@ -372,8 +372,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				8BCC1F6E2099346D008BBED0 /* LaunchScreen.storyboard in Resources */,
-				8B84CD4520CA322E00A4E598 /* GoogleService-Info.plist in Resources */,
 				8B8B142922DA9DE500611AF3 /* Sports.plist in Resources */,
+				8BDD48F122E2A4FD00579712 /* GoogleService-Info.plist in Resources */,
 				8BCC1F6B2099346D008BBED0 /* Assets.xcassets in Resources */,
 				8BCC1F692099346D008BBED0 /* Main.storyboard in Resources */,
 			);
