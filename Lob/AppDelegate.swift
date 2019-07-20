@@ -6,11 +6,9 @@
 //  Copyright © 2018 Elliot Boschwitz. All rights reserved.
 //
 
-import UIKit
-import Firebase
-import Alamofire
-import SwiftyJSON
 import AVKit
+import Firebase
+import UIKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {

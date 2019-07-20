@@ -1,5 +1,4 @@
 PODS:
-  - Alamofire (4.8.2)
   - Firebase (5.20.2):
     - Firebase/Core (= 5.20.2)
   - Firebase/Core (5.20.2):
@@ -56,18 +55,14 @@ PODS:
   - SDWebImage (5.0.2):
     - SDWebImage/Core (= 5.0.2)
   - SDWebImage/Core (5.0.2)
-  - SwiftyJSON (5.0.0)
 
 DEPENDENCIES:
-  - Alamofire
   - Firebase
   - FontAwesome.swift
   - SDWebImage
-  - SwiftyJSON
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
-    - Alamofire
     - Firebase
     - FirebaseAnalytics
     - FirebaseCore
@@ -77,10 +72,8 @@ SPEC REPOS:
     - GoogleUtilities
     - nanopb
     - SDWebImage
-    - SwiftyJSON
 
 SPEC CHECKSUMS:
-  Alamofire: ae5c501addb7afdbb13687d7f2f722c78734c2d3
   Firebase: 0c8cf33f266410c61ab3e2265cfa412200351d9c
   FirebaseAnalytics: ece1aa57a4f43c64d53a648b5a5e05151aae947b
   FirebaseCore: f1a9a8be1aee4bf71a2fc0f4096df6788bdfda61
@@ -90,8 +83,7 @@ SPEC CHECKSUMS:
   GoogleUtilities: 04fce34bcd5620c1ee76fb79172105c74a4df335
   nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
   SDWebImage: 6764b5fa0f73c203728052955dbefa2bf1f33282
-  SwiftyJSON: 36413e04c44ee145039d332b4f4e2d3e8d6c4db7
 
-PODFILE CHECKSUM: db3a77c2b361f047f425fcecf1570cb9adb47f21
+PODFILE CHECKSUM: 9fadcb087fe45185230da653771587d12aa320a2
 
 COCOAPODS: 1.6.1

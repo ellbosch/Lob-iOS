@@ -6,9 +6,7 @@ target 'Lob' do
   use_frameworks!
 
   # Pods for Lob
-  pod 'Alamofire'
   pod 'Firebase'
-  pod 'SwiftyJSON'
   pod 'FontAwesome.swift'
   pod 'SDWebImage'
 
