@@ -26,32 +26,23 @@ class DataProvider {
         case missingData = "Error: no data found."
         case jsonDecodeError = "Error: JSON couldn't be decoded for network call."
     }
-    
 
     // MARK: - When DataProvider class is initialized, load sport data
     private init() {
         self.getSportsData()
     }
     
-    
+    // MARK: - API to FeedVC
     public func getVideoPosts(sport: Sport?, success: (([(Date, [VideoPost])]) -> Void)? = nil, fail: ((DataProviderError) -> Void)? = nil)  {
         guard let urlRequest = buildURL(from: sport) else {
             fail?(DataProviderError.missingUrl)
             return
         }
-        
-        makeRequest(urlRequest: urlRequest, success: success, fail: fail)
+        makeRequest(urlRequest: urlRequest, sport: sport, success: success, fail: fail)
     }
     
-    // MARK: - builds URL for get requests depending on whether we have nil sport
-    private func buildURL(from sport: Sport?) -> URL? {
-        guard let sport = sport else { return URL(string: LOB_ROOT_URL + "/hot_posts") }
-        return URL(string: LOB_ROOT_URL + "/new/\(sport.subreddit)")
-    }
-
     // MARK: - Request call.
-    private func makeRequest(urlRequest: URL, success: (([(Date, [VideoPost])]) -> Void)? = nil, fail: ((DataProviderError) -> Void)? = nil) {
-        
+    private func makeRequest(urlRequest: URL, sport: Sport? = nil, success: (([(Date, [VideoPost])]) -> Void)? = nil, fail: ((DataProviderError) -> Void)? = nil) {
         let task = URLSession(configuration: .default).dataTask(with: urlRequest) { (data, response, error) in
             // make sure no error was returned
             guard error == nil else {
@@ -65,11 +56,33 @@ class DataProvider {
                 return
             }
             
-            let decoder = JSONDecoder()
             do {
+                let videoPosts = try self.parseJSON(for: responseData, sport: sport)
+                let videoPostsSorted = self.videoPostsSorted(videoPosts, sortKey: { $0.hotScore > $1.hotScore })
+                
+                // request was successful
+                success?(videoPostsSorted)
+            } catch {
+                fail?(DataProviderError.jsonDecodeError)
+            }
+        }
+        task.resume()
+    }
+    
+    // MARK: - Builds URL for get requests depending on whether we have nil sport
+    private func buildURL(from sport: Sport?) -> URL? {
+        guard let sport = sport else { return URL(string: LOB_ROOT_URL + "/hot_posts") }
+        return URL(string: LOB_ROOT_URL + "/new/\(sport.subreddit)")
+    }
+    
+    // MARK: - Parses JSON given a particular sport
+    private func parseJSON(for responseData: Data, sport: Sport?) throws -> [VideoPost] {
+        let decoder = JSONDecoder()
+        do {
+            if sport == nil {
+                // decode requests for hot posts
                 guard let postDataPerSport = try decoder.decode([String:[String:[VideoPost]]].self, from: responseData)["results"] else {
-                    fail?(DataProviderError.jsonDecodeError)
-                    return
+                    throw DataProviderError.jsonDecodeError
                 }
                 
                 // extract videopost data and put in dictionary by date
@@ -77,55 +90,18 @@ class DataProvider {
                 for postData in postDataPerSport.values {
                     videoPosts = videoPosts + postData
                 }
-                let videoPostsSorted = self.videoPostsSorted(videoPosts, sortKey: { $0.hotScore > $1.hotScore })
-
-                // request was successful
-                success?(videoPostsSorted)
-            } catch {
-                print(error)
-                fail?(DataProviderError.jsonDecodeError)
-            }
-        }
-        task.resume()
-    }
-    
-    // MARK: - API call for getting videos by sport
-    private func getVideoPostsForSport(sport: String, success: (([(Date, [VideoPost])]) -> Void)? = nil, fail: ((DataProviderError) -> Void)? = nil) {
-        guard let urlRequest = URL(string: LOB_ROOT_URL + "/new/\(sport)") else {
-            fail?(DataProviderError.missingUrl)
-            return
-        }
-
-        let task = URLSession(configuration: .default).dataTask(with: urlRequest) { (data, response, error) in
-            // make sure no error was returned
-            guard error == nil else {
-                print(error!)
-                fail?(DataProviderError.requestFailed)
-                return
-            }
-            // make sure we have valid response
-            guard let responseData: Data = data else {
-                fail?(DataProviderError.missingData)
-                return
-            }
-
-            // parse valid responseData
-            let decoder = JSONDecoder()
-            do {
+                return videoPosts
+            } else {
+                // decode request for anything else {
                 guard let videoPosts: [VideoPost] = try decoder.decode([String:[VideoPost]].self, from: responseData)["results"] else {
-                    fail?(DataProviderError.jsonDecodeError)
-                    return
+                    throw DataProviderError.jsonDecodeError
                 }
-                let videoPostsSorted = self.videoPostsSorted(videoPosts, sortKey: { $0.datePosted > $1.datePosted })
-                
-                // request was successful
-                success?(videoPostsSorted)
-            } catch {
-                print(error)
-                fail?(DataProviderError.jsonDecodeError)
+                return videoPosts
             }
+        } catch {
+            print(error)
+            throw DataProviderError.jsonDecodeError
         }
-        task.resume()
     }
     
     // MARK: - Sorts video posts by specified sort key
