@@ -136,24 +136,31 @@ class FeedViewController: UIViewController {
     
     // loads video posts and scrolls to current day. if no sport is selected, the user is viewing "hot" posts.
     private func initLoadVideoPosts() {
-        DataProvider.shared.getVideoPosts(league: self.sport?.subreddit, completion: { [weak self] videoPosts in
-            self?.dataSource.videoPosts = videoPosts
-            self?.tableView?.reloadData()     // necessary to load data in table view
-            
-            // show error view if there are no posts
-            if videoPosts.isEmpty {
-                self?.errorView?.isHidden = false
+        DataProvider.shared.getVideoPosts(league: self.sport?.subreddit,
+          success: { [weak self] response in
+            DispatchQueue.main.async {
+                self?.dataSource.videoPosts = response
+                self?.tableView?.reloadData()     // necessary to load data in table view
+                
+                // show error view if there are no posts
+                if response.isEmpty {
+                    self?.errorView?.isHidden = false
+                }
+                
+                if let tableView = self?.tableView {
+                    // play first video if indexPathForPlayingVideo is null
+                    let firstIndexPath = IndexPath(row: 0, section:0)
+                    self?.delegate.playVideo(tableView, forRowAt: firstIndexPath)
+                }
+                
+                // hide loading indicator
+                self?.activityIndicator?.stopAnimating()
             }
-            
-            if let tableView = self?.tableView {
-                // play first video if indexPathForPlayingVideo is null
-                let firstIndexPath = IndexPath(row: 0, section:0)
-                self?.delegate.playVideo(tableView, forRowAt: firstIndexPath)
-            }
-            
-            // hide loading indicator
-            self?.activityIndicator?.stopAnimating()
-        })
+        }, fail: { error in
+            Analytics.logEvent("networkFailed", parameters: [ AnalyticsParameterItemCategory: error ])
+            print(error)
+        }
+      )
     }
 
     
@@ -229,7 +236,8 @@ extension FeedViewController: FeedCellDelegate {
         Analytics.logEvent(AnalyticsEventShare, parameters: [
             AnalyticsParameterItemCategory: league,
             AnalyticsParameterItemID: videoPost.id,
-            AnalyticsParameterContentType: "outgoing_link"])
+            AnalyticsParameterContentType: "outgoing_link"]
+        )
         
         // construct url to lob.tv
         let videoUrl = URL(string: "https://lob.tv/video/\(videoPost.id)/")
