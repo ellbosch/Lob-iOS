@@ -136,7 +136,7 @@ class FeedViewController: UIViewController {
     
     // loads video posts and scrolls to current day. if no sport is selected, the user is viewing "hot" posts.
     private func initLoadVideoPosts() {
-        DataProvider.shared.getVideoPosts(league: self.sport?.subreddit,
+        DataProvider.shared.getVideoPosts(sport: self.sport,
           success: { [weak self] response in
             DispatchQueue.main.async {
                 self?.dataSource.videoPosts = response

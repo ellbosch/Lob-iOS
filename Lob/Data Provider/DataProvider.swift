@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 
+
 // MARK: - Network singleton layer
 class DataProvider {
     
@@ -18,7 +19,7 @@ class DataProvider {
     
     public var sportsData: [String:Sport] = [:]
     
-    // custom error types
+    // MARK: - DataProviderError enum
     enum DataProviderError: String, Error {
         case missingUrl = "Error: no URL found."
         case requestFailed = "Error: API call failed."
@@ -26,25 +27,30 @@ class DataProvider {
         case jsonDecodeError = "Error: JSON couldn't be decoded for network call."
     }
     
+
+    // MARK: - When DataProvider class is initialized, load sport data
     private init() {
         self.getSportsData()
     }
     
-    public func getVideoPosts(league: String?, success: (([(Date, [VideoPost])]) -> Void)? = nil, fail: ((DataProviderError) -> Void)? = nil)  {
-        if let league = league {
-            getVideoPostsForSport(sport: league, success: success, fail: fail)
-        } else {
-            getHotVideoPosts(success: success, fail: fail)
-        }
-
-    }
-
-    // MARK: - API call for hot posts
-    private func getHotVideoPosts(success: (([(Date, [VideoPost])]) -> Void)? = nil, fail: ((DataProviderError) -> Void)? = nil) {
-        guard let urlRequest = URL(string: LOB_ROOT_URL + "/hot_posts") else {
+    
+    public func getVideoPosts(sport: Sport?, success: (([(Date, [VideoPost])]) -> Void)? = nil, fail: ((DataProviderError) -> Void)? = nil)  {
+        guard let urlRequest = buildURL(from: sport) else {
             fail?(DataProviderError.missingUrl)
             return
         }
+        
+        makeRequest(urlRequest: urlRequest, success: success, fail: fail)
+    }
+    
+    // MARK: - builds URL for get requests depending on whether we have nil sport
+    private func buildURL(from sport: Sport?) -> URL? {
+        guard let sport = sport else { return URL(string: LOB_ROOT_URL + "/hot_posts") }
+        return URL(string: LOB_ROOT_URL + "/new/\(sport.subreddit)")
+    }
+
+    // MARK: - Request call.
+    private func makeRequest(urlRequest: URL, success: (([(Date, [VideoPost])]) -> Void)? = nil, fail: ((DataProviderError) -> Void)? = nil) {
         
         let task = URLSession(configuration: .default).dataTask(with: urlRequest) { (data, response, error) in
             // make sure no error was returned
