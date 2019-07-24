@@ -7,8 +7,7 @@
 //
 
 import XCTest
-//import Alamofire
-//import SwiftyJSON
+@testable import Lob
 
 class UnitTesting: XCTestCase {
 
@@ -19,31 +18,17 @@ class UnitTesting: XCTestCase {
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
+    
+    // MARK: - Tests VideoPost class
+//    func testVideoPost() {
+//        let videoPost = VideoPost(
+//    }
 
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        
-//        var json: JSON!
-//        Alamofire.request("https://www.lob.tv/hot_postsss").responseJSON { response in
-//            XCTAssertTrue(!response.result.isSuccess)
-//
-//            if response.data != nil {
-//                do {
-//                    json = try JSON(data: response.data!)["results"]
-//                } catch {
-//                    XCTFail()
-//                }
-//            } else {
-//                XCTFail()
-//            }
-//        }
-//        XCTAssertTrue(json != nil)
-//        if json != nil {
-//            XCTAssertTrue(json.count > 0)
-//        }
-//        print("JSON: \(json)")
-    }
+    // MARK: - DataProvider helper call
+//    func testBuildUrl() {
+//        let url = DataProvider.shared.buildURL(nil)
+//        print(url)
+//    }
 
 //    func testPerformanceExample() {
 //        // This is an example of a performance test case.

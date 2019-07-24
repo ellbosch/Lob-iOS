@@ -70,7 +70,7 @@ class DataProvider {
     }
     
     // MARK: - Builds URL for get requests depending on whether we have nil sport
-    private func buildURL(from sport: Sport?) -> URL? {
+    public func buildURL(from sport: Sport?) -> URL? {
         guard let sport = sport else { return URL(string: LOB_ROOT_URL + "/hot_posts") }
         return URL(string: LOB_ROOT_URL + "/new/\(sport.subreddit)")
     }
