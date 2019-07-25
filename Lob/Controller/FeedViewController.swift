@@ -158,7 +158,7 @@ class FeedViewController: UIViewController {
             }
         }, fail: { error in
             Analytics.logEvent("networkFailed", parameters: [ AnalyticsParameterItemCategory: error ])
-            print(error)
+            print(error.localizedDescription)
         }
       )
     }

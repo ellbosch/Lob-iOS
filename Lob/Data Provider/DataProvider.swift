@@ -26,6 +26,8 @@ class DataProvider {
         case missingData = "Error: no data found."
         case jsonDecodeError = "Error: JSON couldn't be decoded for network call."
         case noHotScoreError = "Error: no hot score was determined."
+        case noDatetimeError = "Error: no datetime was determined."
+        case uknownDataProcessingError = "Error: occured either with JSON decode or sort." // THIS SHOULDN'T HAPPEN
     }
 
     // MARK: - When DataProvider class is initialized, load sport data
@@ -59,12 +61,16 @@ class DataProvider {
             
             do {
                 let videoPosts = try self.parseJSON(for: responseData, sport: sport)
-                let videoPostsSorted = self.getVideoPostsSorted(videoPosts, for: sport)
+                let videoPostsSorted = try self.getVideoPostsSorted(videoPosts, for: sport)
                 
                 // request was successful
                 success?(videoPostsSorted)
             } catch {
-                fail?(DataProviderError.jsonDecodeError)
+                guard let dataProviderError = error as? DataProviderError else {
+                    fail?(DataProviderError.uknownDataProcessingError)
+                    return
+                }
+                fail?(dataProviderError)
             }
         }
         task.resume()
@@ -106,7 +112,7 @@ class DataProvider {
     }
     
     // MARK: - Sorts video posts by specified sort key
-    private func getVideoPostsSorted(_ videoPosts: [VideoPost], for sport: Sport?) -> [(Date, [VideoPost])] {
+    private func getVideoPostsSorted(_ videoPosts: [VideoPost], for sport: Sport?) throws -> [(Date, [VideoPost])] {
         var videoPostsByDate: [Date: [VideoPost]] = [:]
         var videoPostsSorted: [(Date, [VideoPost])] = []
         
@@ -124,18 +130,19 @@ class DataProvider {
         }
         // sort videos
         for videos in videoPostsByDate {
-            let videosSorted = videos.value.sorted(by: getter)
-            // overwrite old array
-            videoPostsByDate[videos.key] = videosSorted
+            do {
+                let videosSorted = try videos.value.sorted(by: getter)
+                // overwrite old array
+                videoPostsByDate[videos.key] = videosSorted
+
+                // sort dates
+                let sortedKeys = Array(videoPostsByDate.keys).sorted(by: >)
+                for key in sortedKeys {
+                    let tuple = (key, videoPostsByDate[key]!)
+                    videoPostsSorted.append(tuple)
+                }
+            } catch { throw error }
         }
-        
-        // sort dates
-        let sortedKeys = Array(videoPostsByDate.keys).sorted(by: >)
-        for key in sortedKeys {
-            let tuple = (key, videoPostsByDate[key]!)
-            videoPostsSorted.append(tuple)
-        }
-        
         return videoPostsSorted
     }
     
@@ -154,13 +161,25 @@ class DataProvider {
     }
     
     // MARK: - Determines sort key given a sport's VC
-    private func determineSortKey(for sport: Sport?) -> (VideoPost, VideoPost) -> Bool {
+    private func determineSortKey(for sport: Sport?) -> (VideoPost, VideoPost) throws -> Bool {
         if sport != nil {
             // sort by date if view is for specific sport
-            return { $0.getDatePostedLong()! > $1.getDatePostedLong()! }
+            return {
+                if let datePosted0 = $0.getDatePostedLong(), let datePosted1 = $1.getDatePostedLong() {
+                    return datePosted0 > datePosted1
+                } else {
+                    throw DataProviderError.noDatetimeError
+                }
+            }
         } else {
             // sort by hot score if home view
-            return { $0.hotScore! > $1.hotScore! }
+            return {
+                if let hotScore0 = $0.hotScore, let hotScore1 = $1.hotScore {
+                    return hotScore0 > hotScore1
+                } else {
+                    throw DataProviderError.noHotScoreError
+                }
+            }
         }
     }
 }
