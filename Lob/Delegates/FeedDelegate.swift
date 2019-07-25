@@ -65,7 +65,7 @@ extension FeedDelegate {
                 // start loading spinner
                 cell.activityIndicator?.startAnimating()
                 
-                guard let videoPost = cell.videoPost, let mp4Url = videoPost.mp4Url else { return }
+                guard let videoPost = cell.videoPost, let mp4Url = URL(string: videoPost.mp4UrlRaw) else { return }
                 
                 // lazily instantiate asset before async call
                 let player = AVPlayer(playerItem: nil)
@@ -88,7 +88,7 @@ extension FeedDelegate {
                 Analytics.logEvent("videoLoaded", parameters: [
                     AnalyticsParameterItemID: videoPost.id,
                     AnalyticsParameterItemName: videoPost.title,
-                    AnalyticsParameterItemCategory: videoPost.sport?.name ?? "",
+                    AnalyticsParameterItemCategory: videoPost.getSport() ?? "",
                     AnalyticsParameterContent: "table",
                     AnalyticsParameterIndex: calculateRows(tableView, indexPath: indexPath)
                 ])

@@ -69,10 +69,10 @@ class LinkTableViewCell: UITableViewCell {
             delegate.willShareVideo(videoPost: videoPost)
         }
     }
-    
+
     // button for opening reddit page
     @IBAction func authorButtonSelect(_ sender: Any) {
-        if let url = videoPost?.redditCommentsUrl {
+        if let videoPost = videoPost, let url = URL(string: videoPost.redditCommentsUrlRaw) {
             UIApplication.shared.open(url, options: [:])            
         }
     }

@@ -23,12 +23,12 @@ struct VideoPost: Codable {
     var thumbnailUrlRaw: String
     var height: Int
     var width: Int
-    var hotScore: Float
+    var hotScore: Float?
     
     private enum CodingKeys: String, CodingKey {
         case id
         case title
-        case subreddit
+        case subreddit = "league"
         case datePostedRaw = "date_posted"
         case author
         case redditScore = "reddit_score"

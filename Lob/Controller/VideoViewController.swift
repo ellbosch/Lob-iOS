@@ -88,8 +88,8 @@ class VideoViewController: UIViewController {
     
     func loadFullScreenVideo(slideDirection: String = "") {
         guard let videoPost: VideoPost = videos?[videoIndex],
-            let thumbnailUrl = videoPost.thumbnailUrl,
-            let mp4Url = videoPost.mp4Url else {
+            let thumbnailUrl = URL(string: videoPost.thumbnailUrlRaw),
+            let mp4Url = URL(string: videoPost.mp4UrlRaw) else {
                 return
         }
         

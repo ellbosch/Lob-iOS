@@ -25,6 +25,7 @@ class DataProvider {
         case requestFailed = "Error: API call failed."
         case missingData = "Error: no data found."
         case jsonDecodeError = "Error: JSON couldn't be decoded for network call."
+        case noHotScoreError = "Error: no hot score was determined."
     }
 
     // MARK: - When DataProvider class is initialized, load sport data
@@ -58,7 +59,7 @@ class DataProvider {
             
             do {
                 let videoPosts = try self.parseJSON(for: responseData, sport: sport)
-                let videoPostsSorted = self.videoPostsSorted(videoPosts, sortKey: { $0.hotScore > $1.hotScore })
+                let videoPostsSorted = self.getVideoPostsSorted(videoPosts, for: sport)
                 
                 // request was successful
                 success?(videoPostsSorted)
@@ -105,15 +106,20 @@ class DataProvider {
     }
     
     // MARK: - Sorts video posts by specified sort key
-    private func videoPostsSorted(_ videoPosts: [VideoPost], sortKey getter: (VideoPost, VideoPost) -> Bool) -> [(Date, [VideoPost])] {
+    private func getVideoPostsSorted(_ videoPosts: [VideoPost], for sport: Sport?) -> [(Date, [VideoPost])] {
         var videoPostsByDate: [Date: [VideoPost]] = [:]
         var videoPostsSorted: [(Date, [VideoPost])] = []
         
+        // determine sort key
+        let getter = determineSortKey(for: sport)
+        
         for videoPost in videoPosts {
-            if videoPostsByDate[videoPost.dateShort] != nil {
-                videoPostsByDate[videoPost.dateShort]?.append(videoPost)
-            } else {
-                videoPostsByDate[videoPost.dateShort] = [videoPost]
+            if let dateShort = videoPost.getDatePostedShort() {
+                if videoPostsByDate[dateShort] != nil {
+                    videoPostsByDate[dateShort]?.append(videoPost)
+                } else {
+                    videoPostsByDate[dateShort] = [videoPost]
+                }
             }
         }
         // sort videos
@@ -144,6 +150,17 @@ class DataProvider {
                     print(error)
                 }
             }
+        }
+    }
+    
+    // MARK: - Determines sort key given a sport's VC
+    private func determineSortKey(for sport: Sport?) -> (VideoPost, VideoPost) -> Bool {
+        if sport != nil {
+            // sort by date if view is for specific sport
+            return { $0.getDatePostedLong()! > $1.getDatePostedLong()! }
+        } else {
+            // sort by hot score if home view
+            return { $0.hotScore! > $1.hotScore! }
         }
     }
 }

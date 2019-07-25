@@ -32,18 +32,22 @@ class FeedDataSource: NSObject, UITableViewDataSource {
             cell.videoPost = videoPost
             
             // set cell attributes
-            cell.thumbnailView?.sd_setImage(with: videoPost.thumbnailUrl, placeholderImage: nil)
+            if let thumbnailUrl = URL(string: videoPost.thumbnailUrlRaw) {
+                cell.thumbnailView?.sd_setImage(with: thumbnailUrl, placeholderImage: nil)
+            }
             cell.label?.text = videoPost.title
             
             // set label for time delta
-            cell.timeLabel?.text = videoPost.datePosted.timeAgoDisplay()
+            if let datePosted = videoPost.getDatePostedLong() {
+                cell.timeLabel?.text = datePosted.timeAgoDisplay()
+            }
             
             // sets dimensions for each cell
             let dimensions = setPlayerDimensionsForTableView(width: videoPost.width, height: videoPost.height)
             cell.playerViewWidth?.constant = dimensions.0
             cell.playerViewHeight?.constant = dimensions.1
             
-            if let sport = videoPost.sport {
+            if let sport = videoPost.getSport() {
                 cell.leagueLabelIcon?.image = UIImage(named: sport.iconLabel)
                 cell.leagueLabel?.text = sport.name
             }
