@@ -362,7 +362,6 @@
                         <outlet property="activityIndicator" destination="YtA-2G-nu8" id="lqV-8F-576"/>
                         <outlet property="errorView" destination="uyg-Ys-rfF" id="ZPW-IP-wTf"/>
                         <outlet property="tableView" destination="Wrr-sg-2aK" id="f2j-M2-uNi"/>
-                        <segue destination="mYP-L2-r9H" kind="showDetail" identifier="videoDetailSegue" id="C8N-vk-0Xx"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7Zf-sZ-Pzo" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -778,7 +777,6 @@
                                             <outlet property="thumbnailView" destination="Lwv-OK-TuN" id="rr6-Ti-tAu"/>
                                             <outlet property="timeLabel" destination="SAU-Sv-Buf" id="xko-m7-YvS"/>
                                             <outlet property="timeLabelIcon" destination="oWD-pz-2qx" id="e8r-RJ-bq2"/>
-                                            <segue destination="mYP-L2-r9H" kind="showDetail" identifier="videoDetailSegue" id="fX7-Jc-s10"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -821,7 +819,4 @@
         <image name="share" width="30" height="30"/>
         <image name="sun" width="30" height="30"/>
     </resources>
-    <inferredMetricsTieBreakers>
-        <segue reference="C8N-vk-0Xx"/>
-    </inferredMetricsTieBreakers>
 </document>

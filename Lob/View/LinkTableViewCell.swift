@@ -32,7 +32,6 @@ class LinkTableViewCell: UITableViewCell {
 
     var delegate: FeedCellDelegate?
     var videoPost: VideoPost?
-    var play_on: Bool = false
     var isVideoControlsVisible: Bool = false
     var videoAsset: AVAsset?
     
