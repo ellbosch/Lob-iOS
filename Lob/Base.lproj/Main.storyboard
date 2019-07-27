@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="ZFy-aR-Qwj">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -362,7 +362,6 @@
                         <outlet property="activityIndicator" destination="YtA-2G-nu8" id="lqV-8F-576"/>
                         <outlet property="errorView" destination="uyg-Ys-rfF" id="ZPW-IP-wTf"/>
                         <outlet property="tableView" destination="Wrr-sg-2aK" id="f2j-M2-uNi"/>
-                        <segue destination="mYP-L2-r9H" kind="showDetail" identifier="videoDetailSegue" id="C8N-vk-0Xx"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7Zf-sZ-Pzo" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -778,7 +777,6 @@
                                             <outlet property="thumbnailView" destination="Lwv-OK-TuN" id="rr6-Ti-tAu"/>
                                             <outlet property="timeLabel" destination="SAU-Sv-Buf" id="xko-m7-YvS"/>
                                             <outlet property="timeLabelIcon" destination="oWD-pz-2qx" id="e8r-RJ-bq2"/>
-                                            <segue destination="mYP-L2-r9H" kind="showDetail" identifier="videoDetailSegue" id="fX7-Jc-s10"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -821,7 +819,4 @@
         <image name="share" width="30" height="30"/>
         <image name="sun" width="30" height="30"/>
     </resources>
-    <inferredMetricsTieBreakers>
-        <segue reference="C8N-vk-0Xx"/>
-    </inferredMetricsTieBreakers>
 </document>

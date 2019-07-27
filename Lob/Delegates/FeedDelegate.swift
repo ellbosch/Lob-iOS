@@ -10,14 +10,27 @@ import AVKit
 import FirebaseAnalytics
 import UIKit
 
+// MARK: - Protocol for autoplay manager
+protocol AutoplayTableViewDelegate: class {
+    // MARK - signals to delegate to go to fullscreen mode
+    func willPresentFullScreen(forVideoAt index: Int)
+}
 
-class FeedDelegate: NSObject, UITableViewDelegate {
-    weak var feedVC: UIViewController?           // hold weak reference to parent VC when we need to push new view controller
+class AutoplayManager: NSObject, UITableViewDelegate {
+    weak var delegate: AutoplayTableViewDelegate?
+
     var videoLoopObserver: NSObjectProtocol?     // holds reference to videoLoopObserver so only one is created
     
+    // MARK: - Autoplay cell if specified autoplay element
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         // sets table cell indent to 0
         cell.separatorInset = UIEdgeInsets.zero
+    }
+    
+    // MARK: - Set video to fullscreen on tap, unmute video, and pause all other playing videos
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let index = calculateRows(tableView, indexPath: indexPath) - 1
+        delegate?.willPresentFullScreen(forVideoAt: index)
     }
     
     // play middle(ish) video AFTER scroll drag has ended, but ONLY if user hasn't done a big swipe
@@ -40,27 +53,14 @@ class FeedDelegate: NSObject, UITableViewDelegate {
         }
     }
     
-    // set video to fullscreen on tap, unmute video, and pause all other playing videos
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let feedVC = feedVC as? FeedViewController else {
-            return
-        }
-        
-        // programmatically call segue to show video detail
-        feedVC.performSegue(withIdentifier: "videoDetailSegue", sender: self)
-    }
 }
-extension FeedDelegate {
+extension AutoplayManager {
     // MARK: play video at specified index
     func playVideo(_ tableView: UITableView, forRowAt indexPath: IndexPath) {
         if let cell = tableView.cellForRow(at: indexPath) as? LinkTableViewCell {
             // don't reload player if already loaded
             if let player = cell.playerView?.player, player.currentItem != nil {
-                if player.rate == 0 {
-                    player.play()
-                } else {
-                    return      // SAFETY CALL, SHOULDN'T HAPPEN--don't do anything if video is already playing
-                }
+                player.play()
             } else {
                 // start loading spinner
                 cell.activityIndicator?.startAnimating()

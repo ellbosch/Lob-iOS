@@ -18,19 +18,35 @@ class FeedViewController: UIViewController {
     @IBOutlet weak var headerDateLabel: UILabel?
     @IBOutlet weak var errorView: UIView?
     
-    var dataSource: FeedDataSource = FeedDataSource()
-    var delegate: FeedDelegate = FeedDelegate()
+    var dataSource = FeedDataSource()
+    var autoplayManager = AutoplayManager()
+
     var sport: Sport?
+    
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+    
+    convenience init(sport: Sport?) {
+        self.init(nibName: nil, bundle: nil)
+        self.sport = sport
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         dataSource.sport = self.sport
         dataSource.cellDelegate = self
-        delegate.feedVC = self
+        
+        // set tableview delegates
         self.tableView?.dataSource = dataSource
-        self.tableView?.delegate = delegate
-
+        self.tableView?.delegate = autoplayManager
+        autoplayManager.delegate = self
+        
         // set title: nil case means we're in hot posts view
         if let sport = self.sport {
             self.title = sport.name
@@ -150,7 +166,7 @@ class FeedViewController: UIViewController {
                 if let tableView = self?.tableView {
                     // play first video if indexPathForPlayingVideo is null
                     let firstIndexPath = IndexPath(row: 0, section:0)
-                    self?.delegate.playVideo(tableView, forRowAt: firstIndexPath)
+                    self?.autoplayManager.playVideo(tableView, forRowAt: firstIndexPath)
                 }
                 
                 // hide loading indicator
@@ -199,31 +215,29 @@ class FeedViewController: UIViewController {
     }
 }
 
-
-// MARK: UITabBarControllerDelegate
-extension FeedViewController: UITabBarControllerDelegate {
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        super.prepare(for: segue, sender: sender)
-        
-        if segue.identifier == "videoDetailSegue" {
-            if let videoVC = segue.destination as? VideoViewController {
-                // send array of videoposts and current index to segue vc
-                var videoPostsNoDate: [VideoPost] = [VideoPost]()
-
-                for videosForDate in self.dataSource.videoPosts {
-                    let videoPosts = videosForDate.1
-                    videoPostsNoDate.append(contentsOf: videoPosts)
-                }
-                videoVC.videos = videoPostsNoDate
-
-                // send index of currently viewed video (index = row + rowsInSection(section-1)
-                if let tableView = self.tableView, let indexPath = tableView.indexPathForSelectedRow {
-                    videoVC.videoIndex = delegate.calculateRows(tableView, indexPath: indexPath) - 1
-                    videoVC.league = self.sport?.name
-                }
-            }
+// MARK: - AutoplayDelegate implementation
+extension FeedViewController: AutoplayTableViewDelegate {
+    // MARK: - Presents full screen VC when prompted from delegate
+    func willPresentFullScreen(forVideoAt index: Int) {
+        let storyboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        guard let videoVC: VideoViewController = storyboard.instantiateViewController(withIdentifier: "VideoViewController") as? VideoViewController else {
+            return
         }
+        
+        // send array of videoposts and current index to segue vc
+        var videoPostsNoDate: [VideoPost] = [VideoPost]()
+        
+        for videosForDate in self.dataSource.videoPosts {
+            let videoPosts = videosForDate.1
+            videoPostsNoDate.append(contentsOf: videoPosts)
+        }
+        videoVC.videos = videoPostsNoDate
+        
+        // send index of currently viewed video (index = row + rowsInSection(section-1)
+        videoVC.videoIndex = index
+        videoVC.league = self.sport?.name
+
+        self.present(videoVC, animated: true, completion: nil)
     }
 }
 

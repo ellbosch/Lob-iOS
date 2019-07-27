@@ -15,7 +15,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
     
+    // MARK: - Instantiate views
     func applicationDidFinishLaunching(_ application: UIApplication) {
+        let window = UIWindow(frame: UIScreen.main.bounds)
+        
+        let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let tabBarController = mainStoryboard.instantiateViewController(withIdentifier: "TabBarController")
+        
+        window.makeKeyAndVisible()
+        window.rootViewController = tabBarController
+        self.window = window
+        
+        
         // Firebase config
         if FirebaseApp.app() == nil {
             FirebaseConfiguration.shared.setLoggerLevel(.min)
