@@ -60,11 +60,7 @@ extension AutoplayManager {
         if let cell = tableView.cellForRow(at: indexPath) as? LinkTableViewCell {
             // don't reload player if already loaded
             if let player = cell.playerView?.player, player.currentItem != nil {
-                if player.rate == 0 {
-                    player.play()
-                } else {
-                    return      // SAFETY CALL, SHOULDN'T HAPPEN--don't do anything if video is already playing
-                }
+                player.play()
             } else {
                 // start loading spinner
                 cell.activityIndicator?.startAnimating()
