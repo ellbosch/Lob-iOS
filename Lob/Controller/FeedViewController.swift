@@ -23,6 +23,19 @@ class FeedViewController: UIViewController {
 
     var sport: Sport?
     
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+    
+    convenience init(sport: Sport?) {
+        self.init(nibName: nil, bundle: nil)
+        self.sport = sport
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
