@@ -372,7 +372,7 @@
         <scene sceneID="wbH-yq-LFB">
             <objects>
                 <viewController storyboardIdentifier="VideoViewController" id="mYP-L2-r9H" customClass="VideoViewController" customModule="Lob" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="eY6-NQ-4Ha">
+                    <view key="view" contentMode="scaleToFill" id="eY6-NQ-4Ha" customClass="FullScreenView" customModule="Lob" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
@@ -389,7 +389,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <gestureRecognizers/>
                             </activityIndicatorView>
-                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="m1K-05-vBI">
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="m1K-05-vBI" customClass="FullScreenVideoControlsView" customModule="Lob" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0VQ-CS-i10">
@@ -398,7 +398,7 @@
                                             <color key="titleColor" white="1" alpha="0.80000000000000004" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </state>
                                         <connections>
-                                            <action selector="prevButtonSelect:" destination="mYP-L2-r9H" eventType="touchUpInside" id="dnR-Fe-kqJ"/>
+                                            <action selector="prevButtonSelect:" destination="m1K-05-vBI" eventType="touchUpInside" id="Wjh-dW-LkW"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DpM-Jw-coJ">
@@ -407,7 +407,7 @@
                                             <color key="titleColor" white="1" alpha="0.80000000000000004" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </state>
                                         <connections>
-                                            <action selector="playButtonSelect:" destination="mYP-L2-r9H" eventType="touchUpInside" id="rSd-LJ-hGX"/>
+                                            <action selector="playPauseButtonSelect:" destination="m1K-05-vBI" eventType="touchUpInside" id="PMt-uK-BoK"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6Au-UE-ovA">
@@ -416,7 +416,7 @@
                                             <color key="titleColor" white="1" alpha="0.80000000000000004" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </state>
                                         <connections>
-                                            <action selector="skipButtonSelect:" destination="mYP-L2-r9H" eventType="touchUpInside" id="hDw-Mu-WYR"/>
+                                            <action selector="skipButtonSelect:" destination="m1K-05-vBI" eventType="touchUpInside" id="HDI-Zi-lc1"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PSX-yG-nOI">
@@ -425,7 +425,7 @@
                                             <color key="titleColor" white="1" alpha="0.80000000000000004" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </state>
                                         <connections>
-                                            <action selector="exitButtonPress:" destination="mYP-L2-r9H" eventType="touchUpInside" id="ol7-WH-DSo"/>
+                                            <action selector="exitButtonPress:" destination="m1K-05-vBI" eventType="touchUpInside" id="pnv-LM-aZO"/>
                                         </connections>
                                     </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0:00" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="v66-zx-4h5">
@@ -437,9 +437,8 @@
                                     <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="dNY-Pu-ylr">
                                         <rect key="frame" x="40.5" y="598.5" width="294" height="31"/>
                                         <connections>
-                                            <action selector="scrubberTouchDragEnter:" destination="mYP-L2-r9H" eventType="touchDragEnter" id="ZzY-fc-FEk"/>
-                                            <action selector="scrubberTouchDragInside:" destination="mYP-L2-r9H" eventType="touchDragInside" id="htw-8l-rMF"/>
-                                            <action selector="videoScrubberValueChanged:" destination="mYP-L2-r9H" eventType="valueChanged" id="mMZ-aw-ZS8"/>
+                                            <action selector="scrubberTouchDragEnter:" destination="m1K-05-vBI" eventType="valueChanged" id="3ha-FL-d7v"/>
+                                            <action selector="videoScrubberValueChanged:" destination="m1K-05-vBI" eventType="valueChanged" id="hWX-UB-l7x"/>
                                         </connections>
                                     </slider>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4c2-EY-M7c">
@@ -479,6 +478,16 @@
                                     <constraint firstItem="v66-zx-4h5" firstAttribute="leading" secondItem="m1K-05-vBI" secondAttribute="leadingMargin" id="sPC-eL-DuI"/>
                                     <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="PSX-yG-nOI" secondAttribute="trailing" constant="20" symbolic="YES" id="uK3-lZ-9kt"/>
                                 </constraints>
+                                <connections>
+                                    <outlet property="exitViewButton" destination="PSX-yG-nOI" id="Pzl-O6-8eg"/>
+                                    <outlet property="playPauseButton" destination="DpM-Jw-coJ" id="Ny5-kW-rXL"/>
+                                    <outlet property="prevButton" destination="0VQ-CS-i10" id="JCR-xU-Xir"/>
+                                    <outlet property="skipButton" destination="6Au-UE-ovA" id="U3H-t2-OSm"/>
+                                    <outlet property="titleLabel" destination="4c2-EY-M7c" id="Vig-dj-TUz"/>
+                                    <outlet property="videoDurationLabel" destination="EDL-ph-D7T" id="ntN-Gk-Hi4"/>
+                                    <outlet property="videoScrubberSlider" destination="dNY-Pu-ylr" id="xqt-UF-EsW"/>
+                                    <outlet property="videoTimeLabel" destination="v66-zx-4h5" id="st6-6A-Eti"/>
+                                </connections>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -503,6 +512,10 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="ZjB-LQ-Lnt"/>
                         <connections>
+                            <outlet property="activityIndicator" destination="Igh-ky-X3M" id="VvW-x6-mhL"/>
+                            <outlet property="playerView" destination="zuQ-iC-uJg" id="uuH-nb-2Gk"/>
+                            <outlet property="thumbnailView" destination="uhw-IO-Uij" id="HLb-kr-mF7"/>
+                            <outlet property="videoControlsView" destination="m1K-05-vBI" id="nVQ-jZ-SNB"/>
                             <outletCollection property="gestureRecognizers" destination="iOl-Hg-urj" appends="YES" id="0uu-KE-PCN"/>
                             <outletCollection property="gestureRecognizers" destination="PRv-ij-4Rf" appends="YES" id="WmC-Px-non"/>
                             <outletCollection property="gestureRecognizers" destination="r7x-Ji-gVk" appends="YES" id="19P-Ia-oLb"/>
@@ -512,33 +525,22 @@
                     </view>
                     <connections>
                         <outlet property="activityIndicator" destination="Igh-ky-X3M" id="eZ2-r9-64i"/>
-                        <outlet property="exitFullScreenButton" destination="PSX-yG-nOI" id="cb4-vf-lro"/>
-                        <outlet property="playButton" destination="DpM-Jw-coJ" id="UFJ-b5-44t"/>
-                        <outlet property="playerView" destination="zuQ-iC-uJg" id="SPR-jC-c91"/>
-                        <outlet property="prevVideoButton" destination="0VQ-CS-i10" id="Bsu-mn-nnv"/>
-                        <outlet property="skipVideoButton" destination="6Au-UE-ovA" id="b10-Vi-Jod"/>
-                        <outlet property="thumbnailView" destination="uhw-IO-Uij" id="12V-TJ-kiN"/>
-                        <outlet property="titleLabel" destination="4c2-EY-M7c" id="A5b-cV-sgp"/>
-                        <outlet property="videoControlsView" destination="m1K-05-vBI" id="Vjk-br-5dr"/>
-                        <outlet property="videoDurationLabel" destination="EDL-ph-D7T" id="Rwa-rL-gH0"/>
-                        <outlet property="videoScrubberSlider" destination="dNY-Pu-ylr" id="Srq-ro-2DI"/>
-                        <outlet property="videoTimeLabel" destination="v66-zx-4h5" id="zHV-Ad-nF5"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kha-8u-6Q9" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <swipeGestureRecognizer direction="left" id="PRv-ij-4Rf">
                     <connections>
-                        <action selector="skipSwipeRecognizer:" destination="mYP-L2-r9H" id="AfC-jd-ijh"/>
+                        <action selector="skipSwipeRecognizer:" destination="eY6-NQ-4Ha" id="ONv-d3-huA"/>
                     </connections>
                 </swipeGestureRecognizer>
                 <tapGestureRecognizer cancelsTouchesInView="NO" delaysTouchesEnded="NO" id="iOl-Hg-urj">
                     <connections>
-                        <action selector="tapRecognizer:" destination="mYP-L2-r9H" id="e1j-6n-9Ca"/>
+                        <action selector="tapRecognizer:" destination="eY6-NQ-4Ha" id="NF2-sJ-c8h"/>
                     </connections>
                 </tapGestureRecognizer>
                 <swipeGestureRecognizer cancelsTouchesInView="NO" delaysTouchesEnded="NO" direction="down" id="r7x-Ji-gVk">
                     <connections>
-                        <action selector="swipeDownToExit:" destination="mYP-L2-r9H" id="Fwi-gt-DYM"/>
+                        <action selector="swipeDownToExit:" destination="eY6-NQ-4Ha" id="zZm-e6-R1J"/>
                     </connections>
                 </swipeGestureRecognizer>
                 <screenEdgePanGestureRecognizer delaysTouchesEnded="NO" minimumNumberOfTouches="1" id="yCn-dl-dUY">
@@ -549,7 +551,7 @@
                 </screenEdgePanGestureRecognizer>
                 <swipeGestureRecognizer direction="right" id="7lT-PZ-FyS">
                     <connections>
-                        <action selector="prevSwipeRecognizer:" destination="mYP-L2-r9H" id="N7i-90-nOO"/>
+                        <action selector="prevSwipeRecognizer:" destination="eY6-NQ-4Ha" id="791-ec-t5d"/>
                     </connections>
                 </swipeGestureRecognizer>
             </objects>

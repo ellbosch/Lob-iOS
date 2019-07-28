@@ -26,7 +26,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window.rootViewController = tabBarController
         self.window = window
         
-        
         // Firebase config
         if FirebaseApp.app() == nil {
             FirebaseConfiguration.shared.setLoggerLevel(.min)

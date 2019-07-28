@@ -133,18 +133,6 @@ class FeedViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
 
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        if let player: AVPlayer = object as? AVPlayer {
-            if keyPath == "status" {
-                let status = player.currentItem?.status
-                if status == AVPlayerItem.Status.failed {
-                    Analytics.logEvent("videoLoadFail", parameters: nil)
-                    
-                }
-            }
-
-        }
-    }
     
     /*****************************************
      INITALIZING FOR LOADING DATA
@@ -223,7 +211,6 @@ extension FeedViewController: AutoplayTableViewDelegate {
         guard let videoVC: VideoViewController = storyboard.instantiateViewController(withIdentifier: "VideoViewController") as? VideoViewController else {
             return
         }
-        
         // send array of videoposts and current index to segue vc
         var videoPostsNoDate: [VideoPost] = [VideoPost]()
         
@@ -231,12 +218,12 @@ extension FeedViewController: AutoplayTableViewDelegate {
             let videoPosts = videosForDate.1
             videoPostsNoDate.append(contentsOf: videoPosts)
         }
+//        let videoVC = VideoViewController(videos: videoPostsNoDate, videoIndexToStart: index)
         videoVC.videos = videoPostsNoDate
         
         // send index of currently viewed video (index = row + rowsInSection(section-1)
         videoVC.videoIndex = index
-        videoVC.league = self.sport?.name
-
+        
         self.present(videoVC, animated: true, completion: nil)
     }
 }
