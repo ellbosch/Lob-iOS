@@ -28,7 +28,6 @@ protocol PlayerViewPlayerDelegate: class {
 class PlayerView: UIView {
     var delegateControls: PlayerViewControlsDelegate?
     var delegatePlayer: PlayerViewPlayerDelegate?
-    var videoDidEndPlayingObserver: NSObjectProtocol?
     
     var player: AVPlayer? {
         get {
@@ -45,31 +44,31 @@ class PlayerView: UIView {
     }
     
     // create observers when current item is set
-    var playerItem: AVPlayerItem? {
-        get {
-            return playerLayer.player?.currentItem
-        }
-        set {
-            // play/pause observer
-            newValue?.addObserver(self, forKeyPath: "status", options: [.old, .new], context: nil)
-            
-            // setup video did end playing observer and remove last made one
-            if let videoDidEndPlayingObserver = self.videoDidEndPlayingObserver {
-                NotificationCenter.default.removeObserver(videoDidEndPlayingObserver)
-            }
-            
-            self.videoDidEndPlayingObserver = NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: newValue, queue: .main) { [weak self] _ in
-                
-                // skip to next video and remove observer
-                if let myView = self {
-                    self?.delegatePlayer?.playerDidFinishPlaying(for: myView)
-                }
-            }
-            
-            // tell delegate that new video loaded
-            delegateControls?.playerDidLoad(for: self)
-        }
-    }
+//    var playerItem: AVPlayerItem? {
+//        get {
+//            return playerLayer.player?.currentItem
+//        }
+//        set {
+//            // play/pause observer
+//            newValue?.addObserver(self, forKeyPath: "status", options: [.old, .new], context: nil)
+//
+//            // setup video did end playing observer and remove last made one
+//            if let videoDidEndPlayingObserver = self.videoDidEndPlayingObserver {
+//                NotificationCenter.default.removeObserver(videoDidEndPlayingObserver)
+//            }
+//
+//            self.videoDidEndPlayingObserver = NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: newValue, queue: .main) { [weak self] _ in
+//
+//                // skip to next video and remove observer
+//                if let myView = self {
+//                    self?.delegatePlayer?.playerDidFinishPlaying(for: myView)
+//                }
+//            }
+//
+//            // tell delegate that new video loaded
+//            delegateControls?.playerDidLoad(for: self)
+//        }
+//    }
     
     var isMuted: Bool? {
         didSet {
@@ -102,7 +101,7 @@ class PlayerView: UIView {
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         switch keyPath {
         case "status":
-            if let playerItem = self.playerItem {
+            if let playerItem = player?.currentItem {
                 let status = playerItem.status
                 // send error to analytics if video failed and tell delegate that player will start if successful
                 switch status {

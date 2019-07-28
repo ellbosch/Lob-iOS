@@ -9,7 +9,6 @@
 import Foundation
 import UIKit
 
-
 // MARK: - Network singleton layer
 class DataProvider {
     

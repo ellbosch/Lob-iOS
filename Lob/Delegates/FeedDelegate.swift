@@ -71,6 +71,29 @@ extension AutoplayManager {
                 let player = AVPlayer(playerItem: nil)
                 cell.playerView?.playerLayer.player = player
                 
+                // calculate rows to see how far down user has viewed videos
+                let rowCount = calculateRows(tableView, indexPath: indexPath)
+                
+                DataProvider.shared.loadVideo(for: URL(string: videoPost.mp4UrlRaw),
+                    success: { response in
+                        // main thread changes: play video player and set to mute/unmute
+                        DispatchQueue.main.async { [weak cell] in
+                            cell?.playerView?.playerLayer.player?.replaceCurrentItem(with: response)
+                            cell?.playerView?.player?.play()
+                            cell?.playerView?.fadeIn()
+                            cell?.activityIndicator?.stopAnimating()
+                            cell?.playerView?.player?.isMuted = cell?.playerView?.isMuted ?? false
+                        }
+                        Analytics.logEvent("videoLoaded", parameters: [
+                            AnalyticsParameterItemID: videoPost.id,
+                            AnalyticsParameterItemName: videoPost.title,
+                            AnalyticsParameterItemCategory: videoPost.getSport() ?? "",
+                            AnalyticsParameterContent: "table",
+                            AnalyticsParameterIndex: rowCount
+                        ])
+                    }
+                )
+                
                 DispatchQueue.global(qos: .background).async { [weak cell] in
                     // load avplayer in background thread
                     let item = AVPlayerItem(url: mp4Url)

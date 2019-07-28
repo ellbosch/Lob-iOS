@@ -12,15 +12,19 @@ import SDWebImage
 import UIKit
 
 class VideoViewController: UIViewController {
-    
     var videos: [VideoPost] = []
     var videoIndex: Int = 0
     var shouldPlay: Bool = true
     var openedFromShare: Bool = false
+    var videoDidEndPlayingObserver: NSObjectProtocol?
+
     
     var myView: FullScreenView? {
         get { return view as? FullScreenView }
-        set { view = newValue }
+        set {
+            newValue?.setupView()
+            view = newValue
+        }
     }
     
 //    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
@@ -54,13 +58,11 @@ class VideoViewController: UIViewController {
         return .lightContent
     }
     
-//    override func loadView() {
-//        myView = FullScreenView()
-//        myView?.delegate = self
-//    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // set delegate of full screen view to this VC
+        myView?.delegate = self
         
         // enable audio even if silent mode
         do {
@@ -89,10 +91,24 @@ class VideoViewController: UIViewController {
             return
         }
         let videoPost: VideoPost = videos[videoIndex]
+        let playerView = self.myView?.playerView
         
-        guard let mp4Url = URL(string: videoPost.mp4UrlRaw), let thumbnailUrl = URL(string: videoPost.thumbnailUrlRaw) else {
+        guard let thumbnailUrl = URL(string: videoPost.thumbnailUrlRaw) else {
             return
         }
+        
+        // instantiate playerview if not made
+        if playerView?.player == nil {
+            playerView?.player = AVPlayer(playerItem: nil)
+        }
+        
+        // set alpha to 0 for video on load
+        playerView?.alpha = 0
+        
+        // show activity indicator and video controls view
+        self.myView?.activityIndicator?.isHidden = false
+        self.myView?.activityIndicator?.startAnimating()
+        self.myView?.showVideoControls()
         
         // set videopost to view
         self.myView?.videoPost = videoPost
@@ -104,44 +120,65 @@ class VideoViewController: UIViewController {
             }
         })
         
-        // load new player
-        let videoAsset = AVAsset(url: mp4Url)
-        let playableKey = "playable"
         
         // load url in background thread
-        videoAsset.loadValuesAsynchronously(forKeys: [playableKey]) {
-            var error: NSError? = nil
-            let status = videoAsset.statusOfValue(forKey: playableKey, error: &error)
-            switch status {
-            case .loaded:
-                let league = videoPost.getSport()?.name ?? "[today view]"
-
-                // configure video scrubber to update with video playback (labels for UISlider have to be updated on main thread
-                DispatchQueue.main.async {
-                    Analytics.logEvent("videoLoaded", parameters: [
-                        AnalyticsParameterItemID: videoPost.id,
-                        AnalyticsParameterItemName: videoPost.title,
-                        AnalyticsParameterItemCategory: league,
-                        AnalyticsParameterContent: "fullScreen"
-                        ])
-                    
-                    // Sucessfully loaded. Continue processing.
-                    let item = AVPlayerItem(asset: videoAsset)
-                    self.myView?.playerView?.playerLayer.player?.replaceCurrentItem(with: item)
+        DataProvider.shared.loadVideo(for: URL(string: videoPost.mp4UrlRaw),
+              success: { response in
+                DispatchQueue.main.async { [weak self] in
+                    if let player = self?.myView?.playerView?.player {
+                        player.replaceCurrentItem(with: response)
+                        self?.replaceVideoDidEndPlayingObserver(playerItem: response)
+                    }
                 }
-                
-                break
-            case .failed:
-                // Handle error
-                print("URL LOAD FAILED!")
-            case .cancelled:
-                // Terminate processing
-                print("URL LOAD CANCELLED!")
-            default:
-                // Handle all other cases
-                print("DEFAULT HAPPENED?")
+
+                // analytics
+                let league = videoPost.getSport()?.name ?? "[today view]"
+                Analytics.logEvent("videoLoaded", parameters: [
+                    AnalyticsParameterItemID: videoPost.id,
+                    AnalyticsParameterItemName: videoPost.title,
+                    AnalyticsParameterItemCategory: league,
+                    AnalyticsParameterContent: "fullScreen"
+                ])
             }
-        }
+        )
+        
+        // load new player
+        //        let videoAsset = AVAsset(url: mp4Url)
+        //        let playableKey = "playable"
+//        videoAsset.loadValuesAsynchronously(forKeys: [playableKey]) {
+//            var error: NSError? = nil
+//            let status = videoAsset.statusOfValue(forKey: playableKey, error: &error)
+//            switch status {
+//            case .loaded:
+//                let league = videoPost.getSport()?.name ?? "[today view]"
+//
+//                // configure video scrubber to update with video playback (labels for UISlider have to be updated on main thread
+//                DispatchQueue.main.async {
+//                    Analytics.logEvent("videoLoaded", parameters: [
+//                        AnalyticsParameterItemID: videoPost.id,
+//                        AnalyticsParameterItemName: videoPost.title,
+//                        AnalyticsParameterItemCategory: league,
+//                        AnalyticsParameterContent: "fullScreen"
+//                        ])
+//
+//                    // Sucessfully loaded. Continue processing.
+//                    let item = AVPlayerItem(asset: videoAsset)
+//                    self.myView?.playerView?.playerLayer.player?.replaceCurrentItem(with: item)
+//                    self.myView?.playerView?.playerLayer.player?.play()
+//                }
+//
+//                break
+//            case .failed:
+//                // Handle error
+//                print("URL LOAD FAILED!")
+//            case .cancelled:
+//                // Terminate processing
+//                print("URL LOAD CANCELLED!")
+//            default:
+//                // Handle all other cases
+//                print("DEFAULT HAPPENED?")
+//            }
+//        }
     }
     
     // fades objects in and out (used for video controls)
@@ -160,6 +197,36 @@ class VideoViewController: UIViewController {
             }, completion: nil)
         }
     }
+    
+    func replaceVideoDidEndPlayingObserver(playerItem: AVPlayerItem) {
+        // play/pause observer
+        playerItem.addObserver(self, forKeyPath: "status", options: [.old, .new], context: nil)
+        
+        // setup video did end playing observer and remove last made one
+        if let videoDidEndPlayingObserver = self.videoDidEndPlayingObserver {
+            NotificationCenter.default.removeObserver(videoDidEndPlayingObserver)
+        }
+        
+        self.videoDidEndPlayingObserver = NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: playerItem, queue: .main) { [weak self] _ in
+            
+            // skip to next video and remove observer
+            self?.willLoadNextVideo()
+        }
+    }
+    
+    // THIS NEW OBSERVER WILL READ STATUS AND SHOW AVPLAYER
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        if let item: AVPlayerItem = object as? AVPlayerItem {
+            if keyPath == "status" {
+                let status = item.status
+                if status == AVPlayerItem.Status.readyToPlay {
+                    self.myView?.activityIndicator?.stopAnimating()
+                    self.myView?.playerView?.fadeIn()
+                    self.myView?.playerView?.player?.play()
+                }
+            }
+        }
+    }
 
     
     // special init when user opens video from link
@@ -168,6 +235,7 @@ class VideoViewController: UIViewController {
         if let statusBarView = UIApplication.shared.value(forKeyPath: "statusBarWindow.statusBar") as? UIView {
             statusBarView.backgroundColor = UIColor.black
         }
+        
         
         // load other videos for identified league and identify the video we want to play in the full lsit
 //        let videoPosts = DataProvider.shared.getVideoPosts(league: nil, completion: { [weak self] in
@@ -239,7 +307,7 @@ extension VideoViewController: FullScreenViewDelegate {
         }
         
         // remove skip observer of current video--THIS FIXES THE BUG THE VIDEO TO SUDDENLY PLAY IN BACKGROUND
-        if let videoDidEndPlayingObserver = self.myView?.playerView?.videoDidEndPlayingObserver {
+        if let videoDidEndPlayingObserver = self.videoDidEndPlayingObserver {
             NotificationCenter.default.removeObserver(videoDidEndPlayingObserver)
         }
         

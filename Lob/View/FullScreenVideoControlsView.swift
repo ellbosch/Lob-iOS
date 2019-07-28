@@ -33,16 +33,6 @@ class FullScreenVideoControlsView: UIView {
     @IBOutlet weak var videoDurationLabel: UILabel?
     @IBOutlet weak var titleLabel: UILabel?
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        setupView()
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        setupView()
-    }
-    
     func setupView() {
         prevButton?.titleLabel?.font = UIFont.fontAwesome(ofSize: 30, style: .solid)
         prevButton?.setTitle(String.fontAwesomeIcon(name: .stepBackward), for: .normal)
