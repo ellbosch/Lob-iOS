@@ -63,6 +63,8 @@ class VideoViewController: UIViewController {
         
         // set delegate of full screen view to this VC
         myView?.delegate = self
+        myView?.playerView?.delegatePlayer = myView
+        myView?.playerView?.delegateControls = myView?.videoControlsView
         
         // enable audio even if silent mode
         do {
@@ -118,7 +120,9 @@ class VideoViewController: UIViewController {
         // load url in background thread
         playerView?.setPlayerItem(from: URL(string: videoPost.mp4UrlRaw),
           success: { [weak self] playerItem in
-                self?.replaceVideoDidEndPlayingObserver(playerItem: playerItem)
+                DispatchQueue.main.async { [weak self] in
+                    self?.replaceVideoDidEndPlayingObserver(playerItem: playerItem)
+                }
             }
         )
         
@@ -190,7 +194,7 @@ class VideoViewController: UIViewController {
     
     func replaceVideoDidEndPlayingObserver(playerItem: AVPlayerItem) {
         // play/pause observer
-        playerItem.addObserver(self, forKeyPath: "status", options: [.old, .new], context: nil)
+//        playerItem.addObserver(self, forKeyPath: "status", options: [.old, .new], context: nil)
         
         // setup video did end playing observer and remove last made one
         if let videoDidEndPlayingObserver = self.videoDidEndPlayingObserver {
@@ -205,18 +209,18 @@ class VideoViewController: UIViewController {
     }
     
     // THIS NEW OBSERVER WILL READ STATUS AND SHOW AVPLAYER
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        if let item: AVPlayerItem = object as? AVPlayerItem {
-            if keyPath == "status" {
-                let status = item.status
-                if status == AVPlayerItem.Status.readyToPlay {
-                    self.myView?.activityIndicator?.stopAnimating()
-                    self.myView?.playerView?.fadeIn()
-                    self.myView?.playerView?.player?.play()
-                }
-            }
-        }
-    }
+//    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+//        if let item: AVPlayerItem = object as? AVPlayerItem {
+//            if keyPath == "status" {
+//                let status = item.status
+//                if status == AVPlayerItem.Status.readyToPlay {
+//                    self.myView?.activityIndicator?.stopAnimating()
+//                    self.myView?.playerView?.fadeIn()
+//                    self.myView?.playerView?.player?.play()
+//                }
+//            }
+//        }
+//    }
 
     
     // special init when user opens video from link

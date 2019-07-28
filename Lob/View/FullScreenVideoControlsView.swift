@@ -150,6 +150,10 @@ extension FullScreenVideoControlsView: PlayerViewControlsDelegate {
         let videoDurationFloat = Float(CMTimeGetSeconds(playerView.player?.currentItem?.asset.duration ?? CMTimeMake(value: 0, timescale: 1)))
         self.videoScrubberSlider?.maximumValue = videoDurationFloat
         self.videoDurationLabel?.text = self.convertSecondsToTimeString(secondsTotal: Int(videoDurationFloat))
+        
+        // reset video scrubber to 0
+        self.videoScrubberSlider?.setValue(0, animated: false)
+        self.videoTimeLabel?.text = "0:00"
     }
     
     func playerDidPlay(for player: PlayerView) {
@@ -158,12 +162,6 @@ extension FullScreenVideoControlsView: PlayerViewControlsDelegate {
     
     func playerDidPause(for player: PlayerView) {
         setupViewForPausedVideo()
-    }
-    
-    func playerWillStart(for player: PlayerView) {
-        // reset video scrubber to 0
-        self.videoScrubberSlider?.setValue(0, animated: false)
-        self.videoTimeLabel?.text = "0:00"
     }
     
     func playerIsScrubbing(for playerView: PlayerView, to time: Float64) {
@@ -189,5 +187,4 @@ extension FullScreenVideoControlsView: PlayerViewControlsDelegate {
         
         return timeString
     }
-    
 }
