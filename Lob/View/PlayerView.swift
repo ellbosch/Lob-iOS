@@ -97,6 +97,26 @@ class PlayerView: UIView {
         }
     }
     
+    // MARK: - Calls data provider to load video from URL
+    func setPlayerItem(from url: URL?, success: ((AVPlayerItem) -> ())? = nil) {
+        // instantiate playerview if not made
+        if player == nil {
+            player = AVPlayer(playerItem: nil)
+        }
+        
+        // load url in background thread
+        DataProvider.shared.loadVideo(for: url,
+              success: { response in
+                DispatchQueue.main.async { [weak self] in
+                    if let player = self?.player {
+                        player.replaceCurrentItem(with: response)
+                        success?(response)
+                    }
+                }
+            }
+        )
+    }
+    
     // MARK: - Observers for player
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         switch keyPath {

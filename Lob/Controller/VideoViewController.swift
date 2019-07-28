@@ -97,11 +97,6 @@ class VideoViewController: UIViewController {
             return
         }
         
-        // instantiate playerview if not made
-        if playerView?.player == nil {
-            playerView?.player = AVPlayer(playerItem: nil)
-        }
-        
         // set alpha to 0 for video on load
         playerView?.alpha = 0
         
@@ -120,27 +115,22 @@ class VideoViewController: UIViewController {
             }
         })
         
-        
         // load url in background thread
-        DataProvider.shared.loadVideo(for: URL(string: videoPost.mp4UrlRaw),
-              success: { response in
-                DispatchQueue.main.async { [weak self] in
-                    if let player = self?.myView?.playerView?.player {
-                        player.replaceCurrentItem(with: response)
-                        self?.replaceVideoDidEndPlayingObserver(playerItem: response)
-                    }
-                }
-
-                // analytics
-                let league = videoPost.getSport()?.name ?? "[today view]"
-                Analytics.logEvent("videoLoaded", parameters: [
-                    AnalyticsParameterItemID: videoPost.id,
-                    AnalyticsParameterItemName: videoPost.title,
-                    AnalyticsParameterItemCategory: league,
-                    AnalyticsParameterContent: "fullScreen"
-                ])
+        playerView?.setPlayerItem(from: URL(string: videoPost.mp4UrlRaw),
+          success: { [weak self] playerItem in
+                self?.replaceVideoDidEndPlayingObserver(playerItem: playerItem)
             }
         )
+        
+        // analytics
+        let league = videoPost.getSport()?.name ?? "[today view]"
+        Analytics.logEvent("videoLoaded", parameters: [
+            AnalyticsParameterItemID: videoPost.id,
+            AnalyticsParameterItemName: videoPost.title,
+            AnalyticsParameterItemCategory: league,
+            AnalyticsParameterContent: "fullScreen"
+        ])
+        
         
         // load new player
         //        let videoAsset = AVAsset(url: mp4Url)
