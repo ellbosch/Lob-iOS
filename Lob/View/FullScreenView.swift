@@ -18,11 +18,27 @@ protocol FullScreenViewDelegate: class {
 }
 
 class FullScreenView: UIView {
+    @IBOutlet weak var playerView: PlayerView?
+    @IBOutlet weak var thumbnailView: ThumbnailImageView?
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView?
+    @IBOutlet weak var videoControlsView: FullScreenVideoControlsView? {
+        didSet {
+            // setup controls and delegate
+            videoControlsView?.setupView()          // doesn't get instantiated within the video controls file unless we call here
+            videoControlsView?.delegate = self
+        }
+    }
+    
     var delegate: FullScreenViewDelegate?
     var videoPost: VideoPost? {
         didSet {
             if let videoPostNewValue = videoPost {
+                // set title of video controls
                 videoControlsView?.setNewTitle(title: videoPostNewValue.title)
+                
+                // set thumbnail image and playerview to nil
+                thumbnailView?.image = nil
+                playerView?.player?.replaceCurrentItem(with: nil)
             }
         }
     }
@@ -36,13 +52,6 @@ class FullScreenView: UIView {
             }
         }
     }
-
-    // Reference outlets
-    @IBOutlet weak var playerView: PlayerView?
-    @IBOutlet weak var thumbnailView: ThumbnailImageView?
-    @IBOutlet weak var activityIndicator: UIActivityIndicatorView?
-    @IBOutlet weak var videoControlsView: FullScreenVideoControlsView?
-    
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -56,9 +65,6 @@ class FullScreenView: UIView {
     
     // MARK: - Setup view
     func setupView() {
-        // set delegates
-        videoControlsView?.delegate = self
-        
         setupPlayer()
         setupActivityIndicator()
         

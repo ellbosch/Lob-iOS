@@ -19,31 +19,31 @@ class VideoViewController: UIViewController {
     var openedFromShare: Bool = false
     
     var myView: FullScreenView? {
-        get { return self.view as? FullScreenView }
+        get { return view as? FullScreenView }
         set { view = newValue }
     }
     
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        super.init(nibName: nibNameOrNil, bundle: nil)
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-    }
-    
-    convenience init(videos: [VideoPost], videoIndexToStart: Int, shouldPlay: Bool = true, openedFromShare: Bool = false) {
-        self.init(nibName: nil, bundle: nil)
-
-        // from params
-        self.videos = videos
-        self.videoIndex = videoIndexToStart
-        self.shouldPlay = shouldPlay
-        self.openedFromShare = openedFromShare
-
-        // other params
-//        self.isVideoControlsVisible = false
-    }
-    
+//    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+//        super.init(nibName: nibNameOrNil, bundle: nil)
+//    }
+//
+//    required init?(coder aDecoder: NSCoder) {
+//        super.init(coder: aDecoder)
+//    }
+//
+//    convenience init(videos: [VideoPost], videoIndexToStart: Int, shouldPlay: Bool = true, openedFromShare: Bool = false) {
+//        self.init(nibName: nil, bundle: nil)
+//
+//        // from params
+//        self.videos = videos
+//        self.videoIndex = videoIndexToStart
+//        self.shouldPlay = shouldPlay
+//        self.openedFromShare = openedFromShare
+//
+//        // other params
+////        self.isVideoControlsVisible = false
+//    }
+//    
     // hides status bar
     override var prefersStatusBarHidden: Bool {
         return !openedFromShare
@@ -54,9 +54,10 @@ class VideoViewController: UIViewController {
         return .lightContent
     }
     
-    override func loadView() {
-        myView = FullScreenView()
-    }
+//    override func loadView() {
+//        myView = FullScreenView()
+//        myView?.delegate = self
+//    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -93,9 +94,8 @@ class VideoViewController: UIViewController {
             return
         }
         
-        // set thumbnail image and playerview to nil
-        self.myView?.thumbnailView?.image = nil
-        self.myView?.playerView?.player?.replaceCurrentItem(with: nil)
+        // set videopost to view
+        self.myView?.videoPost = videoPost
         
         // load thumbnail image and animate thumbnail in direction of swipe
         self.myView?.thumbnailView?.sd_setImage(with: thumbnailUrl, placeholderImage: nil, completed: { (image, error, cacheType, url) -> Void in

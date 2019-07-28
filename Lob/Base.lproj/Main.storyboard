@@ -481,7 +481,7 @@
                                 <connections>
                                     <outlet property="exitViewButton" destination="PSX-yG-nOI" id="Pzl-O6-8eg"/>
                                     <outlet property="playPauseButton" destination="DpM-Jw-coJ" id="Ny5-kW-rXL"/>
-                                    <outlet property="prevButton" destination="0VQ-CS-i10" id="JCR-xU-Xir"/>
+                                    <outlet property="prevButton" destination="0VQ-CS-i10" id="Tbx-Gy-mEa"/>
                                     <outlet property="skipButton" destination="6Au-UE-ovA" id="U3H-t2-OSm"/>
                                     <outlet property="titleLabel" destination="4c2-EY-M7c" id="Vig-dj-TUz"/>
                                     <outlet property="videoDurationLabel" destination="EDL-ph-D7T" id="ntN-Gk-Hi4"/>
@@ -512,10 +512,10 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="ZjB-LQ-Lnt"/>
                         <connections>
-                            <outlet property="activityIndicator" destination="Igh-ky-X3M" id="VvW-x6-mhL"/>
-                            <outlet property="playerView" destination="zuQ-iC-uJg" id="uuH-nb-2Gk"/>
-                            <outlet property="thumbnailView" destination="uhw-IO-Uij" id="HLb-kr-mF7"/>
-                            <outlet property="videoControlsView" destination="m1K-05-vBI" id="nVQ-jZ-SNB"/>
+                            <outlet property="activityIndicator" destination="Igh-ky-X3M" id="vt7-bh-2ia"/>
+                            <outlet property="playerView" destination="zuQ-iC-uJg" id="zYy-KF-gey"/>
+                            <outlet property="thumbnailView" destination="uhw-IO-Uij" id="yJV-X7-osF"/>
+                            <outlet property="videoControlsView" destination="m1K-05-vBI" id="1Cr-ZJ-Tsv"/>
                             <outletCollection property="gestureRecognizers" destination="iOl-Hg-urj" appends="YES" id="0uu-KE-PCN"/>
                             <outletCollection property="gestureRecognizers" destination="PRv-ij-4Rf" appends="YES" id="WmC-Px-non"/>
                             <outletCollection property="gestureRecognizers" destination="r7x-Ji-gVk" appends="YES" id="19P-Ia-oLb"/>
@@ -523,9 +523,6 @@
                             <outletCollection property="gestureRecognizers" destination="7lT-PZ-FyS" appends="YES" id="BZg-iB-8Gh"/>
                         </connections>
                     </view>
-                    <connections>
-                        <outlet property="activityIndicator" destination="Igh-ky-X3M" id="eZ2-r9-64i"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kha-8u-6Q9" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <swipeGestureRecognizer direction="left" id="PRv-ij-4Rf">
