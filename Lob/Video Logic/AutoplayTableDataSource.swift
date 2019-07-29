@@ -11,7 +11,6 @@ import UIKit
 
 class AutoplayTableDataSource: NSObject, UITableViewDataSource {
     var videoPosts: [(Date, [VideoPost])] = []
-    var allRows: [LinkTableViewCell] = []           // we REALLY need to get rid of this
     var sport: Sport?
     var isMuted: Bool = true
     
@@ -65,11 +64,6 @@ class AutoplayTableDataSource: NSObject, UITableViewDataSource {
         }
         if let playerView = cell.playerView {
             playerView.playerLayer.frame = playerView.bounds
-        }
-        
-        // we hold a global array of all created cells to release the thumbnail images from memory, since there were leaks
-        if !allRows.contains(cell) {
-            allRows.append(cell)
         }
         
         return cell

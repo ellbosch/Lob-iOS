@@ -117,16 +117,7 @@ class FeedViewController: UIViewController {
     }
     
     // null table if view disappears
-    override func viewWillDisappear(_ animated: Bool) {       
-        // remove all thumbnails and videos from memory
-        for cell in self.dataSource.allRows {
-            if cell.playerView != nil {
-                // video and pic will get recycled or take up space, so get rid of them
-                cell.playerView?.player?.replaceCurrentItem(with: nil)
-            }
-            cell.thumbnailView?.image = nil
-        }
-        
+    override func viewWillDisappear(_ animated: Bool) {        
         self.dataSource.videoPosts.removeAll()
         self.tableView?.reloadData()
     }
