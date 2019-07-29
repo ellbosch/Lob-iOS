@@ -11,11 +11,10 @@ import UIKit
 
 extension DataProvider {
   
-    func loadVideo(for url: URL?, success: ((AVPlayerItem) -> ())? = nil) {
+    func loadVideo(for url: URL?, success: ((AVPlayerItem) -> ())? = nil, fail: (() -> ())? = nil) {
         // load avplayer in background thread
         guard let url = url else {
-            // need errors here
-            
+            fail?()
             return
         }
         

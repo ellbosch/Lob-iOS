@@ -23,6 +23,7 @@ protocol PlayerViewControlsDelegate: class {
 protocol PlayerViewPlayerDelegate: class {
     func playerDidFinishPlaying(for playerView: PlayerView)
     func playerDidLoad(for playerView: PlayerView)
+    func playerFailedToLoad(for playerView: PlayerView)
 }
 
 class PlayerView: UIView {
@@ -73,7 +74,7 @@ class PlayerView: UIView {
     }
     
     // MARK: - Calls data provider to load video from URL
-    func setPlayerItem(from url: URL?, success: ((AVPlayerItem) -> ())? = nil) {
+    func setPlayerItem(from url: URL?, success: ((AVPlayerItem) -> ())? = nil, fail: (() -> ())? = nil) {
         // instantiate playerview if not made
         if player == nil {
             player = AVPlayer(playerItem: nil)
@@ -81,7 +82,7 @@ class PlayerView: UIView {
         
         // load url in background thread
         DataProvider.shared.loadVideo(for: url,
-          success: { [weak self] response in
+            success: { [weak self] response in
                 DispatchQueue.main.async { [weak self] in
                     if let player = self?.player {
                         player.replaceCurrentItem(with: response)
@@ -98,7 +99,8 @@ class PlayerView: UIView {
                         player.addObserver(self!, forKeyPath: "rate", options: [.old, .new], context: nil)
                     }
                 }
-            }
+            },
+            fail: { fail?() }
         )
     }
     
@@ -119,13 +121,14 @@ class PlayerView: UIView {
                 // send error to analytics if video failed and tell delegate that player will start if successful
                 switch status {
                 case .readyToPlay:
-                    Analytics.logEvent("videoLoadSuccess", parameters: nil)
+                    Analytics.logEvent("videoLoadResponse", parameters: [ AnalyticsParameterItemCategory: "success" ])
                     delegateControlView?.playerDidLoad(for: self)
                     delegatePlayerView?.playerDidLoad(for: self)
                 case .failed:
-                    Analytics.logEvent("videoLoadFail", parameters: nil)
+                    Analytics.logEvent("videoLoadResponse", parameters: [ AnalyticsParameterItemCategory: "failed" ])
+                    delegatePlayerView?.playerFailedToLoad(for: self)
                 case .unknown:
-                    Analytics.logEvent("videoLoadUnknown", parameters: nil)
+                    Analytics.logEvent("videoLoadResponse", parameters: [ AnalyticsParameterItemCategory: "unknown" ])
                 default:
                     return
                 }

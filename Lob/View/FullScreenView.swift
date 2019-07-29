@@ -59,7 +59,6 @@ class FullScreenView: UIView {
         
         // set delegate of player to video controls
         self.playerView?.delegateControlView = videoControlsView
-        self.playerView?.delegatePlayerView = self
     }
     
     // MARK: - Sets up activity indicator
@@ -155,25 +154,6 @@ extension FullScreenView: VideoControlViewDelegate {
     func didStartScrubVideo() {
         self.playerView?.player?.pause()
         self.videoControlsView?.isHidden = false
-    }
-}
-
-extension FullScreenView: PlayerViewPlayerDelegate {
-    
-    func playerDidLoad(for playerView: PlayerView) {
-        self.activityIndicator?.stopAnimating()
-        self.playerView?.fadeIn()
-        self.playerView?.playerLayer.player?.play()
-    }
-    
-    func playerDidFinishPlaying(for playerView: PlayerView) {
-        // skip to next video and remove observer
-        delegate?.willLoadNextVideo()
-        
-        Analytics.logEvent("fullScreenVideoChange", parameters: [
-            AnalyticsParameterItemName: "skip",
-            AnalyticsParameterContentType: "auto"
-        ])
     }
 }
 

@@ -40,7 +40,7 @@ class VideoViewController: UIViewController {
         
         // set delegate of full screen view to this VC
         myView?.delegate = self
-        myView?.playerView?.delegatePlayerView = myView
+        myView?.playerView?.delegatePlayerView = self
         myView?.playerView?.delegateControlView = myView?.videoControlsView
         
         // set delegate to PlayerNotifier
@@ -121,8 +121,7 @@ class VideoViewController: UIViewController {
             statusBarView.backgroundColor = UIColor.black
         }
         
-        
-        // load other videos for identified league and identify the video we want to play in the full lsit
+//        // load other videos for identified league and identify the video we want to play in the full list
 //        let videoPosts = DataProvider.shared.getVideoPosts(league: nil, completion: { [weak self] in
 //            // create 1d array of videos
 //            var videoPostsNoDate: [VideoPost] = []
@@ -167,6 +166,38 @@ class VideoViewController: UIViewController {
 extension VideoViewController: PlayerNotifierDelegate {
     func playerItemDidReachEndTime(for _: AVPlayerItem) {
         self.willLoadNextVideo()
+    }
+}
+
+extension VideoViewController: PlayerViewPlayerDelegate {
+    // MARK: - Fades in player and hits play upon loading
+    func playerDidLoad(for playerView: PlayerView) {
+        self.myView?.activityIndicator?.stopAnimating()
+        playerView.fadeIn()
+        playerView.playerLayer.player?.play()
+    }
+    
+    // MARK: - Show alert if video didn't load
+    func playerFailedToLoad(for _: PlayerView) {
+        let alert = UIAlertController(title: "Video failed to load.", message: "Sorry about that!", preferredStyle: .alert)
+        
+        alert.addAction(UIAlertAction(title: "Skip", style: .default, handler: { _ in
+            self.willLoadNextVideo()
+        }))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
+        self.present(alert, animated: true)
+        self.myView?.activityIndicator?.stopAnimating()     // nothing to load!
+    }
+    
+    func playerDidFinishPlaying(for _: PlayerView) {
+        // skip to next video and remove observer
+        willLoadNextVideo()
+        
+        Analytics.logEvent("fullScreenVideoChange", parameters: [
+            AnalyticsParameterItemName: "skip",
+            AnalyticsParameterContentType: "auto"
+        ])
     }
 }
 
