@@ -42,16 +42,6 @@ class FullScreenView: UIView {
             }
         }
     }
-    var isVideoControlsVisible = false
-    var isVideoPaused = false {
-        didSet {
-            if !isVideoPaused {
-                self.playerView?.player?.play()
-            } else {
-                self.playerView?.player?.pause()
-            }
-        }
-    }
     
     // MARK: - Setup view
     func setupView() {
@@ -120,9 +110,11 @@ class FullScreenView: UIView {
     
     func showVideoControls() {
         // show video controls briefly
-        self.videoControlsView?.isHidden = false
-        DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
-            self.videoControlsView?.isHidden = true
+        if let videoControlsView = self.videoControlsView, videoControlsView.isHidden {
+            videoControlsView.isHidden = false
+            DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
+                videoControlsView.isHidden = true
+            }
         }
     }
 }
@@ -142,11 +134,21 @@ extension FullScreenView: VideoControlViewDelegate {
     }
     
     func didSelectPlayPauseButton() {
-        self.isVideoPaused.toggle()
+        if let playerView = playerView {
+            if playerView.isPlaying {
+                playerView.player?.pause()
+            } else {
+                playerView.player?.play()
+            }
+        }
     }
     
-    func didCompleteScrubVideo(to time: CMTime) {
+    func didChangeScrubVideo(to time: CMTime) {
         self.playerView?.player?.seek(to: time)
+    }
+    
+    func didCompleteScrubVideo() {
+//        self.playerView?.player?.play()
     }
     
     func didStartScrubVideo() {

@@ -76,6 +76,8 @@ class PlayerView: UIView {
         }
     }
     
+    var isPlaying: Bool = false
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
@@ -156,8 +158,10 @@ class PlayerView: UIView {
             // tell delegate that player paused or played
             if let player = self.player {
                 if player.rate > 0 {
+                    self.isPlaying = true
                     delegateControlView?.playerDidPlay(for: self)
                 } else {
+                    self.isPlaying = false
                     delegateControlView?.playerDidPause(for: self)
                 }
             }
