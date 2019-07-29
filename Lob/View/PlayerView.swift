@@ -92,7 +92,7 @@ class PlayerView: UIView {
                         self?.setTimeObserver(for: player)
                         
                         // inform notifier class of new video
-                        PlayerNotifier.shared.addPlayerObserver(for: response)
+                        PlayerNotifier.shared.addPlayerObserver(for: player)
     
                         // observers for video load response, and play/pause
                         response.addObserver(self!, forKeyPath: "status", options: [.old, .new], context: nil)

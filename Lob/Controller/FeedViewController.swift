@@ -18,8 +18,8 @@ class FeedViewController: UIViewController {
     @IBOutlet weak var headerDateLabel: UILabel?
     @IBOutlet weak var errorView: UIView?
     
-    var dataSource = FeedDataSource()
-    var autoplayManager = AutoplayManager()
+    var dataSource = AutoplayTableDataSource()
+    var autoplayManager = AutoplayTableDelegate()
 
     var sport: Sport?
     
@@ -105,6 +105,9 @@ class FeedViewController: UIViewController {
             statusBarView.backgroundColor = UIColor.white
         }
     
+        // Set playernotifier delegate each time this view loads
+        PlayerNotifier.shared.delegate = autoplayManager
+        
         // start animating loading spinner
         self.activityIndicator?.startAnimating()
         
@@ -247,9 +250,6 @@ extension FeedViewController: FeedCellDelegate {
         let linkToShare = [videoUrl]
         let activityViewController = UIActivityViewController(activityItems: linkToShare as [Any], applicationActivities: nil)
         activityViewController.popoverPresentationController?.sourceView = self.view // so that iPads won't crash
-        
-        // exclude some activity types from the list (optional)
-        //        activityViewController.excludedActivityTypes = [ UIActivityType.airDrop, UIActivityType.postToFacebook ]
         
         // present the view controller
         self.present(activityViewController, animated: true, completion: nil)

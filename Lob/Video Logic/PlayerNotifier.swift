@@ -11,7 +11,7 @@ import UIKit
 
 // MARK: - Protocol for Player Notifier delegate
 protocol PlayerNotifierDelegate: class {
-    func playerItemDidReachEndTime(for item: AVPlayerItem)
+    func playerItemDidReachEndTime(for player: AVPlayer)
 }
 
 // MARK: - Notifier class that signals to delegate that a video has reached the end
@@ -22,7 +22,9 @@ class PlayerNotifier: NSObject {
     var delegate: PlayerNotifierDelegate?
     
     // MARK: - Adds player observer to listen to new object
-    func addPlayerObserver(for item: AVPlayerItem) {
+    func addPlayerObserver(for player: AVPlayer) {
+        let item = player.currentItem
+        
         // setup video did end playing observer and remove last made one
         if let videoDidEndPlayingObserver = self.videoDidEndPlayingObserver {
             NotificationCenter.default.removeObserver(videoDidEndPlayingObserver)
@@ -31,7 +33,7 @@ class PlayerNotifier: NSObject {
         self.videoDidEndPlayingObserver = NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: item, queue: .main) { [weak self] _ in
             
             // signal to delegate that playe reached end
-            self?.delegate?.playerItemDidReachEndTime(for: item)
+            self?.delegate?.playerItemDidReachEndTime(for: player)
         }
     }
     

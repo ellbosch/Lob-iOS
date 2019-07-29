@@ -164,7 +164,7 @@ class VideoViewController: UIViewController {
 
 // MARK: - Load next video if current video reaches end
 extension VideoViewController: PlayerNotifierDelegate {
-    func playerItemDidReachEndTime(for _: AVPlayerItem) {
+    func playerItemDidReachEndTime(for _: AVPlayer) {
         self.willLoadNextVideo()
     }
 }

@@ -9,7 +9,7 @@
 import UIKit
 
 
-class FeedDataSource: NSObject, UITableViewDataSource {
+class AutoplayTableDataSource: NSObject, UITableViewDataSource {
     var videoPosts: [(Date, [VideoPost])] = []
     var allRows: [LinkTableViewCell] = []           // we REALLY need to get rid of this
     var sport: Sport?
