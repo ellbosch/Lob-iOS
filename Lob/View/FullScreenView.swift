@@ -68,8 +68,8 @@ class FullScreenView: UIView {
         self.playerView?.alpha = 0
         
         // set delegate of player to video controls
-        self.playerView?.delegateControls = videoControlsView
-        self.playerView?.delegatePlayer = self
+        self.playerView?.delegateControlView = videoControlsView
+        self.playerView?.delegatePlayerView = self
     }
     
     // MARK: - Sets up activity indicator
@@ -157,7 +157,7 @@ extension FullScreenView: VideoControlViewDelegate {
 
 extension FullScreenView: PlayerViewPlayerDelegate {
     
-    func playerWillLoad(for playerView: PlayerView) {
+    func playerDidLoad(for playerView: PlayerView) {
         self.activityIndicator?.stopAnimating()
         self.playerView?.fadeIn()
         self.playerView?.playerLayer.player?.play()

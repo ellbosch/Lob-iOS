@@ -63,8 +63,8 @@ class VideoViewController: UIViewController {
         
         // set delegate of full screen view to this VC
         myView?.delegate = self
-        myView?.playerView?.delegatePlayer = myView
-        myView?.playerView?.delegateControls = myView?.videoControlsView
+        myView?.playerView?.delegatePlayerView = myView
+        myView?.playerView?.delegateControlView = myView?.videoControlsView
         
         // enable audio even if silent mode
         do {
@@ -134,45 +134,6 @@ class VideoViewController: UIViewController {
             AnalyticsParameterItemCategory: league,
             AnalyticsParameterContent: "fullScreen"
         ])
-        
-        
-        // load new player
-        //        let videoAsset = AVAsset(url: mp4Url)
-        //        let playableKey = "playable"
-//        videoAsset.loadValuesAsynchronously(forKeys: [playableKey]) {
-//            var error: NSError? = nil
-//            let status = videoAsset.statusOfValue(forKey: playableKey, error: &error)
-//            switch status {
-//            case .loaded:
-//                let league = videoPost.getSport()?.name ?? "[today view]"
-//
-//                // configure video scrubber to update with video playback (labels for UISlider have to be updated on main thread
-//                DispatchQueue.main.async {
-//                    Analytics.logEvent("videoLoaded", parameters: [
-//                        AnalyticsParameterItemID: videoPost.id,
-//                        AnalyticsParameterItemName: videoPost.title,
-//                        AnalyticsParameterItemCategory: league,
-//                        AnalyticsParameterContent: "fullScreen"
-//                        ])
-//
-//                    // Sucessfully loaded. Continue processing.
-//                    let item = AVPlayerItem(asset: videoAsset)
-//                    self.myView?.playerView?.playerLayer.player?.replaceCurrentItem(with: item)
-//                    self.myView?.playerView?.playerLayer.player?.play()
-//                }
-//
-//                break
-//            case .failed:
-//                // Handle error
-//                print("URL LOAD FAILED!")
-//            case .cancelled:
-//                // Terminate processing
-//                print("URL LOAD CANCELLED!")
-//            default:
-//                // Handle all other cases
-//                print("DEFAULT HAPPENED?")
-//            }
-//        }
     }
     
     // fades objects in and out (used for video controls)
@@ -193,9 +154,6 @@ class VideoViewController: UIViewController {
     }
     
     func replaceVideoDidEndPlayingObserver(playerItem: AVPlayerItem) {
-        // play/pause observer
-//        playerItem.addObserver(self, forKeyPath: "status", options: [.old, .new], context: nil)
-        
         // setup video did end playing observer and remove last made one
         if let videoDidEndPlayingObserver = self.videoDidEndPlayingObserver {
             NotificationCenter.default.removeObserver(videoDidEndPlayingObserver)
@@ -207,21 +165,6 @@ class VideoViewController: UIViewController {
             self?.willLoadNextVideo()
         }
     }
-    
-    // THIS NEW OBSERVER WILL READ STATUS AND SHOW AVPLAYER
-//    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-//        if let item: AVPlayerItem = object as? AVPlayerItem {
-//            if keyPath == "status" {
-//                let status = item.status
-//                if status == AVPlayerItem.Status.readyToPlay {
-//                    self.myView?.activityIndicator?.stopAnimating()
-//                    self.myView?.playerView?.fadeIn()
-//                    self.myView?.playerView?.player?.play()
-//                }
-//            }
-//        }
-//    }
-
     
     // special init when user opens video from link
     func initFromLink(videoId: String) {        
@@ -309,6 +252,5 @@ extension VideoViewController: FullScreenViewDelegate {
             navController.isNavigationBarHidden = false     // show nav bar
         }
     }
-    
     
 }

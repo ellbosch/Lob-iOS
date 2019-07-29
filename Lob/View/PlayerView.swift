@@ -16,17 +16,18 @@ protocol PlayerViewControlsDelegate: class {
     func playerDidPause(for playerView: PlayerView)
     func playerDidLoad(for playerView: PlayerView)
     func playerIsScrubbing(for playerView: PlayerView, to time: Float64)
+    func updateScrubber(to time: Float)
 }
 
 // MARK: - Protocol for player item
 protocol PlayerViewPlayerDelegate: class {
     func playerDidFinishPlaying(for playerView: PlayerView)
-    func playerWillLoad(for playerView: PlayerView)
+    func playerDidLoad(for playerView: PlayerView)
 }
 
 class PlayerView: UIView {
-    var delegateControls: PlayerViewControlsDelegate?
-    var delegatePlayer: PlayerViewPlayerDelegate?
+    var delegateControlView: PlayerViewControlsDelegate?
+    var delegatePlayerView: PlayerViewPlayerDelegate?
     
     var player: AVPlayer? {
         get {
@@ -91,7 +92,7 @@ class PlayerView: UIView {
         self.player?.addPeriodicTimeObserver(forInterval: CMTimeMakeWithSeconds(1, preferredTimescale: 1), queue: DispatchQueue.main) { (CMTime) -> Void in
             if self.player?.currentItem?.status == .readyToPlay {
                 let time: Float64 = CMTimeGetSeconds((self.player?.currentTime() ?? CMTimeMake(value: 0, timescale: 1)))
-                self.delegateControls?.playerIsScrubbing(for: self, to: time)
+                self.delegateControlView?.playerIsScrubbing(for: self, to: time)
             }
         }
     }
@@ -110,13 +111,25 @@ class PlayerView: UIView {
                     if let player = self?.player {
                         player.replaceCurrentItem(with: response)
                         success?(response)
+                        
+                        // set time observer on player
+                        self?.setTimeObserver(for: player)
+    
+                        // observers for video load response, and play/pause
+                        response.addObserver(self!, forKeyPath: "status", options: [.old, .new], context: nil)
+                        player.addObserver(self!, forKeyPath: "rate", options: [.old, .new], context: nil)
                     }
                 }
-                // observers for video load response, and play/pause
-                response.addObserver(self!, forKeyPath: "status", options: [.old, .new], context: nil)
-                self?.player?.addObserver(self!, forKeyPath: "rate", options: [.old, .new], context: nil)
             }
         )
+    }
+    
+    func setTimeObserver(for player: AVPlayer) {
+        // updates player scrubber slider as video plays
+        player.addPeriodicTimeObserver(forInterval: CMTimeMakeWithSeconds(1, preferredTimescale: 1), queue: DispatchQueue.main) { [weak self] _ in
+            let time: Float64 = CMTimeGetSeconds(player.currentTime())
+            self?.delegateControlView?.updateScrubber(to: Float(time))
+        }
     }
     
     // MARK: - Observers for player
@@ -129,8 +142,8 @@ class PlayerView: UIView {
                 switch status {
                 case .readyToPlay:
                     Analytics.logEvent("videoLoadSuccess", parameters: nil)
-                    delegateControls?.playerDidLoad(for: self)
-                    delegatePlayer?.playerWillLoad(for: self)
+                    delegateControlView?.playerDidLoad(for: self)
+                    delegatePlayerView?.playerDidLoad(for: self)
                 case .failed:
                     Analytics.logEvent("videoLoadFail", parameters: nil)
                 case .unknown:
@@ -143,9 +156,9 @@ class PlayerView: UIView {
             // tell delegate that player paused or played
             if let player = self.player {
                 if player.rate > 0 {
-                    delegateControls?.playerDidPlay(for: self)
+                    delegateControlView?.playerDidPlay(for: self)
                 } else {
-                    delegateControls?.playerDidPause(for: self)
+                    delegateControlView?.playerDidPause(for: self)
                 }
             }
         default:

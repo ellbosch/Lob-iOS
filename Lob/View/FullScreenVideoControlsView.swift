@@ -172,6 +172,15 @@ extension FullScreenVideoControlsView: PlayerViewControlsDelegate {
         self.videoTimeLabel?.text = self.convertSecondsToTimeString(secondsTotal: seconds)
     }
     
+    // MARK: - Player calls delegate to update scrubber
+    func updateScrubber(to time: Float) {
+        self.videoScrubberSlider?.value = time
+        
+        // also update labels in video by slider
+        let seconds = Int(time)
+        self.videoTimeLabel?.text = self.convertSecondsToTimeString(secondsTotal: seconds)
+    }
+    
     // converts integer of seconds into string representing time (mm:ss)
     private func convertSecondsToTimeString(secondsTotal: Int) -> String {
         var timeString: String
