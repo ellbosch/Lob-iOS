@@ -108,6 +108,7 @@ class FullScreenView: UIView {
         }
     }
     
+    // MARK: - Briefly shows video controls
     func showVideoControls() {
         // show video controls briefly
         if let videoControlsView = self.videoControlsView, videoControlsView.isHidden {

@@ -43,33 +43,6 @@ class PlayerView: UIView {
         return layer as! AVPlayerLayer
     }
     
-    // create observers when current item is set
-//    var playerItem: AVPlayerItem? {
-//        get {
-//            return playerLayer.player?.currentItem
-//        }
-//        set {
-//            // play/pause observer
-//            newValue?.addObserver(self, forKeyPath: "status", options: [.old, .new], context: nil)
-//
-//            // setup video did end playing observer and remove last made one
-//            if let videoDidEndPlayingObserver = self.videoDidEndPlayingObserver {
-//                NotificationCenter.default.removeObserver(videoDidEndPlayingObserver)
-//            }
-//
-//            self.videoDidEndPlayingObserver = NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: newValue, queue: .main) { [weak self] _ in
-//
-//                // skip to next video and remove observer
-//                if let myView = self {
-//                    self?.delegatePlayer?.playerDidFinishPlaying(for: myView)
-//                }
-//            }
-//
-//            // tell delegate that new video loaded
-//            delegateControls?.playerDidLoad(for: self)
-//        }
-//    }
-    
     var isMuted: Bool? {
         didSet {
             player?.isMuted = isMuted ?? true
@@ -116,6 +89,9 @@ class PlayerView: UIView {
                         
                         // set time observer on player
                         self?.setTimeObserver(for: player)
+                        
+                        // inform notifier class of new video
+                        PlayerNotifier.shared.addPlayerObserver(for: response)
     
                         // observers for video load response, and play/pause
                         response.addObserver(self!, forKeyPath: "status", options: [.old, .new], context: nil)

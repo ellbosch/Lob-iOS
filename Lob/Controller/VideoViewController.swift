@@ -16,8 +16,6 @@ class VideoViewController: UIViewController {
     var videoIndex: Int = 0
     var shouldPlay: Bool = true
     var openedFromShare: Bool = false
-    var videoDidEndPlayingObserver: NSObjectProtocol?
-
     
     var myView: FullScreenView? {
         get { return view as? FullScreenView }
@@ -27,27 +25,6 @@ class VideoViewController: UIViewController {
         }
     }
     
-//    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-//        super.init(nibName: nibNameOrNil, bundle: nil)
-//    }
-//
-//    required init?(coder aDecoder: NSCoder) {
-//        super.init(coder: aDecoder)
-//    }
-//
-//    convenience init(videos: [VideoPost], videoIndexToStart: Int, shouldPlay: Bool = true, openedFromShare: Bool = false) {
-//        self.init(nibName: nil, bundle: nil)
-//
-//        // from params
-//        self.videos = videos
-//        self.videoIndex = videoIndexToStart
-//        self.shouldPlay = shouldPlay
-//        self.openedFromShare = openedFromShare
-//
-//        // other params
-////        self.isVideoControlsVisible = false
-//    }
-//    
     // hides status bar
     override var prefersStatusBarHidden: Bool {
         return !openedFromShare
@@ -65,6 +42,9 @@ class VideoViewController: UIViewController {
         myView?.delegate = self
         myView?.playerView?.delegatePlayerView = myView
         myView?.playerView?.delegateControlView = myView?.videoControlsView
+        
+        // set delegate to PlayerNotifier
+        PlayerNotifier.shared.delegate = self
         
         // enable audio even if silent mode
         do {
@@ -119,51 +99,19 @@ class VideoViewController: UIViewController {
         
         // load url in background thread
         playerView?.setPlayerItem(from: URL(string: videoPost.mp4UrlRaw),
-          success: { [weak self] playerItem in
-                DispatchQueue.main.async { [weak self] in
-                    self?.replaceVideoDidEndPlayingObserver(playerItem: playerItem)
-                }
+            success: { _ in
+                // analytics
+                let league = videoPost.getSport()?.name ?? "[today view]"
+                Analytics.logEvent("videoLoaded", parameters: [
+                    AnalyticsParameterItemID: videoPost.id,
+                    AnalyticsParameterItemName: videoPost.title,
+                    AnalyticsParameterItemCategory: league,
+                    AnalyticsParameterContent: "fullScreen"
+                    ]
+                )
             }
         )
         
-        // analytics
-        let league = videoPost.getSport()?.name ?? "[today view]"
-        Analytics.logEvent("videoLoaded", parameters: [
-            AnalyticsParameterItemID: videoPost.id,
-            AnalyticsParameterItemName: videoPost.title,
-            AnalyticsParameterItemCategory: league,
-            AnalyticsParameterContent: "fullScreen"
-        ])
-    }
-    
-    // fades objects in and out (used for video controls)
-    func fadeViewInThenOut(view: UIView) {
-        let animationDuration = 0.25
-        
-        // Fade in the view
-        UIView.animate(withDuration: animationDuration, delay: 0.0, options:.allowUserInteraction, animations: { () -> Void in
-            view.alpha = 1
-        }) { (Bool) -> Void in
-            // After the animation completes, fade out the view after a delay
-            let delay = TimeInterval(exactly: 5) ?? 0
-            
-            UIView.animate(withDuration: animationDuration, delay: delay, options: [.curveEaseOut, .allowUserInteraction], animations: { () -> Void in
-                view.alpha = 0
-            }, completion: nil)
-        }
-    }
-    
-    func replaceVideoDidEndPlayingObserver(playerItem: AVPlayerItem) {
-        // setup video did end playing observer and remove last made one
-        if let videoDidEndPlayingObserver = self.videoDidEndPlayingObserver {
-            NotificationCenter.default.removeObserver(videoDidEndPlayingObserver)
-        }
-        
-        self.videoDidEndPlayingObserver = NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: playerItem, queue: .main) { [weak self] _ in
-            
-            // skip to next video and remove observer
-            self?.willLoadNextVideo()
-        }
     }
     
     // special init when user opens video from link
@@ -215,6 +163,13 @@ class VideoViewController: UIViewController {
     }
 }
 
+// MARK: - Load next video if current video reaches end
+extension VideoViewController: PlayerNotifierDelegate {
+    func playerItemDidReachEndTime(for _: AVPlayerItem) {
+        self.willLoadNextVideo()
+    }
+}
+
 extension VideoViewController: FullScreenViewDelegate {
     func willLoadNextVideo() {
         if videoIndex < videos.count - 1 {
@@ -243,10 +198,7 @@ extension VideoViewController: FullScreenViewDelegate {
             self.myView?.thumbnailView?.image = nil
         }
         
-        // remove skip observer of current video--THIS FIXES THE BUG THE VIDEO TO SUDDENLY PLAY IN BACKGROUND
-        if let videoDidEndPlayingObserver = self.videoDidEndPlayingObserver {
-            NotificationCenter.default.removeObserver(videoDidEndPlayingObserver)
-        }
+        PlayerNotifier.shared.removePlayerObserver()        // ensures that videos won't play in background
         
         if let navController = self.navigationController {
             navController.isNavigationBarHidden = false     // show nav bar
