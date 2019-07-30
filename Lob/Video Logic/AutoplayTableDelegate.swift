@@ -16,9 +16,7 @@ protocol AutoplayTableViewDelegate: class {
     func willPresentFullScreen(forVideoAt index: Int)
 }
 
-class AutoplayTableDelegate: NSObject {
-    weak var delegate: AutoplayTableViewDelegate?
-    
+class AutoplayTableDelegate: NSObject {    
     // MARK: play video at specified index
     func playVideo(_ tableView: UITableView, forRowAt indexPath: IndexPath) {
         if let cell = tableView.cellForRow(at: indexPath) as? LinkTableViewCell {
@@ -70,7 +68,7 @@ class AutoplayTableDelegate: NSObject {
     }
     
     // MARK: identifies the index for where we play video
-    private func locateIndexToPlayVideo(_ tableView: UITableView) -> IndexPath? {
+    func locateIndexToPlayVideo(_ tableView: UITableView) -> IndexPath? {
         var middleIndex: IndexPath?
         
         // see if full screen mode is disabled and new cells have loaded, if yes, toggle autoplay
@@ -119,40 +117,6 @@ class AutoplayTableDelegate: NSObject {
         indexCount += indexPath.row + 1
         
         return indexCount
-    }
-}
-
-extension AutoplayTableDelegate: UITableViewDelegate {
-    // MARK: - Autoplay cell if specified autoplay element
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        // sets table cell indent to 0
-        cell.separatorInset = UIEdgeInsets.zero
-    }
-    
-    // MARK: - Set video to fullscreen on tap, unmute video, and pause all other playing videos
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let index = calculateRows(tableView, indexPath: indexPath) - 1
-        delegate?.willPresentFullScreen(forVideoAt: index)
-    }
-    
-    // play middle(ish) video AFTER scroll drag has ended, but ONLY if user hasn't done a big swipe
-    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        guard let tableView = scrollView as? UITableView else {
-            return
-        }
-        if !decelerate, let indexPath = locateIndexToPlayVideo(tableView) {
-            playVideo(tableView, forRowAt: indexPath)
-        }
-    }
-    
-    // load video if deceleration ended
-    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        guard let tableView = scrollView as? UITableView else {
-            return
-        }
-        if let indexPath = locateIndexToPlayVideo(tableView) {
-            playVideo(tableView, forRowAt: indexPath)
-        }
     }
 }
 

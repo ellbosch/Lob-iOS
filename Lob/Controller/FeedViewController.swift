@@ -22,6 +22,8 @@ class FeedViewController: UIViewController {
     var autoplayManager = AutoplayTableDelegate()
 
     var sport: Sport?
+    var page = 1                    // pagination counter
+    var isPaginationOk = true       // protects us from multiple pagination calls
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nil)
@@ -44,8 +46,7 @@ class FeedViewController: UIViewController {
         
         // set tableview delegates
         self.tableView?.dataSource = dataSource
-        self.tableView?.delegate = autoplayManager
-        autoplayManager.delegate = self
+        self.tableView?.delegate = self
         
         // set title: nil case means we're in hot posts view
         if let sport = self.sport {
@@ -73,23 +74,6 @@ class FeedViewController: UIViewController {
         let refreshControl = UIRefreshControl()
         self.tableView?.refreshControl = refreshControl
         refreshControl.addTarget(self, action: #selector(self.handleRefresh(_:)), for: .valueChanged)
-        
-        // load videos by specified view
-        initLoadVideoPosts()
-    }
-    
-    // hide iphone x home indicator in fullscreen mode
-    func prefersHomeIndicatorAutoHidden() -> Bool {
-        return false
-    }
-    
-    // keep status bar visible
-    override var prefersStatusBarHidden: Bool {
-        return false
-    }
-    
-    override var preferredStatusBarStyle: UIStatusBarStyle {
-        return .default
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -108,12 +92,8 @@ class FeedViewController: UIViewController {
         // Set playernotifier delegate each time this view loads
         PlayerNotifier.shared.delegate = autoplayManager
         
-        // start animating loading spinner
-        self.activityIndicator?.startAnimating()
-        
-        // reload data
-        self.tableView?.reloadData()
-        self.initLoadVideoPosts()
+        // load videos by specified view
+        processPostsResponse()
     }
     
     // reset table if view disappears
@@ -122,9 +102,23 @@ class FeedViewController: UIViewController {
         self.tableView?.reloadData()
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+//    override func didReceiveMemoryWarning() {
+//        super.didReceiveMemoryWarning()
+//        // Dispose of any resources that can be recreated.
+//    }
+    
+    // hide iphone x home indicator in fullscreen mode
+    func prefersHomeIndicatorAutoHidden() -> Bool {
+        return false
+    }
+    
+    // keep status bar visible
+    override var prefersStatusBarHidden: Bool {
+        return false
+    }
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .default
     }
 
     
@@ -133,35 +127,40 @@ class FeedViewController: UIViewController {
      *****************************************/
     
     // loads video posts and scrolls to current day. if no sport is selected, the user is viewing "hot" posts.
-    private func initLoadVideoPosts() {
-        DataProvider.shared.getVideoPosts(sport: self.sport,
+    private func processPostsResponse() {
+        DataProvider.shared.getVideoPosts(sport: self.sport, page: self.page,
           success: { [weak self] response in
             DispatchQueue.main.async {
-                self?.dataSource.videoPosts = response
-                self?.tableView?.reloadData()     // necessary to load data in table view
+                self?.dataSource.videoPosts += response
                 
                 // show error view if there are no posts
-                if response.isEmpty {
+                if self?.page == 1 && response.isEmpty {
                     self?.errorView?.isHidden = false
+                } else {
+                    // play first video if this is first call
+                    if let tableView = self?.tableView, self?.page == 1 {
+                        let firstIndexPath = IndexPath(row: 0, section:0)
+                        self?.autoplayManager.playVideo(tableView, forRowAt: firstIndexPath)
+                    }
+                    self?.page += 1     // increment page
                 }
-                
-                if let tableView = self?.tableView {
-                    // play first video if indexPathForPlayingVideo is null
-                    let firstIndexPath = IndexPath(row: 0, section:0)
-                    self?.autoplayManager.playVideo(tableView, forRowAt: firstIndexPath)
-                }
+
                 // hide loading indicator
                 self?.activityIndicator?.stopAnimating()
+                self?.tableView?.reloadData()
             }
-        }, fail: { error in
+            self?.isPaginationOk = true
+        }, fail: { [weak self] error in
             Analytics.logEvent("networkFailed", parameters: [ AnalyticsParameterItemCategory: error ])
             print(error)
             
             // show error message and hide activity indicator
-            DispatchQueue.main.async { [weak self] in
+            DispatchQueue.main.async {
                 self?.errorView?.isHidden = false
                 self?.activityIndicator?.stopAnimating()
             }
+            
+            self?.isPaginationOk = true
         }
       )
     }
@@ -176,7 +175,9 @@ class FeedViewController: UIViewController {
         self.dataSource.videoPosts.removeAll()
         self.tableView?.reloadData()
     
-        initLoadVideoPosts()
+        self.page = 1       // reset pagination
+        
+        processPostsResponse()
         self.tableView?.refreshControl?.endRefreshing()
         
         // log analytics
@@ -203,9 +204,49 @@ class FeedViewController: UIViewController {
 }
 
 // MARK: - AutoplayDelegate implementation
-extension FeedViewController: AutoplayTableViewDelegate {
+extension FeedViewController: UITableViewDelegate {
+    // MARK: - Set pagination if we reach last element
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if self.isPaginationOk {
+            let lastSection = tableView.numberOfSections - 1
+            let lastRow = IndexPath(row: tableView.numberOfRows(inSection: lastSection) - 1, section: lastSection)
+            if indexPath == lastRow {
+                self.isPaginationOk = false
+                processPostsResponse()
+            }
+        }
+    }
+    
+    // MARK: - Set video to fullscreen on tap, unmute video, and pause all other playing videos
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let index = autoplayManager.calculateRows(tableView, indexPath: indexPath) - 1
+        willPresentFullScreen(forVideoAt: index)
+    }
+    
+    // MARK: - Play middle(ish) video AFTER scroll drag has ended, but ONLY if user hasn't done a big swipe
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        guard let tableView = scrollView as? UITableView else {
+            return
+        }
+        if !decelerate, let indexPath = autoplayManager.locateIndexToPlayVideo(tableView) {
+            autoplayManager.playVideo(tableView, forRowAt: indexPath)
+        }
+    }
+    
+    // MARK: - load video if deceleration ended
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        guard let tableView = scrollView as? UITableView else {
+            return
+        }
+        if let indexPath = autoplayManager.locateIndexToPlayVideo(tableView) {
+            autoplayManager.playVideo(tableView, forRowAt: indexPath)
+        }
+    }
+    
+    
+    
     // MARK: - Presents full screen VC when prompted from delegate
-    func willPresentFullScreen(forVideoAt index: Int) {
+    private func willPresentFullScreen(forVideoAt index: Int) {
         let storyboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
         guard let videoVC: VideoViewController = storyboard.instantiateViewController(withIdentifier: "VideoViewController") as? VideoViewController else {
             return
@@ -217,7 +258,6 @@ extension FeedViewController: AutoplayTableViewDelegate {
             let videoPosts = videosForDate.1
             videoPostsNoDate.append(contentsOf: videoPosts)
         }
-//        let videoVC = VideoViewController(videos: videoPostsNoDate, videoIndexToStart: index)
         videoVC.videos = videoPostsNoDate
         
         // send index of currently viewed video (index = row + rowsInSection(section-1)

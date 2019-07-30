@@ -35,8 +35,14 @@ class LinkTableViewCell: UITableViewCell {
     var isVideoControlsVisible: Bool = false
     var videoAsset: AVAsset?
     
-    override func awakeFromNib() {
-        super.awakeFromNib()
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: .default, reuseIdentifier: "LinkTableViewCell")
+        setupView()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        setupView()
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -48,6 +54,10 @@ class LinkTableViewCell: UITableViewCell {
         
         self.thumbnailView?.sd_setImage(with: nil, placeholderImage: nil)
         self.playerView?.playerLayer.player?.replaceCurrentItem(with: nil)
+    }
+    
+    func setupView() {
+        self.separatorInset = UIEdgeInsets.zero
     }
     
     func updateMuteControls(isMuted: Bool) {
