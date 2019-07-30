@@ -15,6 +15,7 @@
 		8B2318E222ECCACF00E1657D /* FullScreenVideoControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B2318E122ECCACF00E1657D /* FullScreenVideoControlsView.swift */; };
 		8B2318E422EE232800E1657D /* VideoLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B2318E322EE232800E1657D /* VideoLoader.swift */; };
 		8B2318EA22EE8EAA00E1657D /* PlayerNotifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B2318E922EE8EAA00E1657D /* PlayerNotifier.swift */; };
+		8B25D1B422F0E9A20068FCB7 /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B25D1B322F0E9A20068FCB7 /* MainTabBarController.swift */; };
 		8B52BCB120E897D40062F5AB /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B52BCB020E897D40062F5AB /* PlayerView.swift */; };
 		8B76852E2132193300D05240 /* VideoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B76852D2132193300D05240 /* VideoViewController.swift */; };
 		8B7F9FDE20CDA28600C666B8 /* SportsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B7F9FDD20CDA28600C666B8 /* SportsTableViewCell.swift */; };
@@ -68,6 +69,7 @@
 		8B2318E122ECCACF00E1657D /* FullScreenVideoControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullScreenVideoControlsView.swift; sourceTree = "<group>"; };
 		8B2318E322EE232800E1657D /* VideoLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoLoader.swift; sourceTree = "<group>"; };
 		8B2318E922EE8EAA00E1657D /* PlayerNotifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerNotifier.swift; sourceTree = "<group>"; };
+		8B25D1B322F0E9A20068FCB7 /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
 		8B52BCB020E897D40062F5AB /* PlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
 		8B76852D2132193300D05240 /* VideoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoViewController.swift; sourceTree = "<group>"; };
 		8B7F9FDD20CDA28600C666B8 /* SportsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsTableViewCell.swift; sourceTree = "<group>"; };
@@ -211,6 +213,7 @@
 		8BF2B50122DA5F8800320A3F /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				8B25D1B322F0E9A20068FCB7 /* MainTabBarController.swift */,
 				8B135D172119566000B87BA5 /* FeedViewController.swift */,
 				B5CDB41121D5B9C600D54353 /* SportsListViewController.swift */,
 				8BAFE77B22AC657C009B87CA /* SettingsViewController.swift */,
@@ -511,6 +514,7 @@
 			files = (
 				8B8B142622DA934000611AF3 /* Sport.swift in Sources */,
 				8B2318E222ECCACF00E1657D /* FullScreenVideoControlsView.swift in Sources */,
+				8B25D1B422F0E9A20068FCB7 /* MainTabBarController.swift in Sources */,
 				8B135D122115863100B87BA5 /* ThumbnailImageView.swift in Sources */,
 				8BCC1F642099346D008BBED0 /* AppDelegate.swift in Sources */,
 				8BAFE77E22AD8A37009B87CA /* SettingsTableViewCell.swift in Sources */,

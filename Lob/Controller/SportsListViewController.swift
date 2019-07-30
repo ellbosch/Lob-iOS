@@ -30,7 +30,6 @@ class SportsListViewController: UIViewController, UITableViewDelegate, UITableVi
         
         // gets sports data
         self.sports = DataProvider.shared.sportsData.map( { $0.value })
-        print(sports)
         self.tableView?.reloadData()
     }
     
@@ -95,7 +94,17 @@ class SportsListViewController: UIViewController, UITableViewDelegate, UITableVi
     // logic for pushing segue
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 0 {
-            performSegue(withIdentifier: "channelSegue", sender: nil)
+            // display feed vc for sport
+    
+            let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+
+            guard let sportForCell = (tableView.cellForRow(at: indexPath) as? SportsTableViewCell)?.sport,
+                let feedVC: FeedViewController = mainStoryboard.instantiateViewController(withIdentifier: "SportFeedViewController") as? FeedViewController else {
+                fatalError("No sport found!")
+            }
+
+            feedVC.sport = sportForCell
+            self.navigationController?.pushViewController(feedVC, animated: true)
         } else if indexPath.section == 1 {
             performSegue(withIdentifier: "settingsSegue", sender: nil)
         }

@@ -25,18 +25,6 @@ class FeedViewController: UIViewController {
     var page = 1                    // pagination counter
     var isPaginationOk = true       // protects us from multiple pagination calls
     
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        super.init(nibName: nibNameOrNil, bundle: nil)
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-    }
-    
-    convenience init(sport: Sport?) {
-        self.init(nibName: nil, bundle: nil)
-        self.sport = sport
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,12 +36,12 @@ class FeedViewController: UIViewController {
         self.tableView?.dataSource = dataSource
         self.tableView?.delegate = self
         
-        // set title: nil case means we're in hot posts view
+        // view logic--WE'LL EVENTUALLY PORT THIS TO A VIEW FILE
         if let sport = self.sport {
+            // set title: nil case means we're in hot posts view
             self.title = sport.name
         } else {
             // if we're in hot posts view: set date header
-            // date for header
             let now = Date()
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "LLLL d"
@@ -211,11 +199,11 @@ extension FeedViewController: UITableViewDelegate {
             let lastSection = tableView.numberOfSections - 1
             let lastRow = IndexPath(row: tableView.numberOfRows(inSection: lastSection) - 1, section: lastSection)
             if indexPath == lastRow {
-                self.dataSource.videoPosts.removeAll()
-                self.tableView?.reloadData()
-//                
-//                self.isPaginationOk = false
-//                processPostsResponse()
+//                self.dataSource.videoPosts.removeAll()
+//                self.tableView?.reloadData()
+
+                self.isPaginationOk = false
+                processPostsResponse()
             }
         }
     }

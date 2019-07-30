@@ -19,8 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationDidFinishLaunching(_ application: UIApplication) {
         let window = UIWindow(frame: UIScreen.main.bounds)
         
-        let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
-        let tabBarController = mainStoryboard.instantiateViewController(withIdentifier: "TabBarController")
+        let tabBarController = MainTabBarController()
         
         window.makeKeyAndVisible()
         window.rootViewController = tabBarController
