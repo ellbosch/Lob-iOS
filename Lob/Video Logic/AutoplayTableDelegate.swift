@@ -52,7 +52,7 @@ class AutoplayTableDelegate: NSObject {
                             AnalyticsParameterItemName: videoPost.title,
                             AnalyticsParameterItemCategory: videoPost.getSport() ?? "",
                             AnalyticsParameterContent: "table",
-                            AnalyticsParameterIndex: self?.calculateRows(tableView, indexPath: indexPath) ?? -1
+                            AnalyticsParameterIndex: tableView.calculateRows(forRowAt: indexPath)
                             ]
                         )
                     }
@@ -126,18 +126,6 @@ class AutoplayTableDelegate: NSObject {
         }
         return middleIndex
     }
-    
-    // MARK: find 1D index for the now-playing video (use this for analytics to see how far down the table people watch videos)
-    public func calculateRows(_ tableView: UITableView, indexPath: IndexPath) -> Int {
-        var indexCount: Int = 0
-        
-        for i in stride(from: 0, to: indexPath.section, by: 1) {
-            indexCount += tableView.numberOfRows(inSection: i)
-        }
-        indexCount += indexPath.row + 1
-        
-        return indexCount
-    }
 }
 
 // MARK: - Replay current video if it reaches end
@@ -145,5 +133,20 @@ extension AutoplayTableDelegate: PlayerNotifierDelegate {
     func playerItemDidReachEndTime(for player: AVPlayer) {
         player.seek(to: CMTime.zero)
         player.play()
+    }
+}
+
+// MARK: - Extends UITableView class to calculate 1D row for table
+extension UITableView {
+    // MARK: find 1D index for the now-playing video (use this for analytics to see how far down the table people watch videos)
+    public func calculateRows(forRowAt indexPath: IndexPath) -> Int {
+        var indexCount: Int = 0
+        
+        for i in stride(from: 0, to: indexPath.section, by: 1) {
+            indexCount += self.numberOfRows(inSection: i)
+        }
+        indexCount += indexPath.row + 1
+        
+        return indexCount
     }
 }

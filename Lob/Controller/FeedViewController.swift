@@ -18,8 +18,8 @@ class FeedViewController: UIViewController {
     @IBOutlet weak var headerDateLabel: UILabel?
     @IBOutlet weak var errorView: UIView?
     
-    var dataSource = AutoplayTableDataSource()
-    var autoplayManager = AutoplayTableDelegate()
+    var dataSource: AutoplayTableDataSource?
+    var autoplayManager: AutoplayTableDelegate?
 
     var sport: Sport?
     var page = 1                    // pagination counter
@@ -29,8 +29,11 @@ class FeedViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        dataSource.sport = self.sport
-        dataSource.cellDelegate = self
+        dataSource = AutoplayTableDataSource()
+        autoplayManager = AutoplayTableDelegate()
+        
+        dataSource?.sport = self.sport
+        dataSource?.cellDelegate = self
         
         // set tableview delegates
         self.tableView?.dataSource = dataSource
@@ -81,7 +84,7 @@ class FeedViewController: UIViewController {
         }
         
         if let tableView = self.tableView {
-            autoplayManager.playVideo(tableView)
+            autoplayManager?.playVideo(tableView)
         }
     
         // Set playernotifier delegate each time this view loads
@@ -90,7 +93,7 @@ class FeedViewController: UIViewController {
     
     // MARK: - Pause current video
     override func viewWillDisappear(_ animated: Bool) {
-        self.autoplayManager.pauseCurrentVideo()
+        self.autoplayManager?.pauseCurrentVideo()
     }
     
 //    override func didReceiveMemoryWarning() {
@@ -122,7 +125,7 @@ class FeedViewController: UIViewController {
         DataProvider.shared.getVideoPosts(sport: self.sport, page: self.page,
           success: { [weak self] response in
             DispatchQueue.main.async {
-                self?.dataSource.videoPosts += response
+                self?.dataSource?.videoPosts += response
                 
                 // show error view if there are no posts
                 if self?.page == 1 && response.isEmpty {
@@ -158,7 +161,7 @@ class FeedViewController: UIViewController {
     
     @objc func handleRefresh(_ sender: Any) {
         // remove table before refresh sequence begins (makes the experience feel nicer since everything gets reloaded anyways
-        self.dataSource.videoPosts.removeAll()
+        self.dataSource?.videoPosts.removeAll()
         self.tableView?.reloadData()
     
         self.page = 1       // reset pagination
@@ -176,14 +179,16 @@ class FeedViewController: UIViewController {
     
     // toggles mute on current video and changes icons
     @IBAction func muteToggleSelect(_ sender: Any) {
-        // ensures future loaded videos will have mute toggled
-        self.dataSource.isMuted.toggle()
-        
         // update cells that have already loaded
-        if let visibleCells = (self.tableView?.visibleCells as? [LinkTableViewCell]) {
-            for cell in visibleCells {
-                cell.updateMuteControls(isMuted: self.dataSource.isMuted)
-                cell.playerView?.isMuted = self.dataSource.isMuted
+        if let dataSource = self.dataSource {
+            // ensures future loaded videos will have mute toggled
+            dataSource.isMuted.toggle()
+            
+            if let visibleCells = (self.tableView?.visibleCells as? [LinkTableViewCell]) {
+                for cell in visibleCells {
+                    cell.updateMuteControls(isMuted: dataSource.isMuted)
+                    cell.playerView?.isMuted = dataSource.isMuted
+                }
             }
         }
     }
@@ -205,7 +210,7 @@ extension FeedViewController: UITableViewDelegate {
     
     // MARK: - Set video to fullscreen on tap, unmute video, and pause all other playing videos
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let index = autoplayManager.calculateRows(tableView, indexPath: indexPath) - 1
+        let index = tableView.calculateRows(forRowAt: indexPath)
         willPresentFullScreen(forVideoAt: index)
     }
     
@@ -215,7 +220,7 @@ extension FeedViewController: UITableViewDelegate {
             return
         }
         if !decelerate {
-            autoplayManager.playVideo(tableView)
+            autoplayManager?.playVideo(tableView)
         }
     }
     
@@ -224,7 +229,7 @@ extension FeedViewController: UITableViewDelegate {
         guard let tableView = scrollView as? UITableView else {
             return
         }
-        autoplayManager.playVideo(tableView)
+        autoplayManager?.playVideo(tableView)
     }
     
     
@@ -232,13 +237,13 @@ extension FeedViewController: UITableViewDelegate {
     // MARK: - Presents full screen VC when prompted from delegate
     private func willPresentFullScreen(forVideoAt index: Int) {
         let storyboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
-        guard let videoVC: VideoViewController = storyboard.instantiateViewController(withIdentifier: "VideoViewController") as? VideoViewController else {
+        guard let videoVC: VideoViewController = storyboard.instantiateViewController(withIdentifier: "VideoViewController") as? VideoViewController, let dataSource = self.dataSource else {
             return
         }
         // send array of videoposts and current index to segue vc
         var videoPostsNoDate: [VideoPost] = [VideoPost]()
         
-        for videosForDate in self.dataSource.videoPosts {
+        for videosForDate in dataSource.videoPosts {
             let videoPosts = videosForDate.1
             videoPostsNoDate.append(contentsOf: videoPosts)
         }
@@ -247,7 +252,6 @@ extension FeedViewController: UITableViewDelegate {
         // send index of currently viewed video (index = row + rowsInSection(section-1)
         videoVC.videoIndex = index
 
-//        self.navigationController?.pushViewController(videoVC, animated: true)
         self.present(videoVC, animated: true, completion: nil)
     }
 }
