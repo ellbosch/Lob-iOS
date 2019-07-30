@@ -116,8 +116,8 @@ class FeedViewController: UIViewController {
         self.initLoadVideoPosts()
     }
     
-    // null table if view disappears
-    override func viewWillDisappear(_ animated: Bool) {        
+    // reset table if view disappears
+    override func viewWillDisappear(_ animated: Bool) {
         self.dataSource.videoPosts.removeAll()
         self.tableView?.reloadData()
     }
@@ -150,13 +150,18 @@ class FeedViewController: UIViewController {
                     let firstIndexPath = IndexPath(row: 0, section:0)
                     self?.autoplayManager.playVideo(tableView, forRowAt: firstIndexPath)
                 }
-                
                 // hide loading indicator
                 self?.activityIndicator?.stopAnimating()
             }
         }, fail: { error in
             Analytics.logEvent("networkFailed", parameters: [ AnalyticsParameterItemCategory: error ])
             print(error.localizedDescription)
+            
+            // show error message and hide activity indicator
+            DispatchQueue.main.async { [weak self] in
+                self?.errorView?.isHidden = false
+                self?.activityIndicator?.stopAnimating()
+            }
         }
       )
     }
