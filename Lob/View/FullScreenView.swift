@@ -29,7 +29,7 @@ class FullScreenView: UIView {
         }
     }
     
-    var delegate: FullScreenViewDelegate?
+    weak var delegate: FullScreenViewDelegate?
     var videoPost: VideoPost? {
         didSet {
             if let videoPostNewValue = videoPost {

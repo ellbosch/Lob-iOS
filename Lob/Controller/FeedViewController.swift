@@ -211,8 +211,11 @@ extension FeedViewController: UITableViewDelegate {
             let lastSection = tableView.numberOfSections - 1
             let lastRow = IndexPath(row: tableView.numberOfRows(inSection: lastSection) - 1, section: lastSection)
             if indexPath == lastRow {
-                self.isPaginationOk = false
-                processPostsResponse()
+                self.dataSource.videoPosts.removeAll()
+                self.tableView?.reloadData()
+//                
+//                self.isPaginationOk = false
+//                processPostsResponse()
             }
         }
     }

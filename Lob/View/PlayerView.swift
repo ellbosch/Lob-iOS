@@ -27,8 +27,8 @@ protocol PlayerViewPlayerDelegate: class {
 }
 
 class PlayerView: UIView {
-    var delegateControlView: PlayerViewControlsDelegate?
-    var delegatePlayerView: PlayerViewPlayerDelegate?
+    weak var delegateControlView: PlayerViewControlsDelegate?
+    weak var delegatePlayerView: PlayerViewPlayerDelegate?
     
     var player: AVPlayer? {
         get {

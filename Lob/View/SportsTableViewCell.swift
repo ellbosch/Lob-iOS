@@ -12,6 +12,22 @@ class SportsTableViewCell: UITableViewCell {
     @IBOutlet weak var sportsLabel: UILabel?
     @IBOutlet weak var iconLabel: UIImageView?
     
+    var sport: Sport? {
+        didSet {
+            setupView()
+        }
+    }
+    
+    func setupView() {
+        if let sport = self.sport {
+            self.sportsLabel?.text = sport.name
+            self.iconLabel?.image = UIImage(named: sport.iconLabel)
+        } else {
+            self.sportsLabel?.text = "Settings"
+            self.iconLabel?.image = UIImage(named: "settings")
+        }
+    }
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code

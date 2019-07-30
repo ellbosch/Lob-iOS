@@ -19,7 +19,7 @@ class PlayerNotifier: NSObject {
     static let shared = PlayerNotifier()
     
     var videoDidEndPlayingObserver: NSObjectProtocol?
-    var delegate: PlayerNotifierDelegate?
+    weak var delegate: PlayerNotifierDelegate?
     
     // MARK: - Adds player observer to listen to new object
     func addPlayerObserver(for player: AVPlayer) {

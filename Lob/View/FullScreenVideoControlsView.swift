@@ -22,7 +22,7 @@ protocol VideoControlViewDelegate: class {
 }
 
 class FullScreenVideoControlsView: UIView {
-    var delegate: VideoControlViewDelegate?
+    weak var delegate: VideoControlViewDelegate?
     
     // Reference outlets
     @IBOutlet weak var exitViewButton: UIButton?

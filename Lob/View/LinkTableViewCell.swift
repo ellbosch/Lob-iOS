@@ -30,7 +30,7 @@ class LinkTableViewCell: UITableViewCell {
     @IBOutlet weak var leagueLabelIcon: UIImageView?
     @IBOutlet weak var authorButton: RedditAuthorButton?
 
-    var delegate: FeedCellDelegate?
+    weak var delegate: FeedCellDelegate?
     var videoPost: VideoPost?
     var isVideoControlsVisible: Bool = false
     var videoAsset: AVAsset?

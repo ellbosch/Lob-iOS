@@ -24,13 +24,14 @@ class SportsListViewController: UIViewController, UITableViewDelegate, UITableVi
         // instantiate tableview
         self.tableView?.delegate = self
         self.tableView?.dataSource = self
-        self.tableView?.reloadData()
         
         // removes empty cells
         tableView?.tableFooterView = UIView()
         
         // gets sports data
-        getSportData()
+        self.sports = DataProvider.shared.sportsData.map( { $0.value })
+        print(sports)
+        self.tableView?.reloadData()
     }
     
     override func viewDidAppear(_ animated: Bool) {        
@@ -82,16 +83,11 @@ class SportsListViewController: UIViewController, UITableViewDelegate, UITableVi
             fatalError("The dequeued cell is not an instance of SportsTableViewCell")
         }
         
-        switch indexPath.section {
-        case 0:
-            let sport = self.sports[indexPath.row]
-            cell.sportsLabel?.text = sport.name
-            cell.iconLabel?.image = UIImage(named: sport.iconLabel)
-        case 1:
-            cell.sportsLabel?.text = "Settings"
-            cell.iconLabel?.image = UIImage(named: "settings")
-        default:
-            break
+        // set sport if in first section
+        if indexPath.section == 0 {
+            cell.sport = sports[indexPath.row]
+        } else {
+            cell.sport = nil
         }
         return cell
     }

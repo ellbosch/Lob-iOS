@@ -79,7 +79,7 @@ class AutoplayTableDataSource: NSObject, UITableViewDataSource {
     
     // give the table a section header only if we're NOT viewing hot posts
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if self.sport == nil {
+        if self.sport == nil || section < self.videoPosts.count {
             return nil
         } else {
             // sets header indent
