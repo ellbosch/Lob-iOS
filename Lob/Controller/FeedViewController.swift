@@ -155,7 +155,7 @@ class FeedViewController: UIViewController {
             }
         }, fail: { error in
             Analytics.logEvent("networkFailed", parameters: [ AnalyticsParameterItemCategory: error ])
-            print(error.localizedDescription)
+            print(error)
             
             // show error message and hide activity indicator
             DispatchQueue.main.async { [weak self] in

@@ -14,7 +14,7 @@ class DataProvider {
     
     static let shared = DataProvider()
     
-    private let LOB_ROOT_URL = "https://www.lob.tv"
+    private let LOB_ROOT_URL = "https://www.lob.tv/api/v1"
     
     public var sportsData: [String:Sport] = [:]
     
@@ -35,8 +35,8 @@ class DataProvider {
     }
     
     // MARK: - API to FeedVC
-    public func getVideoPosts(sport: Sport?, success: (([(Date, [VideoPost])]) -> Void)? = nil, fail: ((DataProviderError) -> Void)? = nil)  {
-        guard let urlRequest = buildURL(from: sport) else {
+    public func getVideoPosts(sport: Sport?, page: Int = 1, success: (([(Date, [VideoPost])]) -> Void)? = nil, fail: ((DataProviderError) -> Void)? = nil)  {
+        guard let urlRequest = buildURL(from: sport, page: page) else {
             fail?(DataProviderError.missingUrl)
             return
         }
@@ -76,34 +76,20 @@ class DataProvider {
     }
     
     // MARK: - Builds URL for get requests depending on whether we have nil sport
-    public func buildURL(from sport: Sport?) -> URL? {
-        guard let sport = sport else { return URL(string: LOB_ROOT_URL + "/hot_posts") }
-        return URL(string: LOB_ROOT_URL + "/new/\(sport.subreddit)")
+    public func buildURL(from sport: Sport?, page: Int) -> URL? {
+        guard let sport = sport else { return URL(string: LOB_ROOT_URL + "/posts?sort=trending") }
+        return URL(string: LOB_ROOT_URL + "/posts?channel=\(sport.subreddit)&page=\(page)")
     }
     
     // MARK: - Parses JSON given a particular sport
     private func parseJSON(for responseData: Data, sport: Sport?) throws -> [VideoPost] {
         let decoder = JSONDecoder()
         do {
-            if sport == nil {
-                // decode requests for hot posts
-                guard let postDataPerSport = try decoder.decode([String:[String:[VideoPost]]].self, from: responseData)["results"] else {
-                    throw DataProviderError.jsonDecodeError
-                }
-                
-                // extract videopost data and put in dictionary by date
-                var videoPosts: [VideoPost] = []
-                for postData in postDataPerSport.values {
-                    videoPosts = videoPosts + postData
-                }
-                return videoPosts
-            } else {
-                // decode request for anything else {
-                guard let videoPosts: [VideoPost] = try decoder.decode([String:[VideoPost]].self, from: responseData)["results"] else {
-                    throw DataProviderError.jsonDecodeError
-                }
-                return videoPosts
+            // decode request for anything else {
+            guard let videoPosts: [VideoPost] = try decoder.decode([String:[VideoPost]].self, from: responseData)["results"] else {
+                throw DataProviderError.jsonDecodeError
             }
+            return videoPosts
         } catch {
             print(error)
             throw DataProviderError.jsonDecodeError
