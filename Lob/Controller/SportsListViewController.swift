@@ -29,7 +29,7 @@ class SportsListViewController: UIViewController, UITableViewDelegate, UITableVi
         tableView?.tableFooterView = UIView()
         
         // gets sports data
-        self.sports = DataProvider.shared.sportsData.map( { $0.value })
+        self.sports = DataProvider.shared.sportsData.map( { $0.value } ).sorted(by: { $0.name < $1.name })
         self.tableView?.reloadData()
     }
     

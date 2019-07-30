@@ -16,9 +16,16 @@ protocol AutoplayTableViewDelegate: class {
     func willPresentFullScreen(forVideoAt index: Int)
 }
 
-class AutoplayTableDelegate: NSObject {    
-    // MARK: play video at specified index
-    func playVideo(_ tableView: UITableView, forRowAt indexPath: IndexPath) {
+class AutoplayTableDelegate: NSObject {
+    private weak var playerCurrentlyPlaying: AVPlayer?
+    
+    // MARK: Play video at specified index
+    func playVideo(_ tableView: UITableView) {
+        guard let indexPath = locateIndexToPlayVideo(tableView) else {
+            print("No index path identified for autoplaying table.")
+            return
+        }
+        
         if let cell = tableView.cellForRow(at: indexPath) as? LinkTableViewCell {
             // don't reload player if already loaded
             if let player = cell.playerView?.player, player.currentItem != nil {
@@ -33,6 +40,7 @@ class AutoplayTableDelegate: NSObject {
                 cell.playerView?.setPlayerItem(from: URL(string: videoPost.mp4UrlRaw),
                     success: { [weak self] player in
                         DispatchQueue.main.async { [weak self] in
+                            // handle view and AV
                             cell.playerView?.player?.play()
                             cell.playerView?.fadeIn()
                             cell.activityIndicator?.stopAnimating()
@@ -50,7 +58,14 @@ class AutoplayTableDelegate: NSObject {
                     }
                 )
             }
+            // save pointer
+            self.playerCurrentlyPlaying = cell.playerView?.player
         }
+    }
+    
+    // MARK: - Pause current playing video
+    func pauseCurrentVideo() {
+        self.playerCurrentlyPlaying?.pause()
     }
     
     // MARK: pause all videos except specified
@@ -68,7 +83,12 @@ class AutoplayTableDelegate: NSObject {
     }
     
     // MARK: identifies the index for where we play video
-    func locateIndexToPlayVideo(_ tableView: UITableView) -> IndexPath? {
+    private func locateIndexToPlayVideo(_ tableView: UITableView) -> IndexPath? {
+        // play first cell if we haven't loaded anything yet
+        if self.playerCurrentlyPlaying == nil {
+            return IndexPath(row: 0, section: 0)
+        }
+        
         var middleIndex: IndexPath?
         
         // see if full screen mode is disabled and new cells have loaded, if yes, toggle autoplay

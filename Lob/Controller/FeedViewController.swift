@@ -62,6 +62,9 @@ class FeedViewController: UIViewController {
         let refreshControl = UIRefreshControl()
         self.tableView?.refreshControl = refreshControl
         refreshControl.addTarget(self, action: #selector(self.handleRefresh(_:)), for: .valueChanged)
+        
+        // load videos by specified view
+        processPostsResponse()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -76,18 +79,18 @@ class FeedViewController: UIViewController {
         } else {
             statusBarView.backgroundColor = UIColor.white
         }
+        
+        if let tableView = self.tableView {
+            autoplayManager.playVideo(tableView)
+        }
     
         // Set playernotifier delegate each time this view loads
         PlayerNotifier.shared.delegate = autoplayManager
-        
-        // load videos by specified view
-        processPostsResponse()
     }
     
-    // reset table if view disappears
+    // MARK: - Pause current video
     override func viewWillDisappear(_ animated: Bool) {
-        self.dataSource.videoPosts.removeAll()
-        self.tableView?.reloadData()
+        self.autoplayManager.pauseCurrentVideo()
     }
     
 //    override func didReceiveMemoryWarning() {
@@ -125,11 +128,6 @@ class FeedViewController: UIViewController {
                 if self?.page == 1 && response.isEmpty {
                     self?.errorView?.isHidden = false
                 } else {
-                    // play first video if this is first call
-                    if let tableView = self?.tableView, self?.page == 1 {
-                        let firstIndexPath = IndexPath(row: 0, section:0)
-                        self?.autoplayManager.playVideo(tableView, forRowAt: firstIndexPath)
-                    }
                     self?.page += 1     // increment page
                 }
 
@@ -199,9 +197,6 @@ extension FeedViewController: UITableViewDelegate {
             let lastSection = tableView.numberOfSections - 1
             let lastRow = IndexPath(row: tableView.numberOfRows(inSection: lastSection) - 1, section: lastSection)
             if indexPath == lastRow {
-//                self.dataSource.videoPosts.removeAll()
-//                self.tableView?.reloadData()
-
                 self.isPaginationOk = false
                 processPostsResponse()
             }
@@ -219,8 +214,8 @@ extension FeedViewController: UITableViewDelegate {
         guard let tableView = scrollView as? UITableView else {
             return
         }
-        if !decelerate, let indexPath = autoplayManager.locateIndexToPlayVideo(tableView) {
-            autoplayManager.playVideo(tableView, forRowAt: indexPath)
+        if !decelerate {
+            autoplayManager.playVideo(tableView)
         }
     }
     
@@ -229,9 +224,7 @@ extension FeedViewController: UITableViewDelegate {
         guard let tableView = scrollView as? UITableView else {
             return
         }
-        if let indexPath = autoplayManager.locateIndexToPlayVideo(tableView) {
-            autoplayManager.playVideo(tableView, forRowAt: indexPath)
-        }
+        autoplayManager.playVideo(tableView)
     }
     
     
@@ -253,7 +246,8 @@ extension FeedViewController: UITableViewDelegate {
         
         // send index of currently viewed video (index = row + rowsInSection(section-1)
         videoVC.videoIndex = index
-        
+
+//        self.navigationController?.pushViewController(videoVC, animated: true)
         self.present(videoVC, animated: true, completion: nil)
     }
 }

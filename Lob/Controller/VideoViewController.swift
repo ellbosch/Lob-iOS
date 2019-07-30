@@ -220,7 +220,6 @@ extension VideoViewController: FullScreenViewDelegate {
     
     func willExitFullScreenMode() {
         // remove videoviewcontroller
-        self.navigationController?.popViewController(animated: true)
         dismiss(animated: true, completion: nil)
         
         // remove player and thumbnail from memory
