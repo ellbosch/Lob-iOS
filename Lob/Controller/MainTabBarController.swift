@@ -9,10 +9,24 @@
 import UIKit
 
 class MainTabBarController: UITabBarController {
+    
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nil)
+        
+        setupTabController()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        
+        setupTabController()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(false)
+    }
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
+    func setupTabController() {
         // set up view controllers and icons
         let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
         
@@ -26,6 +40,7 @@ class MainTabBarController: UITabBarController {
         let navController = UINavigationController(rootViewController: channelsVC)
         navController.title = "Channels"
         
-        self.viewControllers = [trendingVC, navController]
+        let viewControllers = [trendingVC, navController]
+        self.setViewControllers(viewControllers, animated: false)
     }
 }

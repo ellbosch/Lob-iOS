@@ -39,19 +39,6 @@ class FeedViewController: UIViewController {
         self.tableView?.dataSource = dataSource
         self.tableView?.delegate = self
         
-        // view logic--WE'LL EVENTUALLY PORT THIS TO A VIEW FILE
-        if let sport = self.sport {
-            // set title: nil case means we're in hot posts view
-            self.title = sport.name
-        } else {
-            // if we're in hot posts view: set date header
-            let now = Date()
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "LLLL d"
-            let dateString = dateFormatter.string(from: now)
-            self.headerDateLabel?.text = dateString.uppercased()
-        }
-        
         // analytics
         Analytics.logEvent(AnalyticsEventAppOpen, parameters: [AnalyticsParameterItemCategory: self.title ?? ""])
         
@@ -71,18 +58,31 @@ class FeedViewController: UIViewController {
     }
     
     override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
         // if we're in hot posts view: make status bar solid white
         guard let statusBarView = UIApplication.shared.value(forKeyPath: "statusBarWindow.statusBar") as? UIView else {
             return
         }
-        
-        // TODO: separate this into new VC
-        if self.sport != nil {
+
+        // view logic--WE'LL EVENTUALLY PORT THIS TO A VIEW FILE
+        if let sport = self.sport {
+            // set title: nil case means we're in hot posts view
+            self.title = sport.name
+
             statusBarView.backgroundColor = nil
         } else {
+            // if we're in hot posts view: set date header
+            let now = Date()
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "LLLL d"
+            let dateString = dateFormatter.string(from: now)
+            self.headerDateLabel?.text = dateString.uppercased()
+
             statusBarView.backgroundColor = UIColor.white
         }
         
+        // play video upon view appearing
         if let tableView = self.tableView {
             autoplayManager?.playVideo(tableView)
         }

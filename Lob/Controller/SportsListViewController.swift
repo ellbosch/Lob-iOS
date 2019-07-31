@@ -33,7 +33,9 @@ class SportsListViewController: UIViewController, UITableViewDelegate, UITableVi
         self.tableView?.reloadData()
     }
     
-    override func viewDidAppear(_ animated: Bool) {        
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
         // set delegate to tabBarController here so that it changes to this VC (in case delegate is still set from another VC)
         tabBarController?.delegate = self
 
@@ -93,6 +95,9 @@ class SportsListViewController: UIViewController, UITableViewDelegate, UITableVi
     
     // logic for pushing segue
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        // deselect row for formatting
+        self.tableView?.deselectRow(at: indexPath, animated: true)
+        
         if indexPath.section == 0 {
             // display feed vc for sport
     
@@ -104,7 +109,7 @@ class SportsListViewController: UIViewController, UITableViewDelegate, UITableVi
             }
 
             feedVC.sport = sportForCell
-            self.navigationController?.pushViewController(feedVC, animated: true)
+            self.navigationController?.pushViewController(feedVC, animated: false)      // LEAVE THIS FALSE! animations break switching back and forth on view
         } else if indexPath.section == 1 {
             performSegue(withIdentifier: "settingsSegue", sender: nil)
         }
@@ -117,13 +122,9 @@ class SportsListViewController: UIViewController, UITableViewDelegate, UITableVi
         if segue.identifier == "channelSegue" {
             guard let feedVC = segue.destination as? FeedViewController,
                 let selectedRow = tableView?.indexPathForSelectedRow else { return }
-            
-            // deselect row for formatting
-            self.tableView?.deselectRow(at: selectedRow, animated: true)
     
             // open channel to sport if one is selected
             feedVC.sport = self.sports[selectedRow.row]
-            
         }
     }
 }
