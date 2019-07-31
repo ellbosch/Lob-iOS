@@ -25,7 +25,7 @@ class AutoplayTableDelegate: NSObject {
             print("No index path identified for autoplaying table.")
             return
         }
-        
+
         if let cell = tableView.cellForRow(at: indexPath) as? LinkTableViewCell {
             // don't reload player if already loaded
             if let player = cell.playerView?.player, player.currentItem != nil {
@@ -84,11 +84,6 @@ class AutoplayTableDelegate: NSObject {
     
     // MARK: identifies the index for where we play video
     private func locateIndexToPlayVideo(_ tableView: UITableView) -> IndexPath? {
-        // play first cell if we haven't loaded anything yet
-        if self.playerCurrentlyPlaying == nil {
-            return IndexPath(row: 0, section: 0)
-        }
-        
         var middleIndex: IndexPath?
         
         // see if full screen mode is disabled and new cells have loaded, if yes, toggle autoplay
@@ -145,7 +140,7 @@ extension UITableView {
         for i in stride(from: 0, to: indexPath.section, by: 1) {
             indexCount += self.numberOfRows(inSection: i)
         }
-        indexCount += indexPath.row + 1
+        indexCount += indexPath.row
         
         return indexCount
     }

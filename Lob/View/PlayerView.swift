@@ -35,7 +35,6 @@ class PlayerView: UIView {
             return playerLayer.player
         }
         set {
-            newValue?.addObserver(self, forKeyPath: "rate", options: [.old, .new], context: nil)
             playerLayer.player = newValue
         }
     }
@@ -62,6 +61,11 @@ class PlayerView: UIView {
         setupView()
     }
     
+    deinit {
+        player?.currentItem?.removeObserver(self, forKeyPath: "status")
+        player?.removeObserver(self, forKeyPath: "rate")
+    }
+    
     // MARK: - Sets up player view
     func setupView() {
         // updates player scrubber slider as video plays
@@ -78,6 +82,7 @@ class PlayerView: UIView {
         // instantiate playerview if not made
         if player == nil {
             player = AVPlayer(playerItem: nil)
+            player?.addObserver(self, forKeyPath: "rate", options: [.old, .new], context: nil)
         }
         
         // load url in background thread
@@ -85,6 +90,8 @@ class PlayerView: UIView {
             success: { [weak self] response in
                 DispatchQueue.main.async { [weak self] in
                     if let player = self?.player {
+                        player.currentItem?.removeObserver(self!, forKeyPath: "status")
+                        
                         player.replaceCurrentItem(with: response)
                         success?(response)
                         
@@ -96,7 +103,6 @@ class PlayerView: UIView {
     
                         // observers for video load response, and play/pause
                         response.addObserver(self!, forKeyPath: "status", options: [.old, .new], context: nil)
-                        player.addObserver(self!, forKeyPath: "rate", options: [.old, .new], context: nil)
                     }
                 }
             },
